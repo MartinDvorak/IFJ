@@ -1,4 +1,4 @@
-include #stdio.h
+tady takyinclude #stdio.h
 
 int main {
 printf ("Hello mothafucka\n");
