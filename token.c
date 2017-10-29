@@ -25,7 +25,7 @@ void char_append(char *str, char c) {
 
     int len = strlen(str);
 
-    if (len + 1 >= ((len / 10 + 1) * 10)) {  //TODO comment
+    if (len + 1 >= ((len / SIZEUNEED + 1) * SIZEUNEED)) {  //TODO comment
         str = realloc(str, (len + 1 + SIZEUNEED) * sizeof(char));
     }
 
@@ -43,6 +43,9 @@ TToken* get_next (TToken* t, FILE *fd) {       // simuluje cinost lex.analyzator
     */
     char c;
     int state = 0;
+    int tmp_i = 0;
+    //float tmp_f = 0.0;
+    //char *tmp_s = NULL;
     
     if (t == NULL) {                //FIRST USE
 		t = token_init();	
@@ -56,11 +59,13 @@ TToken* get_next (TToken* t, FILE *fd) {       // simuluje cinost lex.analyzator
     while((c = getc(fd)) != EOF) {
         if (c >= 48 && c <= 57) {
             state = INT_V;
-            char_append(t->string, c);
+            tmp_i = (tmp_i * 10) + (c - '0');
         }
         if (isblank(c))
             break;
     }
+
+    t->int_v = tmp_i;
 
 	return t;
 }

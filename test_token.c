@@ -11,8 +11,12 @@ int main(int argc, char **argv)
 
     token = get_next(token, fd);
     printf("%s\n", token->string);
+    printf("%d\n", token->int_v);
+    printf("%f\n", token->float_v);
     token = get_next(token, fd);
     printf("%s\n", token->string);
+    printf("%d\n", token->int_v);
+    printf("%f\n", token->float_v);
     token_free(token);
     
     fclose(fd);
