@@ -1,0 +1,6 @@
+do texťáku psát řetězce co se chtějí testovat 
+spouštět 
+
+./script_pust testy.txt 
+
+// na script je treba chmox -x script_pust
