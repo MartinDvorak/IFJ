@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "stack.h"
 
 #define TRUE        1
 #define FALSE       0
@@ -43,7 +44,7 @@
 
 #define ID          50   //identifikátor
 #define INT_V       51
-#define DOUBLE_V    52
+#define FLOAT_V   	52
 #define STRING_V    53
 #define ASSIGN      54  //=
 #define EQ          55  //==
@@ -57,6 +58,13 @@
 #define MUL         63  //*
 #define DIV         64  //"/"
 #define INTDIV      65  //"\"
+#define EOL			66	//'\n' - end of line
+#define BRACKET_L	67  // (
+#define BRACKET_R 	68  // )
+#define EOF			69 	// end of file
+#define COLON		70  // ,
+
+
 
 #define SIZEUNEED   10 //minimum token string size
 
@@ -64,7 +72,7 @@
 typedef struct token{
 	int type;
 	
-	int int_v;
+	long int_v;
 	float float_v;
     char *string;
 
@@ -74,4 +82,4 @@ TToken* token_init();
 
 void token_free(TToken* t);
 
-TToken *get_next(TToken *t, FILE *fd);
+TToken *get_next(TToken *t, Tstack* s);
