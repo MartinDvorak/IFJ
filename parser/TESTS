@@ -5,7 +5,7 @@
 2 - testy na deklarace funkcí
 3 - test na definici funkcí
 4 - all in one
-5 - pokusy o prustrel
+5 - kontrola typu
 //
 
 
@@ -98,11 +98,33 @@ závěr:TRUE
 
 
 5)
+Vstup
+
+NULL
+--Nepřečte se žádný token, tudíž se neskočí do žádného zpracování (token=NULL), ihned přeskok do false větve v parser_FREEBASIC
+
+závěr: TRUE
+
 ---------------------------------------------------------
 vypada to ze pokud je vse zadano jak ma byt, funguje spravne
 ---------------------------------------------------------
 POKUSY O PRUSTREL 
 ---------------------------------------------------------
+
+6)
+
+Vstup
+
+{SCOPE,EOL,END,SCOPE,EOL}
+
+vystup : FALSE
+závěr : FALSE???TRUE
+
+-- k tomuto (ze zadání jsem si uvodil že teoreticky body může být prázdné), a pokud ještě if(body(t)) není hotovo, tudíž body(t) nevrátí někdy FALSE je toto v pořádku.
+
+
+Hlavní telo programu je uvozeno klí ˇ covým slovem ˇ Scope následovaným sekvencí definic
+promenných a díl ˇ cích p ˇ ˇríkaz ˚u ukoncených koncem ˇ ˇrádku (sekvence m ˚uže být i prázdná).
 
 
 
