@@ -1,0 +1,108 @@
+--   výstup co řekne program, závěr, jestli jeto správně --
+
+//
+1 - testy na kostru programu
+2 - testy na deklarace funkcí
+3 - test na definici funkcí
+4 - all in one
+5 - pokusy o prustrel
+//
+
+
+1)
+Vstup: 
+
+SCOPE,EOL,BODY,END,SCOPE,EOL	
+-- test základní kostry --
+
+výstup: TRUE
+závěr: TRUE
+
+
+Vstup: 
+
+{SCOPE,EOL,BODY,END,SCOPE,EOL,SCOPE,EOL,BODY,END,SCOPE,EOL,EOF}
+-- test jestli neproběhne 2x main --
+
+výstup: FALSE
+závěr: TRUE
+
+_______________________________________________
+
+
+2)
+Vstup
+
+{DECLARE,FUNCTION,ID,BRACKET_L,ID,AS,INTEGER,BRACKET_R,AS,INTEGER,EOL}
+-- test funkcnosti deklarace funkce podle  F-> DECLARE <Func_line> <F>m --
+
+výstup: TRUE
+závěr: TRUE
+
+Vstup
+
+{DECLARE,FUNCTION,ID,BRACKET_L,ID,AS,STRING,BRACKET_R,AS,INTEGER,EOL,DECLARE,FUNCTION,ID,BRACKET_L,ID,AS,FLOAT,BRACKET_R,AS,STRING,EOL}
+-- deklarace dvou funkcí za sebou -- 
+
+výstup: TRUE,TRUE
+závěr: TRUE
+
+
+{DECLARE,FUNCTION,ID,BRACKET_L,BRACKET_R,AS,STRING,EOL,BODY,END,FUNCTION,EOL};
+
+-- test jestli nemůže proběhnout definice funkce při deklaraci -- 
+
+výstup: FALSE
+závěr: TRUE
+_______________________________________________
+
+3)
+Vstup
+
+{FUNCTION,ID,BRACKET_L,ID,AS,INTEGER,BRACKET_R,AS,INTEGER,EOL,BODY,END,FUNCTION,EOL}
+--test definice funkce podle F-> <Func_line> <BODY> END Function <F>   --
+
+výstup: TRUE
+závěr: TRUE
+
+Vstup
+
+{FUNCTION,ID,BRACKET_L,ID,AS,STRING,COLON,ID,AS,INTEGER,COLON,ID,AS,INTEGER,COLON,ID,AS,INTEGER,BRACKET_R,AS,STRING,EOL,BODY,END,FUNCTION,EOL}
+
+--test na více parametrů ve Funkci
+
+výstup: TRUE
+závěr: TRUE
+
+
+Vstup
+
+{FUNCTION,ID,BRACKET_L,BRACKET_R,AS,STRING,EOL,BODY,END,FUNCTION,EOL}
+
+--test na definici funkci bez parametrů--
+
+výstup: TRUE
+závěr: TRUE
+
+_______________________________________________
+
+4)
+Vstup
+
+{DECLARE,FUNCTION,ID,BRACKET_L,ID,AS,INTEGER,BRACKET_R,AS,INTEGER,EOL,FUNCTION,ID,BRACKET_L,ID,AS,INTEGER,BRACKET_R,AS,INTEGER,EOL,BODY,END,FUNCTION,EOL,SCOPE,EOL,BODY,END,SCOPE,EOL}
+
+--test na deklaraci, definici a scope jdoucí po sobě--
+
+výstup:TRUE
+závěr:TRUE
+
+
+5)
+---------------------------------------------------------
+vypada to ze pokud je vse zadano jak ma byt, funguje spravne
+---------------------------------------------------------
+POKUSY O PRUSTREL 
+---------------------------------------------------------
+
+
+
