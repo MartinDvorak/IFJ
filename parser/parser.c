@@ -3,7 +3,7 @@
 
 int TEST_SUN=0;
 //DOPLNENI TOKENU DO POLE 
-int pole[]={};
+int pole[]={SCOPE,EOL,BODY,END,SCOPE,EOL};
 
 #include "token.c"
 /*TToken* give_me(TToken* t)// simuluje cinost lex.analyzatoru
