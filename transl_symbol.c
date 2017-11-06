@@ -59,7 +59,7 @@ void symb_arr_destructor(tSymbol* arr, int size){
 
 
 
-////example of alloc
+////example of allocate
 int main(){
 
 
