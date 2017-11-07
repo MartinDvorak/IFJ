@@ -1,25 +1,30 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "token.h"
-
-#define SIZEUNEED 10
+#include "stack.h"
 
 int main(int argc, char **argv)
 {
     TToken* token = NULL;
-    FILE *fd;
+    Tstack* s = NULL;
 
-    fd = fopen("text.txt", "r");
 
-    token = get_next(token, fd);
+    token = get_next(token, s);
+    printf("####TOKEN 1####\n");
+    printf("%d\n", token->type);
     printf("%s\n", token->string);
-    printf("%d\n", token->int_v);
-    printf("%f\n", token->float_v);
-    token = get_next(token, fd);
+    printf("%ld\n", token->int_v);
+    printf("%f\n\n", token->float_v);
+    printf("###############\n");
+    token = get_next(token, s);
+    printf("####TOKEN 2####\n");
+    printf("%d\n", token->type);
     printf("%s\n", token->string);
-    printf("%d\n", token->int_v);
+    printf("%ld\n", token->int_v);
     printf("%f\n", token->float_v);
+    printf("###############\n");
     token_free(token);
     
-    fclose(fd);
 
     return 0;
 }

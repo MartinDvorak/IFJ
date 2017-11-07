@@ -42,7 +42,7 @@
 #define STATIC      43
 #define TRUE_KW     44
 
-#define ID          50   //identifikátor
+#define ID          50   //identificator
 #define INT_V       51
 #define FLOAT_V   	52
 #define STRING_V    53
@@ -58,12 +58,17 @@
 #define MUL         63  //*
 #define DIV         64  //"/"
 #define INTDIV      65  //"\"
-#define EOL			66	//'\n' - end of line
+#define MYEOL		66	//'\n' - end of line
 #define BRACKET_L	67  // (
 #define BRACKET_R 	68  // )
-#define EOF			69 	// end of file
+#define SEMICOLON	69 	// ;
 #define COLON		70  // ,
+#define EXCL_M		71	// !
+#define L_COMMENT	72  //in line comment
+#define B_COMMENT	73	//in block commnet
+#define SCAN_ERR	99  //lexem error
 
+//EOF -1
 
 
 #define SIZEUNEED   10 //minimum token string size
