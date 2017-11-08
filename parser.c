@@ -138,7 +138,7 @@ int preprocesing_expr_real(TToken* t, TToken *last, int condition)
 	Toperation* op_arr = NULL;
 	int num_of_op = 0;
 
-	if((op_arr = malloc(sizeof(struct semantic_operation)*(ptr_to_array)) == NULL))
+	if((op_arr = malloc(sizeof(struct semantic_operation)*(ptr_to_array))) == NULL)
 		exit(99);
 
 	if(expr(string,condition) && semantic_exp(string,type_array,ptr_to_array,op_arr,&num_of_op))
