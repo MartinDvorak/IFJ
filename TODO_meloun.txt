@@ -1,0 +1,14 @@
+#define EOL			66  // '\n' - end of line
+#define BRACKET_L   67  // (
+#define BRACKET_R	68	// )
+#define EOF 		69  // end of file -> je definovany dej to do komentare jen aby jsi nezapomnel za tohle je taky treba zpracovat
+#define COLON       70  // ,
+#define SEMICOLON   71  // ;
+neni dat. typ DOUBLE ale FLOAT
+
+#define FLOAT       15
+#define FLOAT_V     52
+--------------------------------
+TAKOVÝ TOKEN NIKDY NBUDE :D
+#define EQ          55  //==  
+

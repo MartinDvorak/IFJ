@@ -1,0 +1,22 @@
+
+podívat se na r_side()a param(t,NULL)
+    - to NULL
+
+výrazy + osetrit r_side na semantiku
+
+
+SEMANTIKA
+
+EXPR 
+
+kazda promena musi byt deklarovana / redefinice nepovolena
+
+kontrola L a R value u přirazeni musi sedět
+
+return 
+
+IMPLICITNI KONVERZE 
+
+int -> double
+
+double -> int

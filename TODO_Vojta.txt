@@ -1,0 +1,43 @@
+Udržuj si nové verze parseru
+
+
+
+
+!!Napsat nějaký reporty hlavně z TESTů, aby bylo vidět co nefunguje a tak Nějak abyych o tom věděl a ideálně nějakou souvislost k tomu pokud bude.
+
+!!!otestovat složku ./expresion 
+    najít si na nějakem oveřeném zdroji, co všechno má fungovat. + zadání. 
+
+!otestovat složku ./expresion/stack
+    -činnost Lex. analyzátoru otestuj 
+            - zjisti si jak to bude meloun použivat 
+
+
+LEX. analyzator 
+- během víknetu by mohlo být
+!!!!projdi a pochop složku ./token
+    -pro další fungování posílání tokenu
+
+!!!Domluv se s melounem, na tom že když tam bude mít chyby (typu valgrind) tak mu je řeš atd. 
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!PARSER 
+- bude se vycházet ze souboru LL_rules.txt ( nastudovat?) 
+- debugovat VŠECHNY pravidla 
+    - budeš si muset někde asi nasymilovat analyzator. 
+    - JE TO UZ HOTOVE, takže prosím pospěš (akorát musím dodělat expr ale to musím počkat na Mirdu = číst ti je to bude akorát to s tím nic nebude dělat 
+takže zadávej prosím jen validní výrazy)
+
+NENI TO PSANY CHRONOLOGICKY JAK TO MAS DELAT. 
+
+!!PODIVAT SE A UDELAT S>TRUKTURU DOKUMENTACE
+
+! = značí doležitost daného úkolu
+
+
+############################################################################
+DONE
+Mates - 
+
+V parseru C, máš 2x INCLUDE #include "./symbtab/symbtab.h"
+v parser.h máš 2x definici give_me
+############################################################################
