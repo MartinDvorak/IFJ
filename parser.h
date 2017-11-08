@@ -68,7 +68,11 @@
 #define COLON		70  // , 
 #define SEMICOLON	71  // ;
 
-
+typedef struct semantic_operation{
+	char op;  // what is operation
+	int l_convert; // left value need convert
+	int r_convert; // right valur need convert
+}Toperation;
 
 TToken* give_me(TToken* t);// simuluje cinost lex.analyzatoru
 
@@ -98,7 +102,7 @@ int param_f(TToken *t, char* string, int* position);
 
 int param_fn(TToken *t, char* string, int* position);
 
-int preprocesing_expr(TToken *t,TToken *last);
+int preprocesing_expr(TToken *t,TToken *last,int condition);
 
 int equal(TToken *t);
 
@@ -130,9 +134,13 @@ int semantic_id_param(TToken *t, char* param, int* position);
 // nalezne jestli existuje fce a tomom vrátí jeji parametry v  char*param
 int semantic_fce_param(Ttnode_ptr root, TToken* t, char* param);
 
-
+// vlozi pokud neexistuje jinak false
 int semantic_insert(Ttnode_ptr* root, char* name, Tdata* data);
 
+// local find id
 int semantic_find_id(TToken* t);
 
+// kouka jeslti jsou nejake funkce ktere nejsou definovane ale jsou volane (volane s deklaraci)
 int semantic_call_undefined_fce();
+
+int semantic_exp(char* string, int* type_array, int num, Toperation* arr, int* num_of_arr);

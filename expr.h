@@ -10,12 +10,12 @@
 
 int reduce(Tstack*s);
 
-char table_precedence(char** table,char token_symbol, char stack_symbol);
+char table_precedence(char** table,char token_symbol, char stack_symbol, int conditin);
 
-char **init_table_precedence();
+char **init_table_precedence(int conditin);
 
-void free_table(char **table);
+void free_table(char **table, int conditin);
 
-int expr(char* string);
+int expr(char* string, int conditin);
 
 char next(char* string, int *position);

@@ -16,18 +16,22 @@ TToken* give_me(TToken* t)// simuluje cinost lex.analyzatoru
 	return t;
 }
 
-
-int preprocesing_expr_real(TToken* t, TToken *last)
+int preprocesing_expr_real(TToken* t, TToken *last, int condition)
 { // TODO - expresion
 	char* string;
 	if ((string = malloc(sizeof(char)*10)) == NULL)
 		exit(99);
 	string = strcpy(string,"");
 
+	int *type_array;
+	int ptr_to_array = 0;
+	if ((type_array = malloc(sizeof(int)*10)) == NULL)
+		exit(99);
+	
 	if (last != NULL)
 	{
 		// TODO kolize na r_side
-
+		type_array[ptr_to_array++] = last->type;
 		string = strcat(string, "i");
 	}
 	while(TRUE)
@@ -41,7 +45,14 @@ int preprocesing_expr_real(TToken* t, TToken *last)
 			if ((string = realloc(string, sizeof(char)*(size+11))) == NULL)
 				exit(99);
 		}
-		
+		if(ptr_to_array%10 == 9)
+		{
+			if ((type_array = realloc(type_array, sizeof(int)*(ptr_to_array+10))) == NULL)
+				exit(99);
+		}
+
+		if(condition)
+		{
 		switch(t->type)
 		{
 			case MUL: string = strcat(string, "*");
@@ -54,6 +65,21 @@ int preprocesing_expr_real(TToken* t, TToken *last)
 					break;
 			case INTDIV:string = strcat(string, "M");
 					break;
+			case ID: if(!semantic_find_id(t)) 
+						free(string);
+						free(type_array);
+						return FALSE;
+			case INT_V: 
+			case FLOAT_V:
+			case STRING_V:
+					type_array[ptr_to_array++] = t->type;
+					string = strcat(string, "i");
+					break;
+			case BRACKET_L: string = strcat(string, "(");
+					break;
+			case BRACKET_R: string = strcat(string, ")");
+					break;
+			
 			case ASSIGN:string = strcat(string, "=");
 					break;
 			case NEQ: string = strcat(string, "N");
@@ -66,11 +92,33 @@ int preprocesing_expr_real(TToken* t, TToken *last)
 					break;
 			case GREATEQ:string = strcat(string, "R");
 					break;
+			default:
+				free(string);
+				free(type_array);
+				return FALSE;
+		}
+		}
+		else{
+		switch(t->type)
+		{	
+			case MUL: string = strcat(string, "*");
+					break;
+			case DIV:string = strcat(string, "/");
+					break;
+			case ADD:string = strcat(string, "+");
+					break;
+			case SUB:string = strcat(string, "-");
+					break;
+			case INTDIV:string = strcat(string, "M");
+					break;
 			case ID: if(!semantic_find_id(t)) 
+						free(string);
+						free(type_array);
 						return FALSE;
 			case INT_V:
 			case FLOAT_V:
 			case STRING_V:
+					type_array[ptr_to_array++] = t->type;
 					string = strcat(string, "i");
 					break;
 			case BRACKET_L: string = strcat(string, "(");
@@ -78,17 +126,36 @@ int preprocesing_expr_real(TToken* t, TToken *last)
 			case BRACKET_R: string = strcat(string, ")");
 					break;
 			default:
-				return FALSE;
+				free(string);
+				return FALSE;	
+			
 		}
-
+		}	
 		t = give_me(t);
 	} // indikuje konec vyrazu 
 	string = strcat(string, "$");
-	return expr(string);
+
+	Toperation* op_arr = NULL;
+	int num_of_op = 0;
+
+	if((op_arr = malloc(sizeof(struct semantic_operation)*(ptr_to_array)) == NULL))
+		exit(99);
+
+	if(expr(string,condition) && semantic_exp(string,type_array,ptr_to_array,op_arr,&num_of_op))
+		{
+			free(string);
+			free(type_array);
+			return TRUE;
+		}
+
+	free(string);	
+	free(type_array);
+	return FALSE;		
+
 
 }
 
-int preprocesing_expr(TToken* t,TToken* last)
+int preprocesing_expr(TToken* t,TToken* last, int condition)
 { // TODO - expresion
 	while(TRUE)
 	{
@@ -107,7 +174,7 @@ int expr_n(TToken *t)
 {
 	if (t->type == EOL)
 		return TRUE;
-	else if (preprocesing_expr(t,NULL))
+	else if (preprocesing_expr(t,NULL,0))
 	{
 		if (t->type == SEMICOLON)
 		{
@@ -313,7 +380,7 @@ int r_side(TToken *t)
 					}
 				}
 		} 
-		else if(preprocesing_expr(t,&tmp))
+		else if(preprocesing_expr(t,&tmp,0))
 		{ // <r_side> -> <expr> EOL
 			if(t->type == EOL)
 			{
@@ -368,15 +435,16 @@ int body(TToken *t)
 			{
 				t = give_me(t);
 				if(type(t,&tmp,1,NULL))
-				{
+				{	
+					// semantic control
+					if(!semantic_insert(&root_local,t->string,&tmp))
+						return FALSE;
+					//
 					t = give_me(t);
 					if(equal(t))
 					{
 						if (t->type == EOL)
-						{ // semantic TODO - predpokladam ze se v token nezmeni t->string
-							if(!semantic_insert(&root_local,t->string,&tmp))
-								return FALSE;
-							// provizorne
+						{ 
 							t = give_me(t);
 							return body(t);
 						}
@@ -424,7 +492,7 @@ int body(TToken *t)
 	else if(t->type == PRINT)
 	{ // <BODY> -> PRINt <EXP>; <EXP_N> EOL <BODY>
 		t = give_me(t);
-		if(preprocesing_expr(t,NULL))
+		if(preprocesing_expr(t,NULL,0))
 			if(t->type == SEMICOLON)
 			{
 				t = give_me(t);
@@ -439,7 +507,7 @@ int body(TToken *t)
 	else if(t->type == IF)
 	{ // <BODY> -> IF <EXP> THEN EOL <BODY> ELSE EOL <BODY> END IF EOL <BODY>
 		t = give_me(t);
-		if(preprocesing_expr(t,NULL))
+		if(preprocesing_expr(t,NULL,1))
 			if (t->type == THEN)
 			{
 				t = give_me(t);
@@ -478,7 +546,7 @@ int body(TToken *t)
 		if(t->type == WHILE)
 		{
 			t = give_me(t);
-			if(preprocesing_expr(t,NULL))
+			if(preprocesing_expr(t,NULL,1))
 				if(t->type == EOL)
 				{
 					t = give_me(t);
@@ -498,7 +566,7 @@ int body(TToken *t)
 	else if(t->type == RETURN)
 	{ // <BODY> -> RETURN <EXP> EOL <BODY>
 		// TODO - semanticka kontrolo jestli je return s return typem
-		if(preprocesing_expr(t,NULL))
+		if(preprocesing_expr(t,NULL,0))
 		{
 			if(t->type == EOL)
 				{
@@ -934,6 +1002,94 @@ int semantic_find_id(TToken* t)
 	ERROR_RETURN = 3;
 	return FALSE;
 } 
+	
+
+int semantic_exp(char* string, int* type_array, int num_type,Toperation* arr, int* num_arr)
+{
+	Tstack* s = NULL;
+	s = stack_init();
+	int str_num = 0;
+	
+	while(string[str_num] != '$')
+	{
+		if(string[str_num] == 'i')
+		{
+			push(s,type_array[num_type++]);
+		}
+		else{
+			
+			Toperation tmp;
+			
+			int left = top2_stack(s);
+			int right = top_stack(s);
+			char c = string[str_num];
+			
+			if(((left == 's')||(right == 's'))&&((c == '-')||(c == '+')||(c == '/')||(c == 'M')))
+			{// nepovolena operace nad stringem
+				free_stack(s);
+				return FALSE;
+			}
+			else if(left == right)
+			{
+				if((c == '/')&&(left == INTEGER))
+				{
+					tmp.op = c;
+					tmp.l_convert = 1;
+					tmp.r_convert = 1;
+					arr[(*num_arr)++] = tmp;
+					pop2(s);
+					push(s,FLOAT);
+
+				}
+				else if((c == 'M')&&(left = FLOAT))
+				{
+					free_stack(s);
+					return FALSE;
+				}
+				else{
+					tmp.op = c;
+					tmp.l_convert = 0;
+					tmp.r_convert = 0;
+					arr[(*num_arr)++] = tmp;
+					pop(s);
+				}
+			}
+			else if(c == 'M')
+			{// modulo nelze jinde nez int/int
+				free_stack(s);
+				return FALSE;
+			}
+			else if((left == INTEGER)&&(right == FLOAT))
+			{
+				tmp.op = c;
+				tmp.l_convert = 1;
+				tmp.r_convert = 0;
+				arr[(*num_arr)++] = tmp;
+				pop2(s);
+				push(s,FLOAT);
+
+			}
+			else if((left == FLOAT)&&(right == INTEGER))
+			{
+				tmp.op = c;
+				tmp.l_convert = 0;
+				tmp.r_convert = 1;
+				arr[(*num_arr)++] = tmp;
+				pop(s);
+			}
+			else{
+				free_stack(s);
+				return FALSE;
+			}
+		}
+		str_num++;
+	}
+
+	/// tohle pak zachovat nejak zde je implicitni hodnota celeho vyrazu
+	int final_type = top_stack(s);
+	free_stack(s);
+	return TRUE;
+}
 
 int main(int argc, char **argv)
 {

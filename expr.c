@@ -6,7 +6,7 @@ char next(char* string, int *position){
 	return string[(*position)++];
 }
 
-int expr(char* string){
+int expr(char* string,int condition){
 
 	int position = 0;
 	Tstack* s = NULL;
@@ -18,12 +18,12 @@ int expr(char* string){
 	char top;
 	char action;
 
-	char **table = init_table_precedence();
+	char **table = init_table_precedence(condition);
 	input = next(string,&position);
 	top = top_stack_terminal(s);	
 	do{
 
-		action = table_precedence(table,input,top);
+		action = table_precedence(table,input,top,condition);
 		switch(action)
 		{
 			case '=':push(s,input);
@@ -35,18 +35,22 @@ int expr(char* string){
 					break;
 			case '>':if(reduce(s))
 						break;
-					else{return FALSE;}
+					else{					
+						free_table(table,condition);
+						free_stack(s);
+						return FALSE;
+					}
 			default:free_stack(s);
-					free_table(table);
+					free_table(table,condition);
+					free_stack(s);
 					return FALSE;
 		}
 		top = top_stack_terminal(s);
 
 	}while(!((input == '$')&&(top == '$')));
 
-	free_table(table);
+	free_table(table,condition);
 	free_stack(s);
-	free(string);
 	return TRUE;
 }
 
@@ -95,70 +99,92 @@ int reduce(Tstack*s)
 
 }
 
-char table_precedence(char** table,char token_symbol, char stack_symbol)
+char table_precedence(char** table,char token_symbol, char stack_symbol,int condition)
 {
+	int size_col = 10;
+	if(condition)
+	{
+		size_col = 16;
+	}
+
 	int i,j;
 	
-	for (i=0; i < 16; i++)
+	for (i=0; i < size_col; i++)
 		if(table[0][i] == token_symbol)
 			break;
 
-	for (j=0; j < 16; j++)
+	for (j=0; j < size_col; j++)
 		if(table[j][0] == stack_symbol)
 			break;
 
 	return table[j][i];
 }
 
-char **init_table_precedence()
+char **init_table_precedence(int condition)
 {// TODO mozna budoou dve verze podle toho pro jaky neterminal
 	char **table;
-	
-	if ((table = malloc(sizeof(char*)*16)) == NULL)
+	int size_col = 10;
+	int size_row = 11;
+	if(condition)
+	{
+		size_col = 16;
+		size_row = 17;
+	}
+
+	if ((table = malloc(sizeof(char*)*size_col)) == NULL)
 		exit(-1);
 
-	for (int i=0; i < 16 ; i++)
+	for (int i=0; i < size_col ; i++)
 	{
-		if((table[i] = malloc(sizeof(char)*17)) == NULL)
+		if((table[i] = malloc(sizeof(char)*size_row)) == NULL)
 		exit(-1);
 	}
-/*
-	table[0] = strcpy(table[0], "0*M+L()i$\0");	
-	table[1] = strcpy(table[1], "*>>>><><>\0");
-	table[2] = strcpy(table[2], "M<>>><><>\0");
-	table[3] = strcpy(table[3], "+<<>><><>\0");
-	table[4] = strcpy(table[4], "L<<<0<><>\0");
-	table[5] = strcpy(table[5], "(<<<<<=<0\0");
-	table[6] = strcpy(table[6], ")>>>>0>0>\0");
-	table[7] = strcpy(table[7], "i>>>>0>0>\0");
-	table[8] = strcpy(table[8], "$<<<<<0<0\0");	
-
-*/
-
+	
+	if(condition){
 	table[0] = strcpy(table[0], "0*/M+-=NLGSR()i$\0");	
 	table[1] = strcpy(table[1], "*>>>>>>>>>>><><>\0");
 	table[2] = strcpy(table[2], "/>>>>>>>>>>><><>\0");
 	table[3] = strcpy(table[3], "M<<>>>>>>>>><><>\0");
 	table[4] = strcpy(table[4], "+<<<>>>>>>>><><>\0");
 	table[5] = strcpy(table[5], "-<<<>>>>>>>><><>\0");
-	table[6] = strcpy(table[6], "=<<<<<>>>>>><><>\0");
-	table[7] = strcpy(table[7], "N<<<<<>>>>>><><>\0");
-	table[8] = strcpy(table[8], "L<<<<<>>>>>><><>\0");
-	table[9] = strcpy(table[9], "G<<<<<>>>>>><><>\0");
-  table[10] = strcpy(table[10], "S<<<<<>>>>>><><>\0");
-  table[11] = strcpy(table[11], "R<<<<<>>>>>><><>\0");
+	table[6] = strcpy(table[6], "=<<<<<000000<><>\0");
+	table[7] = strcpy(table[7], "N<<<<<000000<><>\0");
+	table[8] = strcpy(table[8], "L<<<<<000000<><>\0");
+	table[9] = strcpy(table[9], "G<<<<<000000<><>\0");
+  table[10] = strcpy(table[10], "S<<<<<000000<><>\0");
+  table[11] = strcpy(table[11], "R<<<<<000000<><>\0");
   table[12] = strcpy(table[12], "(<<<<<<<<<<<<=<0\0");
   table[13] = strcpy(table[13], ")>>>>>>>>>>>0>0>\0");
   table[14] = strcpy(table[14], "i>>>>>>>>>>>0>0>\0");
   table[15] = strcpy(table[15], "$<<<<<<<<<<<<0<0\0");	
+	}
 
+	else
+	{	
+	table[0] = strcpy(table[0], "0*/M+-()i$\0");	
+	table[1] = strcpy(table[1], "*>>>>><><>\0");
+	table[2] = strcpy(table[2], "/>>>>><><>\0");
+	table[3] = strcpy(table[3], "M<<>>><><>\0");
+	table[4] = strcpy(table[4], "+<<<>><><>\0");
+	table[5] = strcpy(table[5], "-<<<>><><>\0");
+	table[6] = strcpy(table[6], "(<<<<<<=<0\0");
+	table[7] = strcpy(table[7], ")>>>>>0>0>\0");
+	table[8] = strcpy(table[8], "i>>>>>0>0>\0");
+	table[9] = strcpy(table[9], "$<<<<<<0<0\0");	
+	}
+	
 	return table;
 }
 
 
-void free_table(char** table)
+void free_table(char** table,int condition)
 {
-	for (int i=0; i < 16; i++)
+	int size_col = 10;
+	if(condition)
+	{
+		size_col = 16;
+	}
+	for (int i=0; i < size_col; i++)
 	{
 		free(table[i]);
 	}	
