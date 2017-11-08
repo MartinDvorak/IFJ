@@ -145,11 +145,13 @@ int preprocesing_expr_real(TToken* t, TToken *last, int condition)
 		{
 			free(string);
 			free(type_array);
+			free(op_arr);
 			return TRUE;
 		}
 
 	free(string);	
 	free(type_array);
+	free(op_arr);
 	return FALSE;		
 
 
