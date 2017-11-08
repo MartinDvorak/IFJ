@@ -40,3 +40,5 @@ int stack_empty(Tstack* s);
 int top2_stack(Tstack* s);
 
 void pop2(Tstack*s);
+
+void flush_stack(Tstack* s);
