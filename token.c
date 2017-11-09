@@ -235,8 +235,20 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     push(s,c);
                 }
                 else {
-                    done = 1;
-                    *storage = c;
+                    char oper[] = {'*','+','-','/','\\','<','>','=',' '};
+                    int correct = 0;
+                    for(int i=0; i < 8; i++)
+                        if(c == oper[i])
+                            correct++;
+                            
+                    if(!correct)
+                    {
+                        state= SCAN_ERR;
+                    }
+                    else{
+                        done = 1;
+                        *storage = c;
+                    }
                 }
                 break;
             
@@ -281,6 +293,8 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 }
                 else {
                     state = SCAN_ERR;
+                    done = 1;
+                    *storage = c;
                 }       
                 break;
 
@@ -370,6 +384,14 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
 
     if (state == INT_V) {
         t->int_v = strtol(tmp_s, NULL, 10);
+    }
+
+    if (state == FLOAT_V) {
+        char *ptr = NULL;
+        t->float_v = strtod(tmp_s,&ptr);
+        if (ptr[0] != '\0') {
+            state = SCAN_ERR;
+        }
     }
 
     if ((state == ID) || (state == STRING_V)) {
