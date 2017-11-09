@@ -68,6 +68,8 @@
 #define COLON		70  // , 
 #define SEMICOLON	71  // ;
 
+
+
 typedef struct semantic_operation{
 	char op;  // what is operation
 	int l_convert; // left value need convert
@@ -102,13 +104,13 @@ int param_f(TToken *t, char* string, int* position);
 
 int param_fn(TToken *t, char* string, int* position);
 
-int preprocesing_expr(TToken *t,TToken *last,int condition);
+int preprocesing_expr(TToken *t,TToken *last,int condition,int* exp_ret);
 
-int equal(TToken *t);
+int equal(TToken *t, int l_value);
 
 int expr_n(TToken *t);
 
-int r_side(TToken *t);
+int r_side(TToken *t,int l_value);
 
 int build_in_fce(TToken *t);
 
@@ -119,6 +121,9 @@ int build_in_fce(TToken *t);
 
 // vloze pouze build in fce do stromu globalniho
 void semantic_insert_build_in();
+
+// convertuje type_vlaue na type
+int semantic_id_type_covert(int type);
 
 // prevede char na #define hodnotu 'i' -> INTEGER
 int semantic_convert_data_type (char c);
@@ -137,10 +142,19 @@ int semantic_fce_param(Ttnode_ptr root, TToken* t, char* param);
 // vlozi pokud neexistuje jinak false
 int semantic_insert(Ttnode_ptr* root, char* name, Tdata* data);
 
+// false neexistuje, v typu bude hodnota type promene
+int semantic_id_type(Ttnode_ptr root,TToken* t,int* type );
+
 // local find id
 int semantic_find_id(TToken* t);
 
 // kouka jeslti jsou nejake funkce ktere nejsou definovane ale jsou volane (volane s deklaraci)
 int semantic_call_undefined_fce();
 
-int semantic_exp(char* string, int* type_array, int num, Toperation* arr, int* num_of_arr);
+// string - postfix notace, type array - dat. typy promennych,, arr - pole struct promennych, num_of_arr - pocet vyslednych prvku
+// zkontroluje dat type a pretypuje popripade promenne
+int semantic_exp(char* string, int* type_array, Toperation* arr, int* num_of_arr, int* exp_ret);
+
+int semantic_check_lside_rside(int l_side, int r_side);
+
+int semantic_id_type_convert(int type);

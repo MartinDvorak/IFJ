@@ -6,7 +6,7 @@ char next(char* string, int *position){
 	return string[(*position)++];
 }
 
-int expr(char* string,int condition){
+int expr(char* string,int condition, char* postfix){
 
 	int position = 0;
 	Tstack* s = NULL;
@@ -33,7 +33,7 @@ int expr(char* string,int condition){
 					push(s,input);
 					input = next(string,&position);
 					break;
-			case '>':if(reduce(s))
+			case '>':if(reduce(s,postfix))
 						break;
 					else{					
 						free_table(table,condition);
@@ -54,36 +54,41 @@ int expr(char* string,int condition){
 	return TRUE;
 }
 
-int reduce(Tstack*s)
+int reduce(Tstack*s, char* postfix)
 {
 	// E -> i
 	if ((s->bottom[s->top] == 'i')&&(s->bottom[s->top-1] == '<'))
 	{
-		printf("%c", s->bottom[s->top]);
+		postfix[strlen(postfix)] = s->bottom[s->top]; 
+		//printf("%c", s->bottom[s->top]);
 		s->top--;
 		s->bottom[s->top] = 'E';
 	}	// E -> E * E 
 	else if(((s->bottom[s->top] == 'E')&&((s->bottom[s->top-1] == '*')||(s->bottom[s->top-1] == '/')))&&((s->bottom[s->top-2] == 'E')&&(s->bottom[s->top-3] == '<')))
 	{
-	 	printf("%c", s->bottom[s->top-1]);
+		postfix[strlen(postfix)] = s->bottom[s->top-1]; 
+	 	//printf("%c", s->bottom[s->top-1]);
 		s->top -= 3;
 		s->bottom[s->top] = 'E';
 	}	// E -> E M E 
 	else if(((s->bottom[s->top] == 'E')&&(s->bottom[s->top-1] == 'M'))&&((s->bottom[s->top-2] == 'E')&&(s->bottom[s->top-3] == '<')))
 	{
-		printf("%c", s->bottom[s->top-1]);
+		postfix[strlen(postfix)] = s->bottom[s->top-1];
+		//printf("%c", s->bottom[s->top-1]);
 		s->top -= 3;
 		s->bottom[s->top] = 'E';
 	}	// E -> E + E 
 	else if(((s->bottom[s->top] == 'E')&&((s->bottom[s->top-1] == '+')||(s->bottom[s->top-1] == '-')))&&((s->bottom[s->top-2] == 'E')&&(s->bottom[s->top-3] == '<')))
 	{
-		printf("%c", s->bottom[s->top-1]);
+		postfix[strlen(postfix)] = s->bottom[s->top-1];
+		//printf("%c", s->bottom[s->top-1]);
 		s->top -= 3;
 		s->bottom[s->top] = 'E';
 	}	// E -> E L E 
 	else if(((s->bottom[s->top] == 'E')&&( (s->bottom[s->top-1] == '=') || (s->bottom[s->top-1] == 'N') || (s->bottom[s->top-1] == 'L') || (s->bottom[s->top-1] == 'G') || (s->bottom[s->top-1] == 'S') || (s->bottom[s->top-1] == 'R')))&&((s->bottom[s->top-2] == 'E')&&(s->bottom[s->top-3] == '<')))
 	{
-		printf("%c", s->bottom[s->top-1]);
+		postfix[strlen(postfix)] = s->bottom[s->top-1];
+		//printf("%c", s->bottom[s->top-1]);
 		s->top -= 3;
 		s->bottom[s->top] = 'E';
 	}	// E -> ( E ) 

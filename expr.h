@@ -8,7 +8,7 @@
 #define FALSE 0
 
 
-int reduce(Tstack*s);
+int reduce(Tstack*s, char* postfix);
 
 char table_precedence(char** table,char token_symbol, char stack_symbol, int conditin);
 
@@ -16,6 +16,6 @@ char **init_table_precedence(int conditin);
 
 void free_table(char **table, int conditin);
 
-int expr(char* string, int conditin);
+int expr(char* string, int condition, char* postfix);
 
 char next(char* string, int *position);
