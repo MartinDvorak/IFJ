@@ -5,6 +5,8 @@
 #define TRUE 1
 #define FALSE 0
 
+#define SIZEUNEED 10
+
 #ifndef TTOKEN
 typedef struct token{
 	int type;
@@ -21,4 +23,4 @@ TToken* token_init();
 
 void token_free(TToken* t);
 
-TToken* give_me(TToken* t);
+//TToken* give_me(TToken* t);

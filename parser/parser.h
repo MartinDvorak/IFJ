@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include "token.h"
+#include "symbtab.h"
 
 #define TRUE        1
 #define FALSE       0
@@ -62,43 +66,15 @@
 #define BRACKET_R	68	// )
 //#define EOF 		69  // end of file
 #define COLON		70  // , 
+#define SEMICOLON	71  // ;
 
-#define BODY		100
+typedef struct semantic_operation{
+	char op;  // what is operation
+	int l_convert; // left value need convert
+	int r_convert; // right valur need convert
+}Toperation;
 
-#ifndef TTOKEN
-typedef struct token{
-	int type;
-	
-	int int_v;
-	float float_v;
-    char *string;
-
-}TToken;
-#endif
-#define TTOKEN
-
-#ifndef TTREE
-typedef struct data{
-	int type;
-	int declared;
-	char* param; 
-
-}Tdata;
-
-typedef struct tnode{
-	char* key; // name 
-	Tdata data; 	
-	
-	struct tnode* lptr;
-	struct tnode* rptr;
-
-}*Ttnode_ptr;
-#endif
-#define TTREE
-
-int comapare(TToken *t, int type);
-
-TToken *give_me(TToken *t);
+TToken* give_me(TToken* t);// simuluje cinost lex.analyzatoru
 
 int scope(TToken *t);
 
@@ -106,11 +82,65 @@ int func_line(TToken *t, int declared);
 
 int func(TToken *t);
 
-int param(TToken *t, Tdata* data );
-
 // 0 - param, 1 - type
-int type(TToken *t, Tdata* data, int type_or_param);
+int type(TToken *t, Tdata* data, int type_or_param, int* to_symbtab);
 
 int parser_FREEBASIC(TToken *t);
 
-TToken* give_me(TToken* t);
+void add_char_to_param(TToken *t, Tdata *data);
+
+int body(TToken *t);
+
+// local 1 = insert in local tree
+// pro definice funkci
+int params_N(TToken *t, Tdata *data, int local);
+
+int param(TToken *t, Tdata* data, int local );
+
+// pro kontrolu volani fci
+int param_f(TToken *t, char* string, int* position);
+
+int param_fn(TToken *t, char* string, int* position);
+
+int preprocesing_expr(TToken *t,TToken *last,int condition);
+
+int equal(TToken *t);
+
+int expr_n(TToken *t);
+
+int r_side(TToken *t);
+
+int build_in_fce(TToken *t);
+
+
+
+////////////////////////////////////////////////////////////////////////////
+// 						SEMANTIC
+
+// vloze pouze build in fce do stromu globalniho
+void semantic_insert_build_in();
+
+// prevede char na #define hodnotu 'i' -> INTEGER
+int semantic_convert_data_type (char c);
+
+// promenou v tokenu vezme najde ve stromu - neni err
+// a pote porovna s datovym typev c char data_type
+// indikuje implicitni konverze
+int semantic_id(Ttnode_ptr root, TToken* t, char data_type);
+
+// stejne jako semantic_id akorat vstup je string param a pohybuje se pomoci position
+int semantic_id_param(TToken *t, char* param, int* position);
+
+// nalezne jestli existuje fce a tomom vrátí jeji parametry v  char*param
+int semantic_fce_param(Ttnode_ptr root, TToken* t, char* param);
+
+// vlozi pokud neexistuje jinak false
+int semantic_insert(Ttnode_ptr* root, char* name, Tdata* data);
+
+// local find id
+int semantic_find_id(TToken* t);
+
+// kouka jeslti jsou nejake funkce ktere nejsou definovane ale jsou volane (volane s deklaraci)
+int semantic_call_undefined_fce();
+
+int semantic_exp(char* string, int* type_array, int num, Toperation* arr, int* num_of_arr);

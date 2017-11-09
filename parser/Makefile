@@ -1,3 +1,3 @@
-CFLAGS= -std=c99 -Wall -Wextra -pedantic -g
+CFLAGS = -std=c99 -Wall -Wextra -pedantic -g
 
-parser: parser.c
+parser: stack.c symbtab.c token.c expr.c parser.c
