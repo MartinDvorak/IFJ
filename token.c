@@ -5,8 +5,7 @@
 #include "stack.h"
 
 
-TToken* token_init()
-{
+TToken* token_init () {
 	TToken* t;
 
 	if ((t = malloc(sizeof(TToken))) == NULL)
@@ -17,20 +16,29 @@ TToken* token_init()
 	return t;
 }
 
-void token_free(TToken* t)
-{
+void token_free (TToken* t) {
 	if (t->string != NULL)
 		free(t->string);
 	free(t);
 }
 
+int* storage_init () {
+    int *s;
 
-void just_pop(Tstack* s) {
+    if ((s = malloc(sizeof(int))) == NULL) {
+        exit(99);
+    }
 
-    s->top--;
+    *s = -2;
+    return s;
 }
 
-TToken* get_next (TToken* t, Tstack* s) {       // simuluje cinost lex.analyzatoru
+void storage_free(int *s) {
+    free(s);
+}
+
+
+TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost lex.analyzatoru
 
     const char *keywords[] = {"as", "asc", "declare", "dim", "do", "double", "else",
     "end", "chr", "function", "if", "input", "integer", "length", "loop", "print",
@@ -39,8 +47,11 @@ TToken* get_next (TToken* t, Tstack* s) {       // simuluje cinost lex.analyzato
     "static", "true"};
     
     char c;
+    char com1, com2;
     int state = 0;
     char *tmp_s = NULL;
+    int signed_exp = 0;
+    int done = 0;
     
     if (t == NULL) {                //FIRST USE
         t = token_init();
@@ -52,14 +63,49 @@ TToken* get_next (TToken* t, Tstack* s) {       // simuluje cinost lex.analyzato
         s = stack_init();
     }
     else {
-        while (!stack_empty(s)) {
-            just_pop(s);
-        }
+        flush_stack(s);
     }
 
-    c = getchar();
-    c = tolower(c);
+    if (*storage == -2) {
+        c = tolower(getchar());
+    }
+    else {
+        c = *storage;
+        *storage = -2;
+    }
 
+    //printf("%d\n", *storage);
+
+    while (isblank(c)) {        //deletes leading zeroes
+        c = getchar();
+    }
+
+    if (c == '\'') {                //skips line comment
+        while (getchar() != 10) {   //10 == linefeed
+            continue;
+        }
+        getchar();                  //to get line feed
+    }
+    if (c == '/') {
+        state = DIV;
+        if ((c = getchar()) == '/') {   //skips block comment
+            state = 0;
+            com1 = getchar();
+            while (1) {
+                com2 = getchar();
+                printf("%c %c\n", com1, com2);
+                if (com1 == '/' && com2 == '/') {
+                    break;
+                }
+                else {
+                    com1 = com2;
+                }
+            }
+        }
+        else {
+            *storage = c;
+        }
+    }
 
     if (c == '_') {
         state = ID;
@@ -82,10 +128,12 @@ TToken* get_next (TToken* t, Tstack* s) {       // simuluje cinost lex.analyzato
 
     else if (c == ',') {
         state = COLON;
+        done = 1;
     }
 
     else if (c == ';') {
         state = SEMICOLON;
+        done = 1;
     }
 
     else if (c == '=') {
@@ -102,45 +150,53 @@ TToken* get_next (TToken* t, Tstack* s) {       // simuluje cinost lex.analyzato
 
     else if (c == '+') {
         state = ADD;
+        done = 1;
     }
     
     else if (c == '-') {
         state = SUB;
+        done = 1;
     }
 
     else if (c == '*') {
         state = MUL;
-    }
-
-    else if (c == '/') {
-        state = DIV;
+        done = 1;
     }
 
     else if (c == '\\') {
         state = INTDIV;
+        done = 1;
     }
-    //#TODO if (EOL)
+
+    else if (c == 10) {
+        state = MYEOL;
+        done = 1; 
+    }
 
     else if (c == '(') {
         state = BRACKET_L;
+        done = 1;
     }
 
     else if (c == ')') {
         state = BRACKET_R;
+        done = 1;
     }
 
-    else if (c == '\'') {
-        state = L_COMMENT;
+    else if (c == EOF) {
+        state = EOF;
     }
 
     else {
-        //#TODO
+        state = SCAN_ERR;
     }
 
     printf("state(IN) = %d\n", state);
+    
 
-    while((c = getchar()) != EOF) {
+    while(done == 0 && (c = tolower(getchar())) != EOF) {
 
+        //printf("%c\n", c);
         if (isblank(c)) {
             if (state == EXCL_M) {
                 state = SCAN_ERR;
@@ -149,11 +205,6 @@ TToken* get_next (TToken* t, Tstack* s) {       // simuluje cinost lex.analyzato
             if (state != STRING_V) {
                 break;
             }
-        }
-        printf("%d\n", c);
-
-        if (c == 10) {      //skips line feed character
-            continue;
         }
 
         switch (state) {
@@ -169,7 +220,8 @@ TToken* get_next (TToken* t, Tstack* s) {       // simuluje cinost lex.analyzato
                     push(s,c);
                 }
                 else {
-                    state = SCAN_ERR;
+                    done = 1;
+                    *storage = c;
                 }
                 break;
             
@@ -177,13 +229,58 @@ TToken* get_next (TToken* t, Tstack* s) {       // simuluje cinost lex.analyzato
                 if (c >= '0' && c <= '9') {
                     push(s,c);
                 }
+                else if (c == '.') {
+                    state = FLOAT_V;
+                    push(s,c);
+                }
+                else if (c == 'e') {
+                    state = EXPONENT;
+                    push(s,c);
+                }
                 else {
-                    state = SCAN_ERR;
+                    done = 1;
+                    *storage = c;
                 }
                 break;
             
             case FLOAT_V:
-                //#TODO
+                if (c >= '0' && c <= '9') {
+                    push(s,c);
+                }
+                if (c == 'e') {
+                    state = EXPONENT;
+                    push(s,c);
+                }
+                else {
+                    state = SCAN_ERR;
+                }
+                break;
+
+            case EXPONENT:
+                if (signed_exp == 0) {
+                    if (c == '-') {
+                        push(s,c);
+                        signed_exp = 1;
+                    }
+                    else if (c == '+') {
+                        push(s,c);
+                        signed_exp = 1;
+                    }
+                    else if (c >= '0' && c <= '9') {
+                        push(s, '+');
+                        push(s, c);
+                        signed_exp = 1;
+                    }
+                    else {
+                        state = SCAN_ERR;
+                    }
+                }
+                else if (c >= '0' && c <='9') {
+                    push(s,c);
+                }
+                else {
+                    state = SCAN_ERR;
+                }       
                 break;
 
             case EXCL_M:
@@ -203,15 +300,26 @@ TToken* get_next (TToken* t, Tstack* s) {       // simuluje cinost lex.analyzato
             case ASSIGN:
                 if (c == '=') {
                     state = EQ;
+                    done = 1;
+                }
+                else {
+                    done = 1;
+                    *storage = c;
                 }
                 break;
 
             case LESS:
                 if (c == '=') {
                     state = LESSEQ;
+                    done = 1;
                 }
                 else if (c == '>') {
                     state = NEQ;
+                    done = 1;
+                }
+                else {
+                    done = 1;
+                    *storage = c;
                 }
                 break;
             
@@ -219,38 +327,37 @@ TToken* get_next (TToken* t, Tstack* s) {       // simuluje cinost lex.analyzato
                 if (c == '/') {
                     state = B_COMMENT;
                 }
-                break;
-
-            case L_COMMENT:
-                while (getchar() != 10) {   //10 == linefeed
-                    continue;
+                else {
+                    *storage = c;
                 }
-                getchar();                  //to get line feed
                 break;
-            
-            case B_COMMENT:
-                //TODO
-               //while (getchar() != )
-               break;
         }
+    }
+
+    if (state == EXPONENT) {
+        state = FLOAT_V;
     }
 
     if ((tmp_s = malloc(sizeof(char)*(s->top + 1) + 1)) == NULL) {
         exit(-1);
     }
 
-    strcpy(tmp_s, s->bottom);
-    strcat(tmp_s, "\0");
+    for (int i = 0; i <= s->top; i++) {
+        tmp_s[i] = s->bottom[i];
+        //printf("%c\n", s->bottom[i]);
+    }
 
-    if (state == ID) {
+    //strcat(tmp_s, "\0");
+
+    /*if (state == ID) {
         for (int i = 0; i < 35; i++) {
             if ((strcmp(tmp_s, keywords[i])) == 1) {
                 state = i + AS;
             }
         }
-    }
+    }*/
 
-    printf("state(OUT) = %d\n", state);
+    //printf("state(OUT) = %d\n", state);
 
     t->type = state;
 

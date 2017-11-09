@@ -7,24 +7,28 @@ int main(int argc, char **argv)
 {
     TToken* token = NULL;
     Tstack* s = NULL;
+    int *storage = NULL;
+    int i = 1; 
 
+    storage = storage_init();
 
-    token = get_next(token, s);
-    printf("####TOKEN 1####\n");
-    printf("%d\n", token->type);
-    printf("%s\n", token->string);
-    printf("%ld\n", token->int_v);
-    printf("%f\n\n", token->float_v);
-    printf("###############\n");
-    token = get_next(token, s);
-    printf("####TOKEN 2####\n");
-    printf("%d\n", token->type);
-    printf("%s\n", token->string);
-    printf("%ld\n", token->int_v);
-    printf("%f\n", token->float_v);
-    printf("###############\n");
+    while(1) {
+        token = get_next(token, s, storage);
+        printf("####TOKEN %d####\n", i);
+        printf("%d\n", token->type);
+        printf("%s\n", token->string);
+        printf("%ld\n", token->int_v);
+        printf("%f\n", token->float_v);
+        printf("###############\n\n");
+        i++;
+        if (token->type == EOF) {
+            break;
+        }
+    }
+
     token_free(token);
-    
+
+    storage_free(storage);
 
     return 0;
 }

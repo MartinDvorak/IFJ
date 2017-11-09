@@ -63,15 +63,13 @@
 #define BRACKET_R 	68  // )
 #define SEMICOLON	69 	// ;
 #define COLON		70  // ,
+//#define EOF -1
+//my preciouses
 #define EXCL_M		71	// !
-#define L_COMMENT	72  //in line comment
-#define B_COMMENT	73	//in block commnet
-#define SCAN_ERR	99  //lexem error
-
-//EOF -1
-
-
-#define SIZEUNEED   10 //minimum token string size
+#define EXPONENT	72  //float value with exponent
+#define L_COMMENT	89  //in line comment
+#define B_COMMENT	90	//in block commnet
+#define SCAN_ERR	666  //lexem error
 
 
 typedef struct token{
@@ -87,4 +85,8 @@ TToken* token_init();
 
 void token_free(TToken* t);
 
-TToken *get_next(TToken *t, Tstack* s);
+TToken *get_next(TToken *t, Tstack* s, int *storage);
+
+void storage_free(int *s);
+
+int* storage_init ();
