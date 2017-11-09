@@ -88,12 +88,11 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     }
     if (c == '/') {
         state = DIV;
-        if ((c = getchar()) == '/') {   //skips block comment
+        if ((c = tolower(getchar())) == '/') {   //skips block comment
             state = 0;
             com1 = getchar();
             while (1) {
                 com2 = getchar();
-                printf("%c %c\n", com1, com2);
                 if (com1 == '/' && com2 == '/') {
                     break;
                 }
@@ -101,6 +100,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     com1 = com2;
                 }
             }
+            c = getchar();
         }
         else {
             *storage = c;

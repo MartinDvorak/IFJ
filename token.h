@@ -69,7 +69,7 @@
 #define EXPONENT	72  //float value with exponent
 #define L_COMMENT	89  //in line comment
 #define B_COMMENT	90	//in block commnet
-#define SCAN_ERR	666  //lexem error
+#define SCAN_ERR	666 //lexem error
 
 
 typedef struct token{
