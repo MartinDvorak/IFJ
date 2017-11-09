@@ -58,7 +58,7 @@
 #define MUL         63  //*
 #define DIV         64  //"/"
 #define INTDIV      65  //"\"
-#define EOL		66	//'\n' - end of line
+#define EOL			66	//'\n' - end of line
 #define BRACKET_L	67  // (
 #define BRACKET_R 	68  // )
 #define SEMICOLON	69 	// ;
@@ -72,14 +72,17 @@
 #define SCAN_ERR	666 //lexem error
 
 
+#ifndef TTOKEN
 typedef struct token{
 	int type;
 	
-	long int_v;
+	int int_v;
 	float float_v;
     char *string;
 
 }TToken;
+#endif
+#define TTOKEN
 
 TToken* token_init();
 

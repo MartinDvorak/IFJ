@@ -15,7 +15,7 @@ int main(int argc, char **argv)
         printf("####TOKEN %d####\n", i);
         printf("%d\n", token->type);
         printf("%s\n", token->string);
-        printf("%ld\n", token->int_v);
+        printf("%d\n", token->int_v);
         printf("%f\n", token->float_v);
         printf("###############\n\n");
         i++;

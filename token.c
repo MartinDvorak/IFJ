@@ -37,19 +37,24 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     char *tmp_s = NULL;
     int signed_exp = 0;
     int done = 0;
-    int tecka = 0;
+    int dot = 0;
     
     if (t == NULL) {                //FIRST USE
         t = token_init();
     }
-    
-    free(t->string);
-    
+
     if (s == NULL) {
         s = stack_init();
     }
     else {
         flush_stack(s);
+    }
+
+    if (t->string == NULL) {
+        if ((t->string = malloc(sizeof(char)*2)) == NULL) {
+            exit(99);
+        }
+        t->string = strcpy(t->string, "");
     }
 
     if (*storage == -2) {
@@ -84,7 +89,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
             com1 = getchar();
             while (1) {
                 com2 = getchar();
-                if (com1 == '/' && com2 == '/') {
+                if ((com1 == '/') && (com2 == '/')) {
                     break;
                 }
                 else if (com2 == EOF) {
@@ -108,12 +113,12 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
         push(s,c);
     }
 
-    else if (c >= 'a' && c <= 'z') {
+    else if ((c >= 'a') && (c <= 'z')) {
         state = ID;
         push(s,c);
     }
         
-    else if (c >= '0' && c <= '9') {
+    else if ((c >= '0') && (c <= '9')) {
         state = INT_V;
         push(s, c);
     }
@@ -187,7 +192,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
         state = SCAN_ERR;
     }
     
-    while(done == 0 && (c = tolower(getchar())) != EOF) {
+    while((done == 0) && ((c = tolower(getchar())) != EOF)) {
         if (isblank(c)) {
             if (state == EXCL_M) {
                 state = SCAN_ERR;
@@ -204,10 +209,10 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 if (c == '_') {
                     push(s, c);
                 }
-                else if (c >= 'a' && c <= 'z') {
+                else if ((c >= 'a') && (c <= 'z')) {
                     push(s, c);
                 }
-                else if (c >= '0' && c <= '9') {
+                else if ((c >= '0') && (c <= '9')) {
                     push(s,c);
                 }
                 else {
@@ -217,12 +222,12 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 break;
             
             case INT_V:
-                if (c >= '0' && c <= '9') {
+                if ((c >= '0') && (c <= '9')) {
                     push(s,c);
                 }
                 else if (c == '.') {
                     state = FLOAT_V;
-                    tecka = 1;
+                    dot = 1;
                     push(s,c);
                 }
                 else if (c == 'e') {
@@ -236,14 +241,14 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 break;
             
             case FLOAT_V:
-                if (c >= '0' && c <= '9') {
+                if ((c >= '0') && (c <= '9')) {
                     push(s,c);
                 }
                 else if (c == 'e') {
                     state = EXPONENT;
                     push(s,c);
                 }
-                else if (tecka == 1 && c == '.') {
+                else if ((dot == 1) && (c == '.')) {
                     state = SCAN_ERR;
                 }
                 else {
@@ -262,7 +267,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                         push(s,c);
                         signed_exp = 1;
                     }
-                    else if (c >= '0' && c <= '9') {
+                    else if ((c >= '0') && (c <= '9')) {
                         push(s, '+');
                         push(s, c);
                         signed_exp = 1;
@@ -271,7 +276,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                         state = SCAN_ERR;
                     }
                 }
-                else if (c >= '0' && c <='9') {
+                else if ((c >= '0') && (c <='9')) {
                     push(s,c);
                 }
                 else {
@@ -282,7 +287,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
             case EXCL_M:
                 if (c == '\"') {
                     state = STRING_V;
-                    while ((c = tolower(getchar())) != '\"' && c != '\n') {
+                    while (((c = tolower(getchar())) != '\"') && (c != '\n')) {
                         push(s, c);
                         /*if (c == '\\') {
                             c = tolower(getchar());
@@ -342,15 +347,17 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
         state = FLOAT_V;
     }
 
-    if ((tmp_s = malloc(sizeof(char)*(s->top + 1))) == NULL) {
-        exit(-1);
-    }
+    if ((tmp_s = malloc(sizeof(char)*(s->top + 3))) == NULL) {
+        exit(99);
+    }   
 
-    for (int i = 0; i <= s->top; i++) {
+    int i = 0;
+    for (; i <= s->top; i++) {
         tmp_s[i] = s->bottom[i];
     }
+    tmp_s[i] = '\0'; 
 
-    printf("%s\n", tmp_s);
+    //printf("%s\n", tmp_s);
     if (state == ID) {
         for (int i = 0; i < 35; i++) {
             if ((strcmp(tmp_s, keywords[i])) == 0) {
@@ -365,16 +372,16 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
         t->int_v = strtol(tmp_s, NULL, 10);
     }
 
-    if ((t->string = malloc(sizeof(char)*(s->top + 1) + 1)) == NULL) {
-        exit(-1);
-    }
-
-    if (state == ID || state == STRING_V) {
+    if ((state == ID) || (state == STRING_V)) {
+        free(t->string);
+        if ((t->string = malloc(sizeof(char)*(s->top + 1) + 1)) == NULL) {
+            exit(99);
+        }
         strcpy(t->string, tmp_s);
     }
 
     free(tmp_s);
-    free_stack(s);    
+    free_stack(s);
 
 	return t;
 }
