@@ -1,0 +1,115 @@
+Ponz: Je součástí [] a {}?
+Co je to: Term
+EQ (==): neexistuje
+
+
+
+
+
+#define DIV         64  //"/"
+#define INTDIV      65  //"\"
+Nemá být v uvozovkách!?
+
+
+/' jebat   '/   pokud nedojde k uzavření blokového komentáře je to chyba lexikálky nebo syntaxe? spíš lexu imho?
+
+
+
+PART 1; --Test identifikátorů--
+
+cau77 _77cau -cau 77ccc
+
+ERROR , 77ccc TO BERE JAKO INT A ID 
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
+PART 2; --TEST HODNOT
+
+50 20 0 !"cau" !"ca u" !"" 4.12 0.4 1.e+45 2.e22 5.e-41 -5.e-41 0.e-e 0.4.7 "eror"
+
+!"\097" !"\98" !"\""  !"\"
+
+PROBLEM S FLOATEM BYL (OPRAVEN?)  
+VICEKRAT TO CTE (e) 
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
+PART 3; --CASE SENSITIVE TEST--
+
+<<<"aS elSEIF TruE SubSTR"
+
+<<<"AS,ELSEIF,TRUE,SUBSTR"
+
+V KLIDU
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+PART 4; -- KOMENTAR --
+
+<<<"'84'wwwwwwwwwwwwwwwwwwwwwwwwww"
+
+ZACYKLÍ SE POKUD TAM NENÍ EOL, pokud je, nesprávný error (666)
+////////////////////////////////////////////////////////////////////////////////////
+
+--
+
+PART 5; --vyrazy--
+
+a = a+8*7/2
+
+ID,ASSIGN,ID,+,INT_V,*,INT_V,(CHYBÍ MUL),INT_V,EOL,EOF
+
+NEPROŠLO, NEPŘEČETLO TO DĚLENÍ
+
+7/2
+
+nepřečte dělení
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+PART 6; --komplety--
+
+Dim x as String = !"kundo"
+
+Dim x as
+
+as čte jako ID
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+DIM,ID,AS,STRING,ASSIGN,STR_V
+
+
+PART 7; -- kod --
+
+Dim x as Integer = 10
+DIM y as Integer = 25
+DIM z as Integer
+z = x + y
+print "Sum of x + y = "; z
+
+
+	----kod 2 ---
+
+scope 'Hlavni telo programu
+	Dim a As Integer
+	DIM vysl AS INTEGER
+	PrinT !"Zadejte cislo pro vypocet faktorialu";
+	InpuT A
+	If a < 0 THEN
+		print !"\nFaktorial nelze spocitat\n";
+	ELSE
+		Vysl = 1
+		Do WHile A > 0
+			VYSL = vysl * a
+			a = A - 1
+		LooP
+		Print !"\nVysledek je:" ; vYsl ; !"\n";
+	end IF
+END SCOPE
+

@@ -1,0 +1,134 @@
+0 - IDENTIFIKATORY
+________________________________________________________________
+
+cau77 _77cau -cau 77ccc
+
+
+ID ID SUB ID INT_V ID EOL 
+EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+1 - FLOATY
+________________________________________________________________
+
+4.12 0.4 1.e+45 2.e22 5.e-41 -5.e-41 0.e-e 0.4.7
+
+
+FLOAT_V FLOAT_V FLOAT_V FLOAT_V FLOAT_V SUB FLOAT_V SCAN_ERR SCAN_ERR EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+2 - STRINGY
+________________________________________________________________
+
+!"cau" !"ca u" !"" !"cccc" 
+"eror"
+
+
+STRING_V EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+3 - KOMENTARE
+________________________________________________________________
+
+'84'wwwwwwwwwwwwwwwwwwwwwwwwww
+
+
+EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+4 - CASE SENSITIVITY
+________________________________________________________________
+
+aS elSEIF TruE SubSTR
+AS,ELSEIF,TRUE,SUBSTR
+
+
+AS ELSEIF TRUE_KW SUBSTR EOL 
+AS COLON ELSEIF COLON TRUE_KW COLON SUBSTR EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+5 - KLICOVA SLOVA
+________________________________________________________________
+
+ as if dim dim
+ integer string
+ else end scope
+ scope as as as
+ as if if as 
+
+
+AS ID DIM DIM EOL 
+INTEGER STRING EOL 
+ELSE END SCOPE EOL 
+SCOPE AS AS AS EOL 
+AS AS EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+6 - CASTI KODU
+________________________________________________________________
+
+Dim x as String = !"kundo"
+Dim y as Integer 
+
+
+DIM ID AS STRING ASSIGN STRING_V EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+7 - VYRAZ
+________________________________________________________________
+
+a = a+8*7/2
+prcarna = (frajer+frajerka)*anal
+
+
+ID ASSIGN ID ADD INT_V MUL INT_V DIV INT_V EOL 
+EOL 
+ID ASSIGN BRACKET_L ID ADD ID BRACKET_R MUL ID EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+8 - KOUSEK KODU
+________________________________________________________________
+
+Dim x as Integer = 10
+DIM y as Integer = 25
+DIM z as Integer
+z = x + y
+print "Sum of x + y = "; z
+
+
+DIM ID AS INTEGER ASSIGN INT_V EOL 
+DIM ID AS INTEGER ASSIGN INT_V EOL 
+DIM ID AS INTEGER EOL 
+ID ASSIGN ID ADD ID EOL 
+PRINT SCAN_ERR ID ID ADD ID ASSIGN SCAN_ERR ID EOL 
+EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+9 - VETSI KOD
+________________________________________________________________
+
+scope 'Hlavni telo programu
+	Dim a As Integer
+	DIM vysl AS INTEGER
+	PrinT !"Zadejte cislo pro vypocet faktorialu";
+	InpuT A
+	If a < 0 THEN
+		print !"\nFaktorial nelze spocitat\n";
+	ELSE
+		Vysl = 1
+		Do WHile A > 0
+			VYSL = vysl * a
+			a = A - 1
+		LooP
+		Print !"\nVysledek je:" ; vYsl ; !"\n";
+	end IF
+END SCOPE
+
+
+SCOPE EOL 
+DIM ID AS INTEGER EOL 
+SCAN_ERR ID AS INTEGER EOL 
+SCAN_ERR STRING_V EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+ALL DONE

@@ -1,0 +1,5 @@
+Dim x as Integer = 10
+DIM y as Integer = 25
+DIM z as Integer
+z = x + y
+print "Sum of x + y = "; z
