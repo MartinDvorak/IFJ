@@ -58,7 +58,7 @@
 #define MUL         63  //*
 #define DIV         64  //"/"
 #define INTDIV      65  //"\"
-#define MYEOL		66	//'\n' - end of line
+#define EOL		66	//'\n' - end of line
 #define BRACKET_L	67  // (
 #define BRACKET_R 	68  // )
 #define SEMICOLON	69 	// ;

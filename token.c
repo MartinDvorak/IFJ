@@ -169,7 +169,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     }
 
     else if (c == 10) {
-        state = MYEOL;
+        state = EOL;
         done = 1; 
     }
 
