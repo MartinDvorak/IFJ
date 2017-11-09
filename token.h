@@ -86,7 +86,3 @@ TToken* token_init();
 void token_free(TToken* t);
 
 TToken *get_next(TToken *t, Tstack* s, int *storage);
-
-void storage_free(int *s);
-
-int* storage_init ();

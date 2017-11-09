@@ -22,21 +22,6 @@ void token_free (TToken* t) {
 	free(t);
 }
 
-int* storage_init () {
-    int *s;
-
-    if ((s = malloc(sizeof(int))) == NULL) {
-        exit(99);
-    }
-
-    *s = -2;
-    return s;
-}
-
-void storage_free(int *s) {
-    free(s);
-}
-
 
 TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost lex.analyzatoru
 
@@ -74,8 +59,6 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
         *storage = -2;
     }
 
-    //printf("%d\n", *storage);
-
     while (isblank(c)) {        //deletes leading zeroes
         c = getchar();
     }
@@ -94,6 +77,10 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
             while (1) {
                 com2 = getchar();
                 if (com1 == '/' && com2 == '/') {
+                    break;
+                }
+                else if (com2 == EOF) {
+                    state = EOF;
                     break;
                 }
                 else {
@@ -196,7 +183,6 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
 
     while(done == 0 && (c = tolower(getchar())) != EOF) {
 
-        //printf("%c\n", c);
         if (isblank(c)) {
             if (state == EXCL_M) {
                 state = SCAN_ERR;
@@ -288,6 +274,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     state = STRING_V;
                     while ((c = getchar()) != '\"') {
                         push(s, c);
+
                     }
                     c = getchar();
                     break;
@@ -344,20 +331,17 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
 
     for (int i = 0; i <= s->top; i++) {
         tmp_s[i] = s->bottom[i];
-        //printf("%c\n", s->bottom[i]);
     }
 
-    //strcat(tmp_s, "\0");
+    strcat(tmp_s, "\0");
 
-    /*if (state == ID) {
+    if (state == ID) {
         for (int i = 0; i < 35; i++) {
-            if ((strcmp(tmp_s, keywords[i])) == 1) {
+            if ((strcmp(tmp_s, keywords[i])) == 0) {
                 state = i + AS;
             }
         }
-    }*/
-
-    //printf("state(OUT) = %d\n", state);
+    }
 
     t->type = state;
 

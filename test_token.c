@@ -7,13 +7,11 @@ int main(int argc, char **argv)
 {
     TToken* token = NULL;
     Tstack* s = NULL;
-    int *storage = NULL;
+    int storage = -2;
     int i = 1; 
 
-    storage = storage_init();
-
     while(1) {
-        token = get_next(token, s, storage);
+        token = get_next(token, s, &storage);
         printf("####TOKEN %d####\n", i);
         printf("%d\n", token->type);
         printf("%s\n", token->string);
@@ -27,8 +25,6 @@ int main(int argc, char **argv)
     }
 
     token_free(token);
-
-    storage_free(storage);
 
     return 0;
 }
