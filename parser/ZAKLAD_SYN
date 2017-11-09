@@ -1,0 +1,41 @@
+TESTY 1 - DEKLARACE,DEFINICE,SCOPE: - prazdne
+
+Declare Function factorial (n As Integer) As Integer
+
+Function factorial (n AS INTEGER) aS Integer
+end function
+
+Scope
+End Scope
+
+TESTY 2 - deklarace promennych, definice promennych
+
+Scope
+dim x as integer
+dim y as integer = 1
+End SCOPE
+
+TESTY 3 - zkouska definice funkce
+
+Function factorial (n As Integer) As Integer
+
+	Dim temp_result As Integer
+	Dim decremented_n As Integer
+	Dim result As Integer
+	Return result
+
+End Function
+
+TEST 4 -zkouska if
+
+Scope
+	dim x as integer
+	dim y as integer
+	x=5
+	y=4
+	if (x>5) then 
+		x=6
+	else 
+		x=y+1
+	end if
+end scope

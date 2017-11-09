@@ -1,4 +1,1 @@
-Mates - 
 
-V parseru C, máš 2x INCLUDE #include "./symbtab/symbtab.h"
-v parser.h máš 2x definici give_me
