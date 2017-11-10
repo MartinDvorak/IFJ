@@ -867,6 +867,7 @@ int main(int argc, char **argv)
 	(void)argv;
 
 	TToken* token = NULL;
+	token = token_init();
 
 	init_tree(&root_global);
 	init_tree(&root_local);
@@ -877,6 +878,7 @@ int main(int argc, char **argv)
 	free_tree(&root_local);
 	free_tree(&root_global);
 	
+	// TODO free token
 	token_free(token);
 
 	
