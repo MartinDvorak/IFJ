@@ -31,13 +31,14 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     "continue", "elseif", "exit", "false", "for", "next", "not", "or", "shared",
     "static", "true"};
     
-    char c;
+    int c;
     char com1, com2;
     int state = 0;
     char *tmp_s = NULL;
     int signed_exp = 0;
     int done = 0;
     int dot = 0;
+    int nonzero = 0;
     
     if (t == NULL) {                //FIRST USE
         t = token_init();
@@ -66,7 +67,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     }
 
     while (isblank(c)) {        //deletes leading zeroes
-        c = getchar();
+        c = tolower(getchar());
     }
 
     if (c == '\'') {
@@ -80,16 +81,16 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 c = getchar();
             }
         }
-        getchar();                  //to get line feed
+        //getchar();                  //to get line feed
     }
     if (c == '/') {
         state = DIV;
-        if ((c = tolower(getchar())) == '/') {   //skips block comment
+        if ((c = tolower(getchar())) == '\'') {   //skips block comment
             state = 0;
             com1 = getchar();
             while (1) {
                 com2 = getchar();
-                if ((com1 == '/') && (com2 == '/')) {
+                if ((com1 == '\'') && (com2 == '/')) {
                     break;
                 }
                 else if (com2 == EOF) {
@@ -100,15 +101,18 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     com1 = com2;
                 }
             }
-            c = getchar();
+            c = tolower(getchar());
+            while (isblank(c)) {
+                c = tolower(getchar());
+            }
         }
         else {
             done = 1;
             *storage = c;
         }
     }
-
-    else if (c == '_') {
+    
+    if (c == '_') {
         state = ID;
         push(s,c);
     }
@@ -235,20 +239,8 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     push(s,c);
                 }
                 else {
-                    char oper[] = {'*','+','-','/','\\','<','>','=',' '};
-                    int correct = 0;
-                    for(int i=0; i < 8; i++)
-                        if(c == oper[i])
-                            correct++;
-                            
-                    if(!correct)
-                    {
-                        state= SCAN_ERR;
-                    }
-                    else{
-                        done = 1;
-                        *storage = c;
-                    }
+                    done = 1;
+                    *storage = c;
                 }
                 break;
             
@@ -283,6 +275,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                         push(s, '+');
                         push(s, c);
                         signed_exp = 1;
+                        nonzero = 1;
                     }
                     else {
                         state = SCAN_ERR;
@@ -290,14 +283,19 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 }
                 else if ((c >= '0') && (c <='9')) {
                     push(s,c);
+                    nonzero = 1;
                 }
                 else {
-                    state = SCAN_ERR;
-                    done = 1;
-                    *storage = c;
-                }       
+                    if (!nonzero) {
+                        state = SCAN_ERR;
+                    }
+                    else {
+                        done = 1;
+                        *storage = c;
+                    }   
+                }
                 break;
-
+                
             case EXCL_M:
                 if (c == '\"') {
                     state = STRING_V;
@@ -311,8 +309,8 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                         }*/
 
                     }
-                    c = getchar();
-                    break;
+                    //c = getchar();
+                    //break;
                 }
                 else {
                     state = SCAN_ERR;
