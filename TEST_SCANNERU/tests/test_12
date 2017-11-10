@@ -1,0 +1,1 @@
+s1 = SubStr(s2, s1len, 4)
