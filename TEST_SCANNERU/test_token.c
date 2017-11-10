@@ -40,7 +40,7 @@ case OR:printf("OR ");break;
 case SHARED:printf("SHARED ");break;
 case STATIC:printf("STATIC ");break;
 case TRUE_KW:printf("TRUE_KW ");break;
-
+case IF:printf("IF ");break;
 case ID:printf("ID ");break;
 case INT_V:printf("INT_V ");break;
 case FLOAT_V:printf("FLOAT_V ");break;
@@ -57,7 +57,7 @@ case SUB:printf("SUB ");break;
 case MUL:printf("MUL ");break;
 case DIV:printf("DIV ");break;
 case INTDIV:printf("INTDIV ");break;
-
+case DO:printf("DO ");break;
 case EOL:printf("EOL ");break;
 case BRACKET_L:printf("BRACKET_L ");break;
 case BRACKET_R:printf("BRACKET_R ");break;
@@ -71,6 +71,7 @@ case EXPONENT:printf("EXPONENT ");break;
 case L_COMMENT:printf("L_COMMENT ");break;
 case B_COMMENT:printf("B_COMMENT ");break;
 case SCAN_ERR:printf("SCAN_ERR ");break;
+case LENGTH:printf("LENGTH ");break;
 
     }
 

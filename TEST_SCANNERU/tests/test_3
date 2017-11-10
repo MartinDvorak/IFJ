@@ -1,1 +1,8 @@
 '84'wwwwwwwwwwwwwwwwwwwwwwwwww
+
+scope 'Hlavni telo programu
+Dim a As Integer
+DIM vysl AS INTEGER
+
+/' Program 3: Prace s retezci 
+a vestavenymi funkcemi '/

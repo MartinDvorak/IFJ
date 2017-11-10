@@ -59,7 +59,7 @@ ________________________________________________________________
 
 AS ID DIM DIM EOL 
 INTEGER STRING EOL 
-ELSE END SCOPE EOL 
+ELSE END SCOPE EOL
 SCOPE AS AS AS EOL 
 AS AS EOF
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
