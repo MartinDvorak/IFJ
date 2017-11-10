@@ -8,7 +8,7 @@ int semantic_id_type_convert(int type)
 {return TRUE;}
 
 
-int preprocesing_expr_real(TToken* t, TToken *last, int condition, int* exp_ret)
+int preprocesing_expr(TToken* t, TToken *last, int condition, int* exp_ret)
 { // TODO - expresion
 	char* string;
 	if ((string = malloc(sizeof(char)*10)) == NULL)
@@ -59,9 +59,11 @@ int preprocesing_expr_real(TToken* t, TToken *last, int condition, int* exp_ret)
 			case INTDIV:string = strcat(string, "M");
 					break;
 			case ID: if(!semantic_find_id(t)) 
-						free(string);
-						free(type_array);
-						return FALSE;
+						{
+							free(string);
+							free(type_array);
+							return FALSE;
+						}
 			case INT_V: 
 			case FLOAT_V:
 			case STRING_V:
@@ -106,9 +108,11 @@ int preprocesing_expr_real(TToken* t, TToken *last, int condition, int* exp_ret)
 			case INTDIV:string = strcat(string, "M");
 					break;
 			case ID: if(!semantic_find_id(t)) 
-						free(string);
-						free(type_array);
-						return FALSE;
+						{
+							free(string);
+							free(type_array);
+							return FALSE;
+						}
 			case INT_V:
 			case FLOAT_V:
 			case STRING_V:
@@ -158,21 +162,6 @@ int preprocesing_expr_real(TToken* t, TToken *last, int condition, int* exp_ret)
 
 
 }
-
-int preprocesing_expr(TToken* t,TToken* last, int condition, int* exp_ret)
-{ // TODO - expresion
-	while(TRUE)
-	{
-		if((t->type == EOL) || (t->type == SEMICOLON) || (t->type == THEN))
-			break;
-		
-		
-		t = get_next(t,LA_S,&storage);
-	}
-	return TRUE;
-
-}
-
 
 int expr_n(TToken *t)
 {
@@ -353,11 +342,11 @@ int param_f(TToken *t, char* param, int* position)
 
 int r_side(TToken *t,int lvalue)
 { // zkontrolovat zda se prava strana rovna typove leve
+	int rvalue;
 	if(t->type == ID)
 	{ // TODO zajistit preprocesting id
 		TToken tmp = *t;
 		t = get_next(t,LA_S,&storage);
-		int rvalue;
 
 		if(t->type == BRACKET_L)
 		{ // <r_side> -> id(<param_f>) EOL 
@@ -379,17 +368,17 @@ int r_side(TToken *t,int lvalue)
 				if(t->type == BRACKET_R)
 				{
 					// bacha na off by one
-					if(position != strlen(param))
+					// TODO AZ Bude semantika od comentovat
+					/*if(position != strlen(param))
 						{
 							ERROR_RETURN = 4;
 							return FALSE;
 						}
-					
+					*/
 					t = get_next(t,LA_S,&storage);
 					if(t->type == EOL)
 					{
-						t = get_next(t,LA_S,&storage);
-						return body(t);
+						return TRUE;
 					}
 				}
 		} 
@@ -400,19 +389,31 @@ int r_side(TToken *t,int lvalue)
 				// 
 				if(!semantic_check_lside_rside(lvalue,rvalue))
 					return FALSE;
-				t = get_next(t,LA_S,&storage);
-				return body(t);
+				return TRUE;
 			}
 		}
 	}	
 	else if ((t->type == LENGTH) || (t->type == SUBSTR) || (t->type == ASC) ||(t->type == CHR) )
 	{ // BUILD IN FUNCTION
+		// TODO SEMANTICKA KONTROLA
 		if(build_in_fce(t))
 		{
 			if(t->type == EOL)
 			{
-				t = get_next(t,LA_S,&storage);
-				return body(t);
+				return TRUE;
+			}
+		}
+	}
+	// add
+	else{
+		if(preprocesing_expr(t,NULL,0,&rvalue))
+		{ // <r_side> -> <expr> EOL
+			if(t->type == EOL)
+			{
+				// 
+				if(!semantic_check_lside_rside(lvalue,rvalue))
+					return FALSE;
+				return TRUE;
 			}
 		}
 	}
@@ -831,7 +832,7 @@ int scope(TToken *t)
 					if(t->type == SCOPE)
 					{
 						t = get_next(t,LA_S,&storage);
-						if(t->type == EOL) // oef? 
+						if((t->type == EOL)||(t->type == EOF)) // oef? 
 						{
 							t = get_next(t,LA_S,&storage);
 							return TRUE;
