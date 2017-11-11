@@ -343,6 +343,18 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     *storage = c;
                 }
                 break;
+
+            case GREAT:
+                if (c == '=') {
+                    state = GREATEQ;
+                    done = 1;
+                }
+                else {
+                    done = 1;
+                    *storage = c;
+                }
+
+                break;
             
             case DIV:
                 if (c == '/') {
