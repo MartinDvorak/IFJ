@@ -1,0 +1,52 @@
+<S> -> <F><M><F>
+
+<F>-> epsilon
+<M>-> epsilon
+
+<M> -> SCOPE EOL <BODY> END SCOPE EOL
+<F> -> DECLARATION <FUNC_LINE> EOL <F>
+<F> -> <FUNC_LINE> EOL <BODY> END FUNCTION EOL <F>
+
+<FUNC_LINE> -> FUNCTION ID (<PARAM>) AS <TYPE> EOL 
+<PARAM> -> epsilon
+<PARAM> -> ID AS <TYPE> <PARAMS_N>
+
+<PARAMS_N> ->, ID AS <TYPE> <PARAMS_N>
+<PARAMS_N> -> epsilon
+
+<TYPE> -> INTEGER
+<TYPE> -> FLOAT
+<TYPE> -> STRING
+
+<BODY> -> EOL
+<BODY> -> DIM ID AS <TYPE> <=> EOL
+    <=> -> epsilon 
+    <=> -> <R_SIDE>
+        <R_SIDE> -> <EXP> 
+        <R_SIDE> -> ID (<PARAM_F>) 
+        <R_SIDE> -> BUILDIN_FUNC
+
+                <PARAM_F> -> epsilon
+                <PARAM_F> -> ID <PARAM_FN>
+
+                <PARAM_FN> -> ,ID <PARAM_FN>
+                <PARAM_FN> -> epsilon
+
+<BODY> -> ID = <R_SIDE> EOL
+<BODY> -> INPUT ID  EOL
+<BODY> -> PRINT <EXP>; <EXP_N> EOL
+    <EXP_N> -> epsilon
+    <EXP_N> -> <EXP>; <EXP_N>
+
+<BODY> -> IF <EXP> THEN EOL <BODY> ELSE EOL <BODY> END IF EOL
+<BODY> -> DO WHILE <EXP> EOL <BODY> LOOP EOL
+<BODY> -> RETURN <EXP> EOL
+
+
+//////////////////////////////////
+EXPRESION
+<E> -> (<E>)
+<E> -> <E> <OP> <E>
+<OP> -> {+,-,\,/,*,....}
+<E> -> {ID, CONSTANT}
+f
