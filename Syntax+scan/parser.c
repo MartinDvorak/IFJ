@@ -1,4 +1,4 @@
-##include "parser.h"
+#include "parser.h"
 #include "symbtab.h"
 #include "expr.h"
 #include "token.h"
@@ -59,11 +59,9 @@ int preprocesing_expr(TToken* t, TToken *last, int condition, int* exp_ret)
 			case INTDIV:string = strcat(string, "M");
 					break;
 			case ID: if(!semantic_find_id(t)) 
-						{
-							free(string);
-							free(type_array);
-							return FALSE;
-						}
+						{free(string);
+						free(type_array);
+						return FALSE;}
 			case INT_V: 
 			case FLOAT_V:
 			case STRING_V:
@@ -108,11 +106,9 @@ int preprocesing_expr(TToken* t, TToken *last, int condition, int* exp_ret)
 			case INTDIV:string = strcat(string, "M");
 					break;
 			case ID: if(!semantic_find_id(t)) 
-						{
-							free(string);
-							free(type_array);
-							return FALSE;
-						}
+						{free(string);
+						free(type_array);
+						return FALSE;}
 			case INT_V:
 			case FLOAT_V:
 			case STRING_V:
@@ -162,6 +158,21 @@ int preprocesing_expr(TToken* t, TToken *last, int condition, int* exp_ret)
 
 
 }
+
+int preprocesing_expr_real(TToken* t,TToken* last, int condition, int* exp_ret)
+{ // TODO - expresion
+	while(TRUE)
+	{
+		if((t->type == EOL) || (t->type == SEMICOLON) || (t->type == THEN))
+			break;
+		
+		
+		t = get_next(t,LA_S,&storage);
+	}
+	return TRUE;
+
+}
+
 
 int expr_n(TToken *t)
 {
@@ -347,6 +358,7 @@ int r_side(TToken *t,int lvalue)
 	{ // TODO zajistit preprocesting id
 		TToken tmp = *t;
 		t = get_next(t,LA_S,&storage);
+		
 
 		if(t->type == BRACKET_L)
 		{ // <r_side> -> id(<param_f>) EOL 
@@ -368,13 +380,12 @@ int r_side(TToken *t,int lvalue)
 				if(t->type == BRACKET_R)
 				{
 					// bacha na off by one
-					// TODO AZ Bude semantika od comentovat
-					/*if(position != strlen(param))
-						{
-							ERROR_RETURN = 4;
-							return FALSE;
-						}
-					*/
+					//if(position != strlen(param))
+					//	{
+					//		ERROR_RETURN = 4;
+					//		return FALSE;
+					//	}
+					
 					t = get_next(t,LA_S,&storage);
 					if(t->type == EOL)
 					{
@@ -395,7 +406,6 @@ int r_side(TToken *t,int lvalue)
 	}	
 	else if ((t->type == LENGTH) || (t->type == SUBSTR) || (t->type == ASC) ||(t->type == CHR) )
 	{ // BUILD IN FUNCTION
-		// TODO SEMANTICKA KONTROLA
 		if(build_in_fce(t))
 		{
 			if(t->type == EOL)
@@ -406,16 +416,7 @@ int r_side(TToken *t,int lvalue)
 	}
 	// add
 	else{
-		if(preprocesing_expr(t,NULL,0,&rvalue))
-		{ // <r_side> -> <expr> EOL
-			if(t->type == EOL)
-			{
-				// 
-				if(!semantic_check_lside_rside(lvalue,rvalue))
-					return FALSE;
-				return TRUE;
-			}
-		}
+		return preprocesing_expr(t,NULL,0,&rvalue);
 	}
 	
 	return FALSE;
@@ -589,6 +590,7 @@ int body(TToken *t)
 	else if(t->type == RETURN)
 	{ // <BODY> -> RETURN <EXP> EOL <BODY>
 		// TODO - semanticka kontrolo jestli je return s return typem
+		t = get_next(t,LA_S,&storage);
 		if(preprocesing_expr(t,NULL,0,&nul))
 		{
 			if(t->type == EOL)
@@ -832,7 +834,7 @@ int scope(TToken *t)
 					if(t->type == SCOPE)
 					{
 						t = get_next(t,LA_S,&storage);
-						if((t->type == EOL)||(t->type == EOF)) // oef? 
+						if((t->type == EOL)||(t->type == EOF )) // oef? 
 						{
 							t = get_next(t,LA_S,&storage);
 							return TRUE;
@@ -887,3 +889,4 @@ int main(int argc, char **argv)
 		return ERROR_RETURN;
 	return 0;
 }
+

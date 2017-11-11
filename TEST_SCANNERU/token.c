@@ -6,20 +6,20 @@
 
 
 TToken* token_init () {
-    TToken* t;
+	TToken* t;
 
-    if ((t = malloc(sizeof(TToken))) == NULL)
-        exit(-1);
-    t->int_v = 0;
-    t->float_v = 0.0;
-    t->string = NULL;
-    return t;
+	if ((t = malloc(sizeof(TToken))) == NULL)
+		exit(-1);
+	t->int_v = 0;
+	t->float_v = 0.0;
+	t->string = NULL;
+	return t;
 }
 
 void token_free (TToken* t) {
-    if (t->string != NULL)
-        free(t->string);
-    free(t);
+	if (t->string != NULL)
+		free(t->string);
+	free(t);
 }
 
 
@@ -39,8 +39,6 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     int done = 0;
     int dot = 0;
     int nonzero = 0;
-
-
     
     if (t == NULL) {                //FIRST USE
         t = token_init();
@@ -83,7 +81,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 c = getchar();
             }
         }
-      //  getchar();                  //to get line feed
+        //getchar();                  //to get line feed
     }
     if (c == '/') {
         state = DIV;
@@ -105,14 +103,15 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
             }
             c = tolower(getchar());
             while (isblank(c)) {
-                c = tolower(getchar());}
+                c = tolower(getchar());
+            }
         }
         else {
             done = 1;
             *storage = c;
         }
     }
-
+    
     if (c == '_') {
         state = ID;
         push(s,c);
@@ -239,11 +238,9 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     state = EXPONENT;
                     push(s,c);
                 }
-             else {
-        
-                        done = 1;
-                        *storage = c;
-                    
+                else {
+                    done = 1;
+                    *storage = c;
                 }
                 break;
             
@@ -259,14 +256,12 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     state = SCAN_ERR;
                 }
                 else {
-                
-                        done = 1;
-                        *storage = c;
-                    
+                    done = 1;
+                    *storage = c;
                 }
                 break;
 
-           case EXPONENT:
+            case EXPONENT:
                 if (signed_exp == 0) {
                     if (c == '-') {
                         push(s,c);
@@ -295,13 +290,12 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                         state = SCAN_ERR;
                     }
                     else {
-                        
-                            done = 1;
-                            *storage = c;
-                        
+                        done = 1;
+                        *storage = c;
                     }   
                 }
                 break;
+                
             case EXCL_M:
                 if (c == '\"') {
                     state = STRING_V;
@@ -315,7 +309,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
 
                     }
                     //c = getchar();
-                   // break;
+                    //break;
                 }
                 else {
                     state = SCAN_ERR;
@@ -347,6 +341,18 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     done = 1;
                     *storage = c;
                 }
+                break;
+
+            case GREAT:
+                if (c == '=') {
+                    state = GREATEQ;
+                    done = 1;
+                }
+                else {
+                    done = 1;
+                    *storage = c;
+                }
+
                 break;
             
             case DIV:
@@ -408,5 +414,5 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     free(tmp_s);
     free_stack(s);
 
-    return t;
+	return t;
 }

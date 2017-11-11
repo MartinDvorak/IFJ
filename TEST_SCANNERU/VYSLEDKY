@@ -1,20 +1,23 @@
 0 - IDENTIFIKATORY
 ________________________________________________________________
 
-cau77 _77cau -cau 77ccc
+cau _cau 77cau cis_2 14.eHoj 14.7Hoj !"kunda"jsi
 
 
-ID ID SUB ID INT_V ID EOL 
+ID ID INT_V ID ID SCAN_ERR FLOAT_V ID STRING_V ID EOL 
 EOF
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 1 - FLOATY
 ________________________________________________________________
 
-4.12 0.4 1.e+45 2.e22 5.e-41 -5.e-41 0.e-e 0.4.7
+4.12 0.4 1.e+45 2.e22 5.e-41 5.e-41 
+1.e-e 0.4.7 11e2
 
 
-FLOAT_V FLOAT_V FLOAT_V FLOAT_V FLOAT_V SUB FLOAT_V SCAN_ERR SCAN_ERR EOF
+FLOAT_V FLOAT_V FLOAT_V FLOAT_V FLOAT_V FLOAT_V EOL 
+SCAN_ERR SCAN_ERR FLOAT_V EOL 
+EOF
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 2 - STRINGY
@@ -24,27 +27,39 @@ ________________________________________________________________
 "eror"
 
 
-STRING_V EOF
+STRING_V STRING_V STRING_V STRING_V EOL 
+SCAN_ERR EOF
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 3 - KOMENTARE
 ________________________________________________________________
 
 '84'wwwwwwwwwwwwwwwwwwwwwwwwww
+scope 'Hlavni telo programu
+Dim a As Integer
+DIM vysl AS INTEGER
+/' Program 3: Prace s retezci 
+a vestavenymi funkcemi '/
 
 
+EOL 
+EOL 
+SCOPE EOL 
+DIM ID AS INTEGER EOL 
+DIM ID AS INTEGER EOL 
+EOL 
 EOF
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 4 - CASE SENSITIVITY
 ________________________________________________________________
 
-aS elSEIF TruE SubSTR
-AS,ELSEIF,TRUE,SUBSTR
+Dim As Integer Dim
+) as
 
 
-AS ELSEIF TRUE_KW SUBSTR EOL 
-AS COLON ELSEIF COLON TRUE_KW COLON SUBSTR EOF
+DIM AS INTEGER DIM EOL 
+BRACKET_R AS EOF
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 5 - KLICOVA SLOVA
@@ -57,11 +72,11 @@ ________________________________________________________________
  as if if as 
 
 
-AS ID DIM DIM EOL 
+AS IF DIM DIM EOL 
 INTEGER STRING EOL 
-ELSE END SCOPE EOL
+ELSE END SCOPE EOL 
 SCOPE AS AS AS EOL 
-AS AS EOF
+AS IF IF AS EOF
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 6 - CASTI KODU
@@ -71,7 +86,8 @@ Dim x as String = !"kundo"
 Dim y as Integer 
 
 
-DIM ID AS STRING ASSIGN STRING_V EOF
+DIM ID AS STRING ASSIGN STRING_V EOL 
+DIM ID AS INTEGER EOF
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 7 - VYRAZ
@@ -79,11 +95,16 @@ ________________________________________________________________
 
 a = a+8*7/2
 prcarna = (frajer+frajerka)*anal
+x = (a*b/c)*45
 
 
-ID ASSIGN ID ADD INT_V MUL INT_V DIV INT_V EOL 
+ID ASSIGN ID ADD INT_V MUL INT_V INT_V INT_V EOL 
 EOL 
-ID ASSIGN BRACKET_L ID ADD ID BRACKET_R MUL ID EOF
+ID ASSIGN BRACKET_L ID ADD ID BRACKET_R MUL ID EOL 
+EOL 
+ID ASSIGN BRACKET_L ID MUL ID ID ID BRACKET_R MUL INT_V EOL 
+EOL 
+EOF
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 8 - KOUSEK KODU
@@ -93,14 +114,14 @@ Dim x as Integer = 10
 DIM y as Integer = 25
 DIM z as Integer
 z = x + y
-print "Sum of x + y = "; z
+print !"x + y = "; z
 
 
 DIM ID AS INTEGER ASSIGN INT_V EOL 
 DIM ID AS INTEGER ASSIGN INT_V EOL 
 DIM ID AS INTEGER EOL 
 ID ASSIGN ID ADD ID EOL 
-PRINT SCAN_ERR ID ID ADD ID ASSIGN SCAN_ERR ID EOL 
+PRINT STRING_V SEMICOLON ID EOL 
 EOF
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
@@ -108,27 +129,196 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ________________________________________________________________
 
 scope 'Hlavni telo programu
-	Dim a As Integer
-	DIM vysl AS INTEGER
-	PrinT !"Zadejte cislo pro vypocet faktorialu";
-	InpuT A
-	If a < 0 THEN
-		print !"\nFaktorial nelze spocitat\n";
-	ELSE
-		Vysl = 1
-		Do WHile A > 0
-			VYSL = vysl * a
-			a = A - 1
-		LooP
-		Print !"\nVysledek je:" ; vYsl ; !"\n";
-	end IF
+Dim a As Integer
+DIM vysl AS INTEGER
+PrinT !"Zadejte cislo pro vypocet faktorialu";
+InpuT A
+If a < 0 THEN
+print !"\nFaktorial nelze spocitat\n";
+ELSE
+Vysl = 1
+Do WHile A > 0
+VYSL = vysl * a
+a = A - 1
+LooP
+Print !"\nVysledek je:" ; vYsl ; !"\n";
+end IF
 END SCOPE
 
 
 SCOPE EOL 
 DIM ID AS INTEGER EOL 
-SCAN_ERR ID AS INTEGER EOL 
-SCAN_ERR STRING_V EOF
+DIM ID AS INTEGER EOL 
+PRINT STRING_V SEMICOLON EOL 
+INPUT ID EOL 
+IF ID LESS INT_V THEN EOL 
+PRINT STRING_V SEMICOLON EOL 
+ELSE EOL 
+ID ASSIGN INT_V EOL 
+DO WHILE ID GREAT INT_V EOL 
+ID ASSIGN ID MUL ID EOL 
+ID ASSIGN ID SUB INT_V EOL 
+LOOP EOL 
+PRINT STRING_V SEMICOLON ID SEMICOLON STRING_V SEMICOLON EOL 
+END IF EOL 
+END SCOPE EOL 
+EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+10 - velky kod
+________________________________________________________________
+
+Declare Function factorial (n As Integer) As Integer
+Function factorial (n As Integer) As Integer
+Dim temp_result As Integer
+Dim decremented_n As Integer
+Dim result As Integer
+If n < 2 Then
+result = 1
+Else
+decremented_n = n - 1
+temp_result = factorial(decremented_n)
+result = n * temp_result
+End If
+Return result
+End Function
+Scope 'Hlavni telo programu
+Dim a As Integer
+Dim vysl As Integer
+Print !"Zadejte cislo pro vypocet faktorialu";
+Input a
+If a < 0 Then
+Print !"\nFaktorial nelze spocitat\n";
+Else
+vysl = factorial(a)
+Print !"\nVysledek je:" ; vysl ; !"\n";
+End If
+End Scope
+
+
+DECLARE FUNCTION ID BRACKET_L ID AS INTEGER BRACKET_R AS INTEGER EOL 
+FUNCTION ID BRACKET_L ID AS INTEGER BRACKET_R AS INTEGER EOL 
+DIM ID AS INTEGER EOL 
+DIM ID AS INTEGER EOL 
+DIM ID AS INTEGER EOL 
+IF ID LESS INT_V THEN EOL 
+ID ASSIGN INT_V EOL 
+ELSE EOL 
+ID ASSIGN ID SUB INT_V EOL 
+ID ASSIGN ID BRACKET_L ID BRACKET_R EOL 
+ID ASSIGN ID MUL ID EOL 
+END IF EOL 
+RETURN ID EOL 
+END FUNCTION EOL 
+SCOPE EOL 
+DIM ID AS INTEGER EOL 
+DIM ID AS INTEGER EOL 
+PRINT STRING_V SEMICOLON EOL 
+INPUT ID EOL 
+IF ID LESS INT_V THEN EOL 
+PRINT STRING_V SEMICOLON EOL 
+ELSE EOL 
+ID ASSIGN ID BRACKET_L ID BRACKET_R EOL 
+PRINT STRING_V SEMICOLON ID SEMICOLON STRING_V SEMICOLON EOL 
+END IF EOL 
+END SCOPE EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+11 - nejvetsi kod
+________________________________________________________________
+
+Scope 'Hlavni telo programu
+Dim s1 As String
+Dim s2 As String 'Koment
+Dim s1len As Integer
+s1 = !"Toto je nejaky text"
+s2 = s1 + !", ktery jeste trochu obohatime"
+Print s1; !"\n"; s2; !"\n";
+s1len = Length(s1)
+s1len = s1len - 4 + 1
+s1 = SubStr(s2, s1len, 4 )
+Print !"4 znaky od "; s1len; !". znaku v \""; s2; !"\":"; s1; !"\n";
+Print !"Zadejte serazenou posloupnost vsech malych pismen a-h, ";
+Print !"pricemz se pismena nesmeji v posloupnosti opakovat";
+Input s1
+Do While (s1 <> !"abcdefgh")
+Print !"\nSpatne zadana posloupnost, zkuste znovu";
+Input s1
+Loop
+End Scope
+
+
+SCOPE EOL 
+DIM ID AS STRING EOL 
+DIM ID AS STRING EOL 
+DIM ID AS INTEGER EOL 
+ID ASSIGN STRING_V EOL 
+ID ASSIGN ID ADD STRING_V EOL 
+PRINT ID SEMICOLON STRING_V SEMICOLON ID SEMICOLON STRING_V SEMICOLON EOL 
+ID ASSIGN LENGTH BRACKET_L ID BRACKET_R EOL 
+ID ASSIGN ID SUB INT_V ADD INT_V EOL 
+ID ASSIGN SUBSTR BRACKET_L ID COLON ID COLON INT_V BRACKET_R EOL 
+PRINT STRING_V SEMICOLON ID SEMICOLON STRING_V SCAN_ERR ID SEMICOLON STRING_V SCAN_ERR ID SEMICOLON STRING_V SEMICOLON EOL 
+PRINT STRING_V SEMICOLON EOL 
+PRINT STRING_V SEMICOLON EOL 
+INPUT ID EOL 
+DO WHILE BRACKET_L ID NEQ STRING_V BRACKET_R EOL 
+PRINT STRING_V SEMICOLON EOL 
+INPUT ID EOL 
+LOOP EOL 
+END SCOPE EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+12 - volani funkce
+________________________________________________________________
+
+s1 = SubStr(s2, s1len, 4)
+
+
+ID ASSIGN SUBSTR BRACKET_L ID COLON ID COLON INT_V BRACKET_R EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+13 - vsechna klic slova
+________________________________________________________________
+
+Scope
+dim x as integer
+end scope
+
+
+SCOPE EOL 
+DIM ID AS INTEGER EOL 
+END SCOPE EOL 
+EOF
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+14 - if statement vyraz
+________________________________________________________________
+
+Scope
+	dim x as integer
+	dim y as integer
+	x=5
+	y=4
+	if (x>5) then 
+		x=6
+	else 
+		x=y+1
+	end if
+end scope
+
+
+SCOPE EOL 
+DIM ID AS INTEGER EOL 
+DIM ID AS INTEGER EOL 
+ID ASSIGN INT_V EOL 
+ID ASSIGN INT_V EOL 
+IF BRACKET_L ID GREAT INT_V BRACKET_R THEN EOL 
+ID ASSIGN INT_V EOL 
+ELSE EOL 
+ID ASSIGN ID ADD INT_V EOL 
+END IF EOL 
+END SCOPE EOF
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ALL DONE
