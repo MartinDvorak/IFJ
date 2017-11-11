@@ -112,90 +112,92 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
         }
     }
     
-    if (c == '_') {
-        state = ID;
-        push(s,c);
-    }
+    if (state == 0) { 
+        if (c == '_') {
+            state = ID;
+            push(s,c);
+        }
 
-    else if ((c >= 'a') && (c <= 'z')) {
-        state = ID;
-        push(s,c);
-    }
+        else if ((c >= 'a') && (c <= 'z')) {
+            state = ID;
+            push(s,c);
+        }
+            
+        else if ((c >= '0') && (c <= '9')) {
+            state = INT_V;
+            push(s, c);
+        }
+
+        else if (c == '!') {
+            state = EXCL_M;
+        }
+
+        else if (c == ',') {
+            state = COLON;
+            done = 1;
+        }
+
+        else if (c == ';') {
+            state = SEMICOLON;
+            done = 1;
+        }
+
+        else if (c == '=') {
+            state = ASSIGN;
+        }
+
+        else if (c == '<') {
+            state = LESS;
+        }
+
+        else if (c == '>') {
+            state = GREAT;
+        }
+
+        else if (c == '+') {
+            state = ADD;
+            done = 1;
+        }
         
-    else if ((c >= '0') && (c <= '9')) {
-        state = INT_V;
-        push(s, c);
+        else if (c == '-') {
+            state = SUB;
+            done = 1;
+        }
+
+        else if (c == '*') {
+            state = MUL;
+            done = 1;
+        }
+
+        else if (c == '\\') {
+            state = INTDIV;
+            done = 1;
+        }
+
+        else if (c == 10) {
+            state = EOL;
+            done = 1; 
+        }
+
+        else if (c == '(') {
+            state = BRACKET_L;
+            done = 1;
+        }
+
+        else if (c == ')') {
+            state = BRACKET_R;
+            done = 1;
+        }
+
+        else if (c == EOF) {
+            state = EOF;
+        }
+
+        else {
+            state = SCAN_ERR;
+        }
     }
 
-    else if (c == '!') {
-        state = EXCL_M;
-    }
-
-    else if (c == ',') {
-        state = COLON;
-        done = 1;
-    }
-
-    else if (c == ';') {
-        state = SEMICOLON;
-        done = 1;
-    }
-
-    else if (c == '=') {
-        state = ASSIGN;
-    }
-
-    else if (c == '<') {
-        state = LESS;
-    }
-
-    else if (c == '>') {
-        state = GREAT;
-    }
-
-    else if (c == '+') {
-        state = ADD;
-        done = 1;
-    }
-    
-    else if (c == '-') {
-        state = SUB;
-        done = 1;
-    }
-
-    else if (c == '*') {
-        state = MUL;
-        done = 1;
-    }
-
-    else if (c == '\\') {
-        state = INTDIV;
-        done = 1;
-    }
-
-    else if (c == 10) {
-        state = EOL;
-        done = 1; 
-    }
-
-    else if (c == '(') {
-        state = BRACKET_L;
-        done = 1;
-    }
-
-    else if (c == ')') {
-        state = BRACKET_R;
-        done = 1;
-    }
-
-    else if (c == EOF) {
-        state = EOF;
-    }
-
-    else {
-        state = SCAN_ERR;
-    }
-    
     while((done == 0) && ((c = tolower(getchar())) != EOF)) {
         if (isblank(c)) {
             if (state == EXCL_M) {
