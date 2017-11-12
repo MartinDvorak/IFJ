@@ -1,4 +1,4 @@
-function funkce(x as integer,s as strin,y as integer) as integer
+function funkce(x as integer,s as string,y as integer) as integer
 	x = x + y
 	return x 
 end function

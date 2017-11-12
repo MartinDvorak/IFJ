@@ -1,4 +1,1 @@
-declare function ja(x as integer) as integer
-Scope
-s1 = ja(s2, s1len, 4)
-End SCOPE
+x = a

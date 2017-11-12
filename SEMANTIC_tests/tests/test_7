@@ -1,7 +1,8 @@
 scope
 dim x as integer
 if (x<!"Kunda") then
-print !"spravne"
+print !"spravne";
 else 
-print !"spatne"
+print !"spatne";
+end if
 end scope

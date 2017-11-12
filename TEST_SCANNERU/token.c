@@ -4,22 +4,93 @@
 #include "token.h"
 #include "stack.h"
 
+void foo(int type)
+{
+    switch(type)
+    {
+        case AS:printf("AS ");break;
+case ASC:printf("ASC ");break;
+case DECLARE:printf("DECLARE ");break;
+case DIM:printf("DIM ");break;
+case DOUBLE:printf("DOUBLE ");break;
+case ELSE:printf("ELSE ");break;
+case END:printf("END ");break;
+case CHR:printf("CHR ");break;
+case FUNCTION:printf("FUNCTION ");break;
+case INPUT:printf("INPUT ");break;
+case INTEGER:printf("INTEGER ");break;
+case LOOP:printf("LOOP ");break;
+case PRINT:printf("PRINT ");break;
+case RETURN:printf("RETURN ");break;
+case SCOPE:printf("SCOPE ");break;
+case STRING:printf("STRING ");break;
+case SUBSTR:printf("SUBSTR ");break;
+case THEN:printf("THEN ");break;  
+case WHILE:printf("WHILE ");break;
+case AND:printf("AND ");break;    
+case BOOLEAN:printf("BOOLEAN ");break;
+case CONTINUE:printf("CONTINUE ");break;
+case ELSEIF:printf("ELSEIF ");break;
+case EXIT:printf("EXIT ");break;
+case FALSE_KW:printf("FALSE_KW ");break;
+case FOR:printf("FOR ");break;
+case NEXT:printf("NEXT ");break;
+case NOT:printf("NOT ");break;
+case OR:printf("OR ");break;
+case SHARED:printf("SHARED ");break;
+case STATIC:printf("STATIC ");break;
+case TRUE_KW:printf("TRUE_KW ");break;
+case IF:printf("IF ");break;
+case ID:printf("ID ");break;
+case INT_V:printf("INT_V ");break;
+case FLOAT_V:printf("FLOAT_V ");break;
+case STRING_V:printf("STRING_V ");break;
+case ASSIGN:printf("ASSIGN ");break;
+case EQ:printf("EQ ");break;
+case NEQ:printf("NEQ ");break;
+case LESS:printf("LESS ");break;
+case GREAT:printf("GREAT ");break;
+case LESSEQ:printf("LESSEQ ");break;
+case GREATEQ:printf("GREATEQ ");break;
+case ADD:printf("ADD ");break;
+case SUB:printf("SUB ");break;
+case MUL:printf("MUL ");break;
+case DIV:printf("DIV ");break;
+case INTDIV:printf("INTDIV ");break;
+case DO:printf("DO ");break;
+case EOL:printf("EOL \n");break;
+case BRACKET_L:printf("BRACKET_L ");break;
+case BRACKET_R:printf("BRACKET_R ");break;
+//case EOF      69  // end of file
+case COLON:printf("COLON ");break; 
+case SEMICOLON:printf("SEMICOLON ");break;
+case EOF:printf("EOF");break;
+//my preciouses
+case EXCL_M:printf("EXCL_M ");break;
+case EXPONENT:printf("EXPONENT ");break;
+case L_COMMENT:printf("L_COMMENT ");break;
+case B_COMMENT:printf("B_COMMENT ");break;
+case SCAN_ERR:printf("SCAN_ERR ");break;
+case LENGTH:printf("LENGTH ");break;
+
+    }
+}
 
 TToken* token_init () {
-	TToken* t;
+    TToken* t;
 
-	if ((t = malloc(sizeof(TToken))) == NULL)
-		exit(-1);
-	t->int_v = 0;
-	t->float_v = 0.0;
-	t->string = NULL;
-	return t;
+    if ((t = malloc(sizeof(TToken))) == NULL)
+        exit(-1);
+    t->int_v = 0;
+    t->float_v = 0.0;
+    t->string = NULL;
+    return t;
 }
 
 void token_free (TToken* t) {
-	if (t->string != NULL)
-		free(t->string);
-	free(t);
+    if (t->string != NULL)
+        free(t->string);
+    free(t);
 }
 
 
@@ -112,90 +183,92 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
         }
     }
     
-    if (c == '_') {
-        state = ID;
-        push(s,c);
-    }
+    if (state == 0) { 
+        if (c == '_') {
+            state = ID;
+            push(s,c);
+        }
 
-    else if ((c >= 'a') && (c <= 'z')) {
-        state = ID;
-        push(s,c);
-    }
+        else if ((c >= 'a') && (c <= 'z')) {
+            state = ID;
+            push(s,c);
+        }
+            
+        else if ((c >= '0') && (c <= '9')) {
+            state = INT_V;
+            push(s, c);
+        }
+
+        else if (c == '!') {
+            state = EXCL_M;
+        }
+
+        else if (c == ',') {
+            state = COLON;
+            done = 1;
+        }
+
+        else if (c == ';') {
+            state = SEMICOLON;
+            done = 1;
+        }
+
+        else if (c == '=') {
+            state = ASSIGN;
+        }
+
+        else if (c == '<') {
+            state = LESS;
+        }
+
+        else if (c == '>') {
+            state = GREAT;
+        }
+
+        else if (c == '+') {
+            state = ADD;
+            done = 1;
+        }
         
-    else if ((c >= '0') && (c <= '9')) {
-        state = INT_V;
-        push(s, c);
+        else if (c == '-') {
+            state = SUB;
+            done = 1;
+        }
+
+        else if (c == '*') {
+            state = MUL;
+            done = 1;
+        }
+
+        else if (c == '\\') {
+            state = INTDIV;
+            done = 1;
+        }
+
+        else if (c == 10) {
+            state = EOL;
+            done = 1; 
+        }
+
+        else if (c == '(') {
+            state = BRACKET_L;
+            done = 1;
+        }
+
+        else if (c == ')') {
+            state = BRACKET_R;
+            done = 1;
+        }
+
+        else if (c == EOF) {
+            state = EOF;
+        }
+
+        else {
+            state = SCAN_ERR;
+        }
     }
 
-    else if (c == '!') {
-        state = EXCL_M;
-    }
-
-    else if (c == ',') {
-        state = COLON;
-        done = 1;
-    }
-
-    else if (c == ';') {
-        state = SEMICOLON;
-        done = 1;
-    }
-
-    else if (c == '=') {
-        state = ASSIGN;
-    }
-
-    else if (c == '<') {
-        state = LESS;
-    }
-
-    else if (c == '>') {
-        state = GREAT;
-    }
-
-    else if (c == '+') {
-        state = ADD;
-        done = 1;
-    }
-    
-    else if (c == '-') {
-        state = SUB;
-        done = 1;
-    }
-
-    else if (c == '*') {
-        state = MUL;
-        done = 1;
-    }
-
-    else if (c == '\\') {
-        state = INTDIV;
-        done = 1;
-    }
-
-    else if (c == 10) {
-        state = EOL;
-        done = 1; 
-    }
-
-    else if (c == '(') {
-        state = BRACKET_L;
-        done = 1;
-    }
-
-    else if (c == ')') {
-        state = BRACKET_R;
-        done = 1;
-    }
-
-    else if (c == EOF) {
-        state = EOF;
-    }
-
-    else {
-        state = SCAN_ERR;
-    }
-    
     while((done == 0) && ((c = tolower(getchar())) != EOF)) {
         if (isblank(c)) {
             if (state == EXCL_M) {
@@ -411,8 +484,9 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
         strcpy(t->string, tmp_s);
     }
 
+    foo (t->type);
     free(tmp_s);
     free_stack(s);
 
-	return t;
+    return t;
 }

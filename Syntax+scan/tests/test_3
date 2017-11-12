@@ -1,4 +1,4 @@
 scope
 dim x as integer
-x = (a*b+c)*45
+x = (a*b\c)*45
 end scope

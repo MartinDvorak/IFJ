@@ -18,7 +18,7 @@ typedef struct semantic_operation{
 void semantic_insert_build_in();
 
 // convertuje type_vlaue na type
-int semantic_id_type_convert(int type);
+int semantic_id_type_convert(TToken* t);
 
 // prevede char na #define hodnotu 'i' -> INTEGER
 int semantic_convert_data_type (char c);
@@ -32,7 +32,7 @@ int semantic_id(Ttnode_ptr root, TToken* t, char data_type);
 int semantic_id_param(TToken *t, char* param, int* position);
 
 // nalezne jestli existuje fce a tomom vrátí jeji parametry v  char*param
-int semantic_fce_param(Ttnode_ptr root, TToken* t, char* param);
+int semantic_fce_param(Ttnode_ptr root, TToken* t, char** param);
 
 // vlozi pokud neexistuje jinak false
 int semantic_insert(Ttnode_ptr* root, char* name, Tdata* data);
@@ -53,4 +53,8 @@ int semantic_exp(char* string, int* type_array, Toperation* arr, int* num_of_arr
 
 int semantic_check_lside_rside(int l_side, int r_side);
 
-void semantic_return_type(int glob_var,int local,int ret_type);
+void semantic_return_type(int* glob_var,int local,int ret_type);
+
+int semantic_check_define(Ttnode_ptr* root, char* name);
+
+void semantic_flag_use(Ttnode_ptr* root,TToken* t);
