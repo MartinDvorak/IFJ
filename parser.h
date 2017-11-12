@@ -16,7 +16,7 @@
 #ifndef ST_GV
 Ttnode_ptr root_global = NULL;
 Ttnode_ptr root_local = NULL;
-int ERROR_RETURN = 2; //syntax error
+int return_type = 0;
 #endif
 #define ST_GV
 //***********************************************
@@ -27,6 +27,13 @@ Tstack* LA_S = NULL;
 int storage = -2;
 #endif
 #define LA_GV
+//***********************************************
+// GLOBAL for syntax errors
+//***********************************************
+#ifndef ERR_GV
+int ERROR_RETURN = 2; //syntax error
+#endif
+#define ERR_GV
 //***********************************************
 
 
