@@ -1181,7 +1181,7 @@ int semantic_check_define(Ttnode_ptr* root, char* name)
 	Tdata tmp;
 	if(search_tree(*root,name,&tmp))
 	{
-		if (insert_define_tree(root,name,1,1)){
+		if (!insert_define_tree(root,name,1,1)){
 			return 0;
 		}
 		return 1;

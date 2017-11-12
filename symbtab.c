@@ -146,7 +146,7 @@ int search_in_pre_order(Ttnode_ptr root)
 	else{
 		if(root->data.defined == -1)
 			return TRUE;
-		return search_in_pre_order(root->lptr) || search_in_pre_order(root->lptr);
+		return search_in_pre_order(root->lptr) || search_in_pre_order(root->rptr);
 	}
 
 }
