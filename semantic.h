@@ -18,7 +18,7 @@ typedef struct semantic_operation{
 void semantic_insert_build_in();
 
 // convertuje type_vlaue na type
-int semantic_id_type_convert(int type);
+int semantic_id_type_convert(TToken* t);
 
 // prevede char na #define hodnotu 'i' -> INTEGER
 int semantic_convert_data_type (char c);

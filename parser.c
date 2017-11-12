@@ -66,7 +66,7 @@ int preprocesing_expr(TToken* t, TToken *last, int condition, int* exp_ret)
 			case FLOAT_V:
 			case STRING_V:
 					// TODO pro komplikovanejsi strukturu predelat insert
-					type_array[ptr_to_array++] = semantic_id_type_convert(t->type);
+					type_array[ptr_to_array++] = semantic_id_type_convert(t);
 					string = strcat(string, "i");
 					break;
 			case BRACKET_L: string = strcat(string, "(");
@@ -115,7 +115,7 @@ int preprocesing_expr(TToken* t, TToken *last, int condition, int* exp_ret)
 			case FLOAT_V:
 			case STRING_V:
 					// TODO pro komplikovanejsi strukturu predelat insert
-					type_array[ptr_to_array++] = semantic_id_type_convert(t->type);
+					type_array[ptr_to_array++] = semantic_id_type_convert(t);
 					string = strcat(string, "i");
 					break;
 			case BRACKET_L: string = strcat(string, "(");
@@ -934,9 +934,11 @@ int semantic_check_lside_rside(int l_side, int r_side)
 	
 }
 
-int semantic_id_type_convert(int type)
+int semantic_id_type_convert(TToken* t)
 {
-	switch(type)
+	Tdata tmp;
+				
+	switch(t->type)
 	{
 		case INTEGER:
 		case INT_V:
@@ -947,6 +949,9 @@ int semantic_id_type_convert(int type)
 		case DOUBLE:
 		case FLOAT_V:
 				return DOUBLE;
+		case ID:
+				search_tree(root_local,t->string,&tmp);
+				return tmp.type;
 		default:
 			return 0;						
 
