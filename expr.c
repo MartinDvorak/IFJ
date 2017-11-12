@@ -49,6 +49,8 @@ int expr(char* string,int condition, char* postfix){
 
 	}while(!((input == '$')&&(top == '$')));
 
+	postfix[strlen(postfix)] = '$';
+	
 	free_table(table,condition);
 	free_stack(s);
 	return TRUE;

@@ -21,6 +21,7 @@ int preprocesing_expr(TToken* t, TToken *last, int condition, int* exp_ret)
 	{
 		// TODO pro komplikovanejsi strukturu predelat insert
 
+
 		type_array[ptr_to_array++] = last->type;
 		string = strcat(string, "i");
 	}
@@ -968,22 +969,34 @@ void semantic_insert_build_in()
 
 	tmp.type = INTEGER;
 	tmp.defined = 1;
-	tmp.param = "s";
+	
+	if((tmp.param = malloc(sizeof(char)*5)) == NULL)
+		exit(99);
+	tmp.param = strcpy(tmp.param,"s");
 	semantic_insert(&root_global,"length",&tmp);
 
 	tmp.type = STRING;
 	tmp.defined = 1;
-	tmp.param = "sii";
+	
+	if((tmp.param = malloc(sizeof(char)*5)) == NULL)
+		exit(99);
+	tmp.param = strcpy(tmp.param,"sii");
 	semantic_insert(&root_global,"substr",&tmp);
 	
 	tmp.type = INTEGER;
 	tmp.defined = 1;
-	tmp.param = "si";
+	
+	if((tmp.param = malloc(sizeof(char)*5)) == NULL)
+		exit(99);	
+	tmp.param = strcpy(tmp.param,"si");
 	semantic_insert(&root_global,"asc",&tmp);
 	
 	tmp.type = STRING;
 	tmp.defined = 1;
-	tmp.param = "i";
+
+	if((tmp.param = malloc(sizeof(char)*5)) == NULL)
+		exit(99);	
+	tmp.param = strcpy(tmp.param,"s");
 	semantic_insert(&root_global,"chr",&tmp);
 }
 
@@ -1001,16 +1014,16 @@ int semantic_convert_data_type (char c)
 
 int semantic_id(Ttnode_ptr root, TToken* t, char data_type)
 {
-	Tdata* tmp = NULL;
+	Tdata tmp;
 	int predict;
 	if(t->type == ID)
 	{
-		if(!search_tree(root,t->string,tmp))
+		if(!search_tree(root,t->string,&tmp))
 		{
 			ERROR_RETURN = 3;
 			return FALSE;	
 		}
-		predict = tmp->type;
+		predict = tmp.type;
 	}
 	else{
 		switch(t->type)
@@ -1043,13 +1056,13 @@ int semantic_id(Ttnode_ptr root, TToken* t, char data_type)
 }
 int semantic_id_type(Ttnode_ptr root,TToken *t, int* type)
 {
-	Tdata* tmp = NULL;
-	if(!search_tree(root,t->string,tmp))
+	Tdata tmp;
+	if(!search_tree(root,t->string,&tmp))
 	{
 		ERROR_RETURN = 3;
 		return FALSE;	
 	}
-	*type = tmp->type;
+	*type = tmp.type;
 	return TRUE;
 }
 
@@ -1059,13 +1072,13 @@ int semantic_id_param(TToken *t, char* param, int* position)
 	
 	if (t->type == ID)
 	{
- 		Tdata* tmp = NULL;
-		if(!(search_tree(root_local,t->string,tmp)))
+ 		Tdata tmp;
+		if(!(search_tree(root_local,t->string,&tmp)))
 			{
 				ERROR_RETURN = 3;
 				return FALSE;
 			}
-		desizion = tmp->type;
+		desizion = tmp.type;
 	}
 	
 	// nasel jsem parametr ale mit nema, nebo je vic napsal vic paramentru nez je treba
@@ -1112,10 +1125,10 @@ int semantic_id_param(TToken *t, char* param, int* position)
 
 int semantic_fce_param(Ttnode_ptr root, TToken* t, char* param)
 {
-	Tdata* tmp = NULL;
-	if(search_tree(root,t->string,tmp))
+	Tdata tmp;
+	if(search_tree(root,t->string,&tmp))
 	{
-		param = tmp->param; 
+		param = tmp.param; 
 		return TRUE;
 	}
 	ERROR_RETURN = 3;
