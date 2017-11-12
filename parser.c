@@ -889,6 +889,7 @@ int main(int argc, char **argv)
 
 	int res = parser_FREEBASIC(token);
 	printf("ERRRRRROR >>>>__%d__<<<<<\n",res);
+	printf(">>>>>>>%d<<<<<<<<<<<<<\n", ERROR_RETURN);
 	free_tree(&root_local);
 	free_tree(&root_global);
 	
@@ -1154,6 +1155,7 @@ int semantic_find_id(TToken* t)
 	return FALSE;
 } 
 	
+
 
 int semantic_exp(char* string, int* type_array,Toperation* arr, int* num_arr,int* exp_ret)
 {
