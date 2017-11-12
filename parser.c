@@ -22,7 +22,7 @@ int preprocesing_expr(TToken* t, TToken *last, int condition, int* exp_ret)
 		// TODO pro komplikovanejsi strukturu predelat insert
 
 
-		type_array[ptr_to_array++] = last->type;
+		type_array[ptr_to_array++] = semantic_id_type_convert(last);
 		string = strcat(string, "i");
 	}
 	while(TRUE)
@@ -353,12 +353,13 @@ int r_side(TToken *t,int lvalue)
 			char *param = NULL;
 			
 			// semantic chceck
-			if(!semantic_fce_param(root_global,&tmp,param))
+			if(!semantic_fce_param(root_global,&tmp,&param))
 				return FALSE;
 			if(!semantic_id_type(root_global,t,&rvalue))
 				return FALSE;
 			if(!semantic_check_lside_rside(lvalue,rvalue))
 				return FALSE;
+			semantic_flag_use(&root_global,t);
 			/// end
 			
 			t = get_next(t,LA_S,&storage);
@@ -367,12 +368,12 @@ int r_side(TToken *t,int lvalue)
 				{
 					// bacha na off by one
 					// TODO AZ Bude semantika od comentovat
-					/*if(position != strlen(param))
+					if(position != strlen(param))
 						{
 							ERROR_RETURN = 4;
 							return FALSE;
 						}
-					*/
+					
 					t = get_next(t,LA_S,&storage);
 					if(t->type == EOL)
 					{
@@ -594,8 +595,11 @@ int body(TToken *t)
 			//semantic
 			// ZAPNOUT NA KONTROLU SEMANTIKY TODO
 			
-			//if(return_type == 0)
-			//	return FALSE;
+			if(return_type == 0)
+			{	
+				ERROR_RETURN = 6;
+				return FALSE;
+			}
 			if(!semantic_check_lside_rside(return_type,rvalue))
 				return FALSE;
 			//end semantic
@@ -733,14 +737,30 @@ int func_line(TToken* t,int local)
 	tmp.defined = local;
 	tmp.param = NULL;
 
+	int flag = 0;
 	if(t->type == FUNCTION)		
 	{ //func_line -> function id (<param>) as <type> eol
 		t = get_next(t,LA_S,&storage);
 		if(t->type == ID)
 		{	
 			// sementic
-			if(!semantic_insert(&root_global, t->string, &tmp))
-				return FALSE;
+			if(local)
+			{
+				int prom = semantic_check_define(&root_global,t->string);
+				if(prom == 0)// redefinace
+					return FALSE;
+				else if(prom == -1){ // prvni def
+					if(!semantic_insert(&root_global, t->string, &tmp))
+						return FALSE; // neni prvni def					// 
+				}
+				else{
+					flag = 1;
+				}
+			}
+			else{
+				if(!semantic_insert(&root_global, t->string, &tmp))
+					return FALSE;
+			}
 			//
 			char *name =NULL;
 			if ((name = malloc(sizeof(char)*strlen(t->string))) == NULL)
@@ -754,7 +774,6 @@ int func_line(TToken* t,int local)
 				if(local)
 				{
 					free_tree(&root_local);
-					// nastaveni pro RETURN hodnoty
 				}
 				//
 				t = get_next(t,LA_S,&storage);
@@ -768,14 +787,20 @@ int func_line(TToken* t,int local)
 						 	if(type(t,&tmp,1,NULL))
 						 	{
 						 		// semantic
-						 		semantic_return_type(return_type,local,tmp.type);
+						 		semantic_return_type(&return_type,local,tmp.type);
 						 		// end  semantic
 
 						 		t = get_next(t,LA_S,&storage);
 						 		if(t->type == EOL)
 						 		{
 						 			// update semantic
-						 			insert_data_tree(&root_global, name, &tmp);
+						 			if(!flag)
+						 			{
+						 				insert_data_tree(&root_global, name, &tmp);
+						 			}
+						 			else{
+						 				free(tmp.param);
+						 			}
 						 			free(name);
 						 			t = get_next(t,LA_S,&storage);
 						 			return TRUE;
@@ -797,8 +822,7 @@ int func(TToken* t)
 	else if(t->type == DECLARE)
 	{ // F-> DECLARE <Func_line> <F>
 		t = get_next(t,LA_S,&storage);
-		return (func_line(t,0) && func(t));
-			
+		return (func_line(t,0) && func(t));	
 	} 
 	else if (t->type == FUNCTION)
 	{// F-> <Func_line> <BODY> END Function <F>
@@ -836,6 +860,7 @@ int scope(TToken *t)
 		t = get_next(t,LA_S,&storage);
 		if(t->type == EOL)
 		{
+			free_tree(&root_local);
 			t = get_next(t,LA_S,&storage);
 			if(body(t))
 			{
@@ -903,14 +928,14 @@ int main(int argc, char **argv)
 }
 
 
-void semantic_return_type(int glob_var,int local,int ret_type)
+void semantic_return_type(int* glob_var,int local,int ret_type)
 {
 	if(local)
 	{
-		glob_var = ret_type;
+		*glob_var = ret_type;
 	}
 	else{
-		glob_var = 0;
+		*glob_var = 0;
 	}
 }
 
@@ -1094,7 +1119,7 @@ int semantic_id_param(TToken *t, char* param, int* position)
 			return FALSE;
 		}
 	
-	int convert = semantic_convert_data_type((*position)++);
+	int convert = semantic_convert_data_type(param[(*position)++]);
 
 
 	switch(desizion)
@@ -1129,12 +1154,12 @@ int semantic_id_param(TToken *t, char* param, int* position)
 }
 
 
-int semantic_fce_param(Ttnode_ptr root, TToken* t, char* param)
+int semantic_fce_param(Ttnode_ptr root, TToken* t, char** param)
 {
 	Tdata tmp;
 	if(search_tree(root,t->string,&tmp))
 	{
-		param = tmp.param; 
+		*param = tmp.param; 
 		return TRUE;
 	}
 	ERROR_RETURN = 3;
@@ -1150,6 +1175,24 @@ int semantic_insert(Ttnode_ptr* root, char* name, Tdata* data)
 	ERROR_RETURN = 3;
 	return FALSE;
 	// exit code 3    
+}
+int semantic_check_define(Ttnode_ptr* root, char* name)
+{
+	Tdata tmp;
+	if(search_tree(*root,name,&tmp))
+	{
+		if (insert_define_tree(root,name,1,1)){
+			return 0;
+		}
+		return 1;
+	}
+	return -1;
+}
+
+void semantic_flag_use(Ttnode_ptr* root,TToken* t)
+{
+	insert_define_tree(root,t->string,1,-1);
+
 }
 
 int semantic_find_id(TToken* t)
@@ -1184,9 +1227,10 @@ int semantic_exp(char* string, int* type_array,Toperation* arr, int* num_arr,int
 			int right = top_stack(s);
 			char c = string[str_num];
 			
-			if(((left == 's')||(right == 's'))&&((c == '-')||(c == '+')||(c == '/')||(c == 'M')))
+			if(((left == STRING)||(right == STRING))&&((c == '-')||(c == '*')||(c == '/')||(c == 'M')))
 			{// nepovolena operace nad stringem
 				free_stack(s);
+				ERROR_RETURN = 4;
 				return FALSE;
 			}
 			else if(left == right)
@@ -1204,6 +1248,7 @@ int semantic_exp(char* string, int* type_array,Toperation* arr, int* num_arr,int
 				else if((c == 'M')&&(left = DOUBLE))
 				{
 					free_stack(s);
+					ERROR_RETURN = 4;
 					return FALSE;
 				}
 				else{
@@ -1217,6 +1262,7 @@ int semantic_exp(char* string, int* type_array,Toperation* arr, int* num_arr,int
 			else if(c == 'M')
 			{// modulo nelze jinde nez int/int
 				free_stack(s);
+				ERROR_RETURN = 4;
 				return FALSE;
 			}
 			else if((left == INTEGER)&&(right == DOUBLE))
@@ -1239,6 +1285,7 @@ int semantic_exp(char* string, int* type_array,Toperation* arr, int* num_arr,int
 			}
 			else{
 				free_stack(s);
+				ERROR_RETURN = 4;
 				return FALSE;
 			}
 		}

@@ -69,6 +69,30 @@ int insert_data_tree(Ttnode_ptr* root, char* name, Tdata* tdata)
 	}
 }
 
+int insert_define_tree(Ttnode_ptr* root, char* name,int search, int set)
+{
+	if (*root == NULL)
+	{
+		return FALSE;
+	}
+	else{
+		if (!(strcmp((*root)->key, name)))
+		{
+			if((*root)->data.defined == search)
+				return FALSE;
+			(*root)->data.defined = set;
+			return TRUE;
+		} 
+		else if (strcmp((*root)->key, name) > 0)
+		{
+			return insert_define_tree(&(*root)->lptr, name,search,set);
+		}
+		else{
+			return insert_define_tree(&(*root)->rptr, name,search,set);
+		}
+	}
+}
+
 // TRUE or FALSE if true data returned in Tdata_fce* data
 int  search_tree(Ttnode_ptr root ,char* name, Tdata* tdata){
 	if (root == NULL)
