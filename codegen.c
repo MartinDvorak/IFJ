@@ -145,6 +145,7 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 					printf("CREATEFRAME\n");
 					printf("DEFVAR TF@$tmp1\n");
 					printf("DEFVAR TF@$tmp2\n");
+
 					printf("POPS TF@$tmp1\n");
 					printf("POPS TF@$tmp2\n");
 					printf("FLOAT2REINTS\n");
@@ -157,6 +158,7 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 					printf("CREATEFRAME\n");
 					printf("DEFVAR TF@$tmp1\n");
 					printf("DEFVAR TF@$tmp2\n");
+
 					printf("POPS TF@$tmp1\n");
 					printf("POPS TF@$tmp2\n");
 					printf("INT2FLOATS\n");
@@ -171,6 +173,7 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 					//konverze na int
 					printf("CREATEFRAME\n");
 					printf("DEFVAR TF@$tmp1\n");
+
 					printf("POPS TF@$tmp1\n");
 					printf("FLOAT2REINTS\n");
 					printf("PUSHS TF@$tmp1\n");
@@ -180,6 +183,7 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 					//ve vsech ostatnich pripadech konverze na float
 					printf("CREATEFRAME\n");
 					printf("DEFVAR TF@$tmp1\n");
+
 					printf("POPS TF@$tmp1\n");
 					printf("INT2FLOATS\n");
 					printf("PUSHS TF@$tmp1\n");
@@ -190,7 +194,26 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 			switch(act.op){
 				//provedeni operace
 				case '+':
+					if((operand_array[operand_index-1].type == STRING) || 
+						(operand_array[operand_index-1].type == STRING_V)){
+						//jde o retezce
+						printf("CREATEFRAME\n");
+						printf("DEFVAR TF@$tmp_op\n");
+						printf("DEFVAR TF@$tmp1\n");
+						printf("DEFVAR TF@$tmp2\n");
+						printf("DEFVAR TF@$tmp_res\n");
+
+						printf("POPS TF@$tmp_op\n");
+						printf("POPS TF@$tmp1\n");
+						printf("POPS TF@$tmp2\n");
+						printf("CONCAT TF@$tmp_res TF@$tmp2 TF@$tmp1\n");
+						printf("PUSHS TF@$tmp_res\n");
+						printf("CREATEFRAME\n");
+					} 
+					else{
+						//integery nebo floaty
 					printf("ADDS\n");
+					}
 					break;
 				case '-':
 					printf("SUBS\n");
@@ -202,7 +225,18 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 					printf("DIVS\n");
 					break;
 				case 'M':
-					//TODO modulo
+					//prevede oba na float, podeli, osekne na int
+					printf("CREATEFRAME\n");
+					printf("DEFVAR TF@tmp_op\n");
+					printf("DEFVAR TF@tmp1\n");
+					
+					printf("POPS TF@tmp_op\n");
+					printf("INT2FLOATS\n");
+					printf("POPS TF@tmp1\n");
+					printf("INT2FLOATS\n");
+					printf("PUSHS TF@tmp1\n");
+					printf("DIVS\n");
+					printf("FLOAT2INTS\n");
 					break;
 				case 'N':
 					printf("EQS\n");
@@ -233,6 +267,7 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 			//konec vyrazu, ulozeni vysledku vyrazu
 			printf("DEFVAR LF@$expr_retval%d\n", ret_id);
 			printf("POPS LF@$expr_retval\n");
+			printf("CLEARS\n");
 			ret_id++; //inkrement unique id navratove hodnoty
 		}
 	}

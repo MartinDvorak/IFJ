@@ -1,6 +1,7 @@
 #include "semantic.h"
 #include "symbtab.h"
 
+
 /*
 /////////////////////////////////////////////////////////
 // 		PRO TESTOVNI SYNTAXE 
@@ -43,11 +44,27 @@ int semantic_id_type(Ttnode_ptr root,TToken* t,int* type )
 int semantic_check_lside_rside(int l_side, int r_side)
 {return TRUE;}
 
+void semantic_return_type(int glob_var,int local,int ret_type)
+{}
+//int semantic_id_type_convert(int type)
+//{return TRUE;}
+
 ///////////////////////////////////////////////////////////////////
 //				END
 ///////////////////////////////////////////////////////////////////
 
 */
+
+void semantic_return_type(int glob_var,int local,int ret_type)
+{
+	if(local)
+	{
+		glob_var = ret_type;
+	}
+	else{
+		glob_var = 0;
+	}
+}
 int semantic_check_lside_rside(int l_side, int r_side)
 {
 	if(l_side != r_side)

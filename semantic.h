@@ -65,3 +65,5 @@ int semantic_call_undefined_fce();
 int semantic_exp(char* string, TExpr_operand* operand_array, Toperation* arr, int* num_of_arr, int* exp_ret);
 
 int semantic_check_lside_rside(int l_side, int r_side);
+
+void semantic_return_type(int glob_var,int local,int ret_type);

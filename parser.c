@@ -594,8 +594,18 @@ int body(TToken *t)
 	else if(t->type == RETURN)
 	{ // <BODY> -> RETURN <EXP> EOL <BODY>
 		// TODO - semanticka kontrolo jestli je return s return typem
-		if(preprocesing_expr(t,NULL,0,&nul))
+		int rvalue;
+		t = get_next(t,LA_S,&storage);
+		if(preprocesing_expr(t,NULL,0,&rvalue))
 		{
+			//semantic
+			// ZAPNOUT NA KONTROLU SEMANTIKY TODO
+			
+			//if(return_type == 0)
+			//	return FALSE;
+			if(!semantic_check_lside_rside(return_type,rvalue))
+				return FALSE;
+			//end semantic
 			if(t->type == EOL)
 				{
 					t = get_next(t,LA_S,&storage);
@@ -751,6 +761,7 @@ int func_line(TToken* t,int local)
 				if(local)
 				{
 					free_tree(&root_local);
+					// nastaveni pro RETURN hodnoty
 				}
 				//
 				t = get_next(t,LA_S,&storage);
@@ -763,6 +774,10 @@ int func_line(TToken* t,int local)
 						 	t = get_next(t,LA_S,&storage);
 						 	if(type(t,&tmp,1,NULL))
 						 	{
+						 		// semantic
+						 		semantic_return_type(return_type,local,tmp.type);
+						 		// end  semantic
+
 						 		t = get_next(t,LA_S,&storage);
 						 		if(t->type == EOL)
 						 		{
@@ -892,4 +907,3 @@ int main(int argc, char **argv)
 		return ERROR_RETURN;
 	return 0;
 }
-
