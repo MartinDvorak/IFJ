@@ -5,6 +5,7 @@
 /////////////////////////////////////////////////////////
 // 		PRO TESTOVNI SYNTAXE 
 ////////////////////////////////////////////////////////
+/*
 void semantic_insert_build_in()
 {}
 
@@ -45,8 +46,8 @@ int semantic_check_lside_rside(int l_side, int r_side)
 
 void semantic_return_type(int glob_var,int local,int ret_type)
 {}
-//int semantic_id_type_convert(int type)
-//{return TRUE;}
+int semantic_id_type_convert(int type)
+{return TRUE;}
 
 ///////////////////////////////////////////////////////////////////
 //				END
@@ -67,12 +68,22 @@ void semantic_return_type(int glob_var,int local,int ret_type)
 
 int semantic_check_lside_rside(int l_side, int r_side)
 {
-	if(l_side != r_side)
+	if(l_side == r_side)
 	{
-		ERROR_RETURN = 6;
-		return FALSE;
+		return TRUE;
 	}
-	return TRUE;
+	else if ((l_side == INTEGER) && (r_side == DOUBLE))
+	{	// covreze Double-> int
+		return TRUE;
+	}
+	else if ((l_side == DOUBLE) && (r_side == INTEGER))
+	{ // INT -> DOUBLE
+		return TRUE;
+	}
+	
+	ERROR_RETURN = 6;
+	return FALSE;
+	
 }
 
 int semantic_id_type_convert(int type)
@@ -85,9 +96,9 @@ int semantic_id_type_convert(int type)
 		case STRING:
 		case STRING_V:
 				return STRING;
-		case FLOAT:
+		case DOUBLE:
 		case FLOAT_V:
-				return FLOAT;
+				return DOUBLE;
 		default:
 			return 0;						
 
@@ -136,7 +147,7 @@ int semantic_convert_data_type (char c)
 	switch(c)
 	{
 		case 'i': return INTEGER;
-		case 'f': return FLOAT;
+		case 'f': return DOUBLE;
 		case 's': return STRING; 
 		default: return 0;
 	}
@@ -160,7 +171,7 @@ int semantic_id(Ttnode_ptr root, TToken* t, char data_type)
 		{
 			case INT_V: predict = INTEGER;
 				break;
-			case FLOAT_V: predict = FLOAT;
+			case FLOAT_V: predict = DOUBLE;
 				break;
 			case STRING_V: predict = STRING;
 				break;		
@@ -169,12 +180,12 @@ int semantic_id(Ttnode_ptr root, TToken* t, char data_type)
 	int type = semantic_convert_data_type(data_type);
 	if(predict == type)
 		return TRUE;
-	else if ((predict == INTEGER) &&(type == FLOAT))
+	else if ((predict == INTEGER) &&(type == DOUBLE))
 	{
 		// TODO implicit INT -> FLOAT
 		return TRUE;
 	}
-	else if((predict == FLOAT) &&(type == INTEGER))
+	else if((predict == DOUBLE) &&(type == INTEGER))
 	{
 		// TODO implicit FLOAT -> INT
 		return TRUE;	
@@ -227,7 +238,7 @@ int semantic_id_param(TToken *t, char* param, int* position)
 		case INTEGER: desizion = INTEGER;
 					break;
 		case FLOAT_V:
-		case FLOAT: desizion = FLOAT;
+		case DOUBLE: desizion = DOUBLE;
 					break;
 		case STRING_V:
 		case STRING: desizion = STRING;
@@ -238,12 +249,12 @@ int semantic_id_param(TToken *t, char* param, int* position)
 	{
 		return TRUE;
 	}
-	else if((desizion == INTEGER) && (convert == FLOAT))
+	else if((desizion == INTEGER) && (convert == DOUBLE))
 	{
 		//TODO implicit convert INT -> FLOAT
 		return TRUE; 
 	}
-	else if((desizion == FLOAT) && (convert == INTEGER))
+	else if((desizion == DOUBLE) && (convert == INTEGER))
 	{
 		//TODO implicit convert FLOAT -> INT
 		return TRUE;
@@ -321,10 +332,10 @@ int semantic_exp(char* string, int* type_array,Toperation* arr, int* num_arr,int
 					tmp.r_convert = 1;
 					arr[(*num_arr)++] = tmp;
 					pop2(s);
-					push(s,FLOAT);
+					push(s,DOUBLE);
 
 				}
-				else if((c == 'M')&&(left = FLOAT))
+				else if((c == 'M')&&(left = DOUBLE))
 				{
 					free_stack(s);
 					return FALSE;
@@ -342,17 +353,17 @@ int semantic_exp(char* string, int* type_array,Toperation* arr, int* num_arr,int
 				free_stack(s);
 				return FALSE;
 			}
-			else if((left == INTEGER)&&(right == FLOAT))
+			else if((left == INTEGER)&&(right == DOUBLE))
 			{
 				tmp.op = c;
 				tmp.l_convert = 1;
 				tmp.r_convert = 0;
 				arr[(*num_arr)++] = tmp;
 				pop2(s);
-				push(s,FLOAT);
+				push(s,DOUBLE);
 
 			}
-			else if((left == FLOAT)&&(right == INTEGER))
+			else if((left == DOUBLE)&&(right == INTEGER))
 			{
 				tmp.op = c;
 				tmp.l_convert = 0;
