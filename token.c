@@ -54,7 +54,45 @@ int valid_ES(Tstack* s) {
     }
 
     return 1;
-}    
+}
+
+void skip_BC (int *state) {
+
+    int com1, com2;
+    int c;
+
+    com1 = getchar();
+    while (1) {
+        com2 = getchar();
+        if ((com1 == '\'') && (com2 == '/')) {
+            break;
+        }
+        else if (com2 == EOF) {
+        *state = EOF;
+            break;
+        }
+        else {
+            com1 = com2;
+        }
+    }
+}
+
+int skip_LC(int *state) {
+
+    int c;
+
+    c = getchar();              //skips line comment
+    while (c != 10) {           //10 == linefeed
+        if (c == EOF) {
+            *state = EOF;
+            break;
+        }
+        else {
+            c = getchar();
+        }
+    }
+    return c;
+}
 
 
 TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost lex.analyzatoru
@@ -105,7 +143,8 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     }
 
     if (c == '\'') {
-        c = getchar();              //skips line comment
+         c = skip_LC(&state);
+        /*c = getchar();              //skips line comment
         while (c != 10) {           //10 == linefeed
             if (c == EOF) {
                 state = EOF;
@@ -114,30 +153,20 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
             else {
                 c = getchar();
             }
-        }
-        //getchar();                  //to get line feed
+        }*/
     }
+
     if (c == '/') {
         state = DIV;
         if ((c = tolower(getchar())) == '\'') {   //skips block comment
             state = 0;
-            com1 = getchar();
-            while (1) {
-                com2 = getchar();
-                if ((com1 == '\'') && (com2 == '/')) {
-                    break;
-                }
-                else if (com2 == EOF) {
-                    state = EOF;
-                    break;
-                }
-                else {
-                    com1 = com2;
-                }
-            }
-            c = tolower(getchar());
+            skip_BC(&state);
+            c = tolower(getchar()); 
             while (isblank(c)) {
                 c = tolower(getchar());
+                if (c == '\'') {
+                    c = skip_LC(&state);
+                }
             }
         }
         else {
