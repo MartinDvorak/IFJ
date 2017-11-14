@@ -1,7 +1,11 @@
+#ifndef PARSER_H_
+#define PARSER_H_
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stddef.h>
 
 #include "symbtab.h"
 #include "stack.h"
@@ -13,11 +17,20 @@
 
 // GLOBAL VARIABLES FOR symbtab
 //*************************************************
+
 #ifndef ST_GV
 #define ST_GV
+
+
 Ttnode_ptr root_global = NULL;
 Ttnode_ptr root_local = NULL;
 int return_type = 0;
+
+/*
+extern Ttnode_ptr root_global;
+extern Ttnode_ptr root_local;
+extern int return_type;
+*/
 #endif
 
 //***********************************************
@@ -25,8 +38,14 @@ int return_type = 0;
 //***********************************************
 #ifndef LA_GV
 #define LA_GV
+
 Tstack* LA_S = NULL;
 int storage = -2;
+
+/*
+extern Tstack* LA_S;
+extern int storage;
+*/
 #endif
 
 //***********************************************
@@ -35,6 +54,7 @@ int storage = -2;
 #ifndef ERR_GV
 #define ERR_GV
 int ERROR_RETURN = 2; //syntax error
+//extern ERROR_RETURN;
 #endif
 
 //***********************************************
@@ -78,3 +98,6 @@ int expr_n(TToken *t);
 int r_side(TToken *t,int l_value);
 
 int build_in_fce(TToken *t);
+
+
+#endif //PARSER_H_

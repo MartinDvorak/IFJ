@@ -368,7 +368,7 @@ int r_side(TToken *t,int lvalue)
 				{
 					// bacha na off by one
 					// TODO AZ Bude semantika od comentovat
-					if(position != strlen(param))
+					if(position != (int)strlen(param))
 						{
 							ERROR_RETURN = 4;
 							return FALSE;
@@ -454,7 +454,7 @@ int body(TToken *t)
 				if(type(t,&tmp,1,NULL))
 				{	
 					// semantic control
-					if(!semantic_insert(&root_local,t->string,&tmp))
+					if(!semantic_insert_id(&root_local,root_global,t->string,&tmp))
 						return FALSE;
 					//
 					t = get_next(t,LA_S,&storage);
@@ -682,7 +682,7 @@ int params_N(TToken *t, Tdata *data, int local)
 					{
 						tmp.defined = 1;
 						tmp.param = NULL;
-						if(!semantic_insert(&root_local,t->string,&tmp))
+						if(!semantic_insert_id(&root_local,root_global,t->string,&tmp))
 							return FALSE;	
 					}
 					t = get_next(t,LA_S,&storage);
@@ -711,7 +711,7 @@ int param(TToken* t, Tdata* data, int local)
 				{
 					tmp.defined = 1;
 					tmp.param = NULL;
-					if(!semantic_insert(&root_local,t->string,&tmp))
+					if(!semantic_insert_id(&root_local,root_global,t->string,&tmp))
 						return FALSE;
 				}
 				//
@@ -799,6 +799,8 @@ int func_line(TToken* t,int local)
 						 				insert_data_tree(&root_global, name, &tmp);
 						 			}
 						 			else{
+						 				if(!semantic_check_params(root_global,name,tmp.param))
+						 					return FALSE;
 						 				free(tmp.param);
 						 			}
 						 			free(name);
@@ -913,8 +915,15 @@ int main(int argc, char **argv)
 
 
 	int res = parser_FREEBASIC(token);
-	printf("ERRRRRROR >>>>__%d__<<<<<\n",res);
-	printf(">>>>>>>%d<<<<<<<<<<<<<\n", ERROR_RETURN);
+
+	if (!res)
+	{
+		printf("Vystup z prekladace::%d::\n", ERROR_RETURN);
+	}
+	else{
+		printf("Vystup z prekladace::%d::\n", res);	
+	} 
+	
 	free_tree(&root_local);
 	free_tree(&root_global);
 	
@@ -1113,7 +1122,7 @@ int semantic_id_param(TToken *t, char* param, int* position)
 	}
 	
 	// nasel jsem parametr ale mit nema, nebo je vic napsal vic paramentru nez je treba
-	if(strlen(param) < (*position)+1)
+	if((int)strlen(param) < (*position)+1)
 		{
 			ERROR_RETURN = 4;
 			return FALSE;
@@ -1176,6 +1185,19 @@ int semantic_insert(Ttnode_ptr* root, char* name, Tdata* data)
 	return FALSE;
 	// exit code 3    
 }
+
+int semantic_insert_id(Ttnode_ptr* root,Ttnode_ptr root_check, char* name, Tdata* data)
+{
+	Tdata tmp;
+	if( (insert_tree(root,name,data)) && (search_tree(root_check,name,&tmp)) )
+	{
+		return TRUE;
+	}
+	ERROR_RETURN = 3;
+	return FALSE;
+	// exit code 3    
+}
+
 int semantic_check_define(Ttnode_ptr* root, char* name)
 {
 	Tdata tmp;
@@ -1187,6 +1209,30 @@ int semantic_check_define(Ttnode_ptr* root, char* name)
 		return 1;
 	}
 	return -1;
+}
+
+int semantic_check_params(Ttnode_ptr root,char* name, char* param)
+{
+	Tdata tmp;
+	if(search_tree(root,name,&tmp))
+	{
+		if(strlen(param) != strlen(tmp.param))
+		{
+			ERROR_RETURN = 3;
+			return FALSE;
+		}
+		else{
+			unsigned num = strlen(param);
+			for(unsigned i=0 ; i < num ; i++)
+				if(param[i] != tmp.param[i])
+				{
+					ERROR_RETURN = 3;
+					return FALSE;
+				}
+		}
+	}
+	ERROR_RETURN = 3;
+	return FALSE;
 }
 
 void semantic_flag_use(Ttnode_ptr* root,TToken* t)
