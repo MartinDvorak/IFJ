@@ -1,8 +1,0 @@
-upravy:
- 
-
-v souborech parser.c, semantic.c semantic.h 
-+ codegen.c codegen.h
-
-nastrel jak by mohl vypadat preklad vyrazu
-spatne slinkovane knihovny
