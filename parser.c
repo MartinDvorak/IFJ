@@ -815,14 +815,14 @@ int func_line(TToken* t,int local)
 	}
 	return FALSE;
 }
-int func(TToken* t)
+int func(TToken* t, int scope)
 {	// F-> epsilon
-	if((t->type == SCOPE) || (t->type == EOF))
+	if(((t->type == SCOPE) && (!scope)) || (t->type == EOF))
 		return TRUE;
 	else if(t->type == DECLARE)
 	{ // F-> DECLARE <Func_line> <F>
 		t = get_next(t,LA_S,&storage);
-		return (func_line(t,0) && func(t));	
+		return (func_line(t,0) && func(t,scope));	
 	} 
 	else if (t->type == FUNCTION)
 	{// F-> <Func_line> <BODY> END Function <F>
@@ -837,7 +837,7 @@ int func(TToken* t)
 						if(t->type == EOL)
 						{
 							t = get_next(t,LA_S,&storage);
-							return func(t);
+							return func(t,scope);
 						}
 					}
 				}
@@ -845,7 +845,7 @@ int func(TToken* t)
 	else if (t->type == EOL)
 	{
 		t = get_next(t,LA_S,&storage);
-		return func(t);
+		return func(t,scope);
 	}
 
 	return FALSE;
@@ -895,8 +895,8 @@ int parser_FREEBASIC(TToken *t)
 	//TODO 
 	semantic_insert_build_in();
 	t = get_next(t,LA_S,&storage);
-	if ((t->type == SCOPE) || (t->type == DECLARE) || (t->type == FUNCTION) ||(t->type == EOF))
-		return (func(t) && (scope(t)) && (func(t)) && (semantic_call_undefined_fce()));
+	if ((t->type == SCOPE) || (t->type == DECLARE) || (t->type == FUNCTION) ||(t->type == EOF) || (t->type == EOL))
+		return (func(t,0) && (scope(t)) && (func(t,1)) && (semantic_call_undefined_fce()));
 	return FALSE;	 
 }
 

@@ -46,7 +46,8 @@ int scope(TToken *t);
 
 int func_line(TToken *t, int declared);
 
-int func(TToken *t);
+// scope = FALSE -> nebyl jeste, TRUE -> uz byl 
+int func(TToken *t, int scope);
 
 // 0 - param, 1 - type
 int type(TToken *t, Tdata* data, int type_or_param, int* to_symbtab);
