@@ -22,6 +22,40 @@ void token_free (TToken* t) {
 	free(t);
 }
 
+int valid_ES(Tstack* s) {
+    
+    int c;
+    int tmp = 0;
+
+    c = tolower(getchar());
+     if (c == '\\' || c == '\"' || c == 't' || c == 'n') {
+        push(s, c);
+    }
+    else if (c >= '0' && c <= '2') {
+        tmp = c - '0';
+        printf("%d\n", tmp);
+        push(s, c);
+        for (int i = 0; i < 2; i++) {
+            c = tolower(getchar());
+            if (c >= '0' && c <= '9') {
+                push(s,c);
+                tmp = (tmp*10) + (c - '0');
+            }
+            else {
+                return 0;
+            }
+        }
+        if (tmp > 255) {
+            return 0;
+        }
+    }
+    else {
+        return 0;
+    }
+
+    return 1;
+}    
+
 
 TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost lex.analyzatoru
 
@@ -303,12 +337,11 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     state = STRING_V;
                     while (((c = tolower(getchar())) != '\"') && (c != '\n')) {
                         push(s, c);
-                        /*if (c == '\\') {
-                            c = tolower(getchar());
-                            if (c != '\\' && c != '\"' && c != 't' && c != 'n') {
-
+                        if (c == '\\') {
+                            if (valid_ES(s) == 0) {
+                                state = SCAN_ERR;
                             }
-                        }*/
+                        }
 
                     }
                     //c = getchar();

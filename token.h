@@ -89,3 +89,5 @@ TToken* token_init();
 void token_free(TToken* t);
 
 TToken *get_next(TToken *t, Tstack* s, int *storage);
+
+int valid_ES(Tstack* s);
