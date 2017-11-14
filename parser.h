@@ -21,16 +21,16 @@
 #ifndef ST_GV
 #define ST_GV
 
-
+/*
 Ttnode_ptr root_global = NULL;
 Ttnode_ptr root_local = NULL;
 int return_type = 0;
+*/
 
-/*
 extern Ttnode_ptr root_global;
 extern Ttnode_ptr root_local;
 extern int return_type;
-*/
+
 #endif
 
 //***********************************************
@@ -38,14 +38,13 @@ extern int return_type;
 //***********************************************
 #ifndef LA_GV
 #define LA_GV
-
+/*
 Tstack* LA_S = NULL;
 int storage = -2;
+*/
 
-/*
 extern Tstack* LA_S;
 extern int storage;
-*/
 #endif
 
 //***********************************************
@@ -53,8 +52,10 @@ extern int storage;
 //***********************************************
 #ifndef ERR_GV
 #define ERR_GV
-int ERROR_RETURN = 2; //syntax error
-//extern ERROR_RETURN;
+//int ERROR_RETURN = 2; //syntax error
+
+extern int ERROR_RETURN;
+
 #endif
 
 //***********************************************
@@ -72,7 +73,9 @@ int func(TToken *t, int scope);
 // 0 - param, 1 - type
 int type(TToken *t, Tdata* data, int type_or_param, int* to_symbtab);
 
-int parser_FREEBASIC(TToken *t);
+int parser_start(TToken *t);
+
+int parser_FREEBASIC();
 
 void add_char_to_param(TToken *t, Tdata *data);
 

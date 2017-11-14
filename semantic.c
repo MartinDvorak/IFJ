@@ -1,6 +1,8 @@
 #include "semantic.h"
 #include "symbtab.h"
 
+#include "parser.h"
+
 
 /////////////////////////////////////////////////////////
 // 		PRO TESTOVNI SYNTAXE 
@@ -54,7 +56,8 @@ int semantic_id_type_convert(int type)
 ///////////////////////////////////////////////////////////////////
 
 */
-/*
+
+
 void semantic_return_type(int* glob_var,int local,int ret_type)
 {
 	if(local)
@@ -240,7 +243,7 @@ int semantic_id_param(TToken *t, char* param, int* position)
 	}
 	
 	// nasel jsem parametr ale mit nema, nebo je vic napsal vic paramentru nez je treba
-	if(strlen(param) < (*position)+1)
+	if((int)strlen(param) < (*position)+1)
 		{
 			ERROR_RETURN = 4;
 			return FALSE;
@@ -327,6 +330,30 @@ int semantic_check_define(Ttnode_ptr* root, char* name)
 		return 1;
 	}
 	return -1;
+}
+
+int semantic_check_params(Ttnode_ptr root,char* name, char* param)
+{
+	Tdata tmp;
+	if(search_tree(root,name,&tmp))
+	{
+		if(strlen(param) != strlen(tmp.param))
+		{
+			ERROR_RETURN = 3;
+			return FALSE;
+		}
+		else{
+			unsigned num = strlen(param);
+			for(unsigned i=0 ; i < num ; i++)
+				if(param[i] != tmp.param[i])
+				{
+					ERROR_RETURN = 3;
+					return FALSE;
+				}
+		}
+	}
+	ERROR_RETURN = 3;
+	return FALSE;
 }
 
 void semantic_flag_use(Ttnode_ptr* root,TToken* t)
@@ -437,4 +464,3 @@ int semantic_exp(char* string, int* type_array,Toperation* arr, int* num_arr,int
 	free_stack(s);
 	return TRUE;
 }
-*/

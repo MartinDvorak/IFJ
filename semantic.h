@@ -5,7 +5,6 @@
 #include "symbtab.h"
 #include "token.h"
 
-
 #ifndef OPSTR
 typedef struct semantic_operation{
 	char op;  // what is operation
