@@ -6,6 +6,17 @@
 void init_tree(Ttnode_ptr* root){
 	*root = NULL;
 }
+/*
+Tdata* insert_data( Tdata* data)
+{
+	Tdata* dest;
+	if((dest = malloc(sizeof(Tdata))) == NULL)
+		exit(99);
+	dest->type = data->type;
+	dest->defined = data->defined;
+	dest->param =  data->param;
+}
+*/
 
 int insert_tree(Ttnode_ptr* root, char* name, Tdata* data){
 	if (*root == NULL)
@@ -15,7 +26,12 @@ int insert_tree(Ttnode_ptr* root, char* name, Tdata* data){
 		if (((*root)->key = malloc(sizeof(char)*(strlen(name)+7))) == NULL) 
 			exit(-1);
 		(*root)->key = strcpy((*root)->key ,name);
-		(*root)->data = *data;
+		
+		(*root)->data.type = data->type;
+		(*root)->data.defined = data->defined;
+		(*root)->data.param = data->param;
+		
+		//(*root)->data = *data;
 		(*root)->lptr = NULL;
 		(*root)->rptr = NULL;
 		return TRUE;
@@ -49,6 +65,30 @@ int insert_data_tree(Ttnode_ptr* root, char* name, Tdata* tdata)
 		}
 		else{
 			return insert_data_tree(&(*root)->rptr, name, tdata);
+		}
+	}
+}
+
+int insert_define_tree(Ttnode_ptr* root, char* name,int search, int set)
+{
+	if (*root == NULL)
+	{
+		return FALSE;
+	}
+	else{
+		if (!(strcmp((*root)->key, name)))
+		{
+			if((*root)->data.defined == search)
+				return FALSE;
+			(*root)->data.defined = set;
+			return TRUE;
+		} 
+		else if (strcmp((*root)->key, name) > 0)
+		{
+			return insert_define_tree(&(*root)->lptr, name,search,set);
+		}
+		else{
+			return insert_define_tree(&(*root)->rptr, name,search,set);
 		}
 	}
 }

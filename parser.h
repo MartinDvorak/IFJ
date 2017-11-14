@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,26 +14,29 @@
 // GLOBAL VARIABLES FOR symbtab
 //*************************************************
 #ifndef ST_GV
+#define ST_GV
 Ttnode_ptr root_global = NULL;
 Ttnode_ptr root_local = NULL;
 int return_type = 0;
 #endif
-#define ST_GV
+
 //***********************************************
 // GLOBAL for lex. analyzator
 //***********************************************
 #ifndef LA_GV
+#define LA_GV
 Tstack* LA_S = NULL;
 int storage = -2;
 #endif
-#define LA_GV
+
 //***********************************************
 // GLOBAL for syntax errors
 //***********************************************
 #ifndef ERR_GV
+#define ERR_GV
 int ERROR_RETURN = 2; //syntax error
 #endif
-#define ERR_GV
+
 //***********************************************
 
 
@@ -66,7 +68,7 @@ int param_f(TToken *t, char* string, int* position);
 
 int param_fn(TToken *t, char* string, int* position);
 
-int preprocesing_expr(TToken *t,TToken *last,int condition,int* exp_ret);
+int preprocesing_expr(TToken *t,TToken *last,int condition,int* exp_ret, int* exp_ret_id);
 
 int equal(TToken *t, int l_value);
 

@@ -7,39 +7,24 @@ void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_a
 //uvolni cele pole operandu 
 void operand_array_destructor(TExpr_operand* operand_array, int size);
 
-
-void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation* op_arr);
+//generovani kodu vyrazu, nastavi cislo navratove hodnoty vyrazu
+void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation* op_arr, int* expr_ret_id);
 
 
 void codegen_dim(TToken* t);
 
+
+void codegen_scope();
+
+
+void codegen_input(TToken* t);
+
+
+void codegen_print(int expr_ret_id);
+
+
 //prevede retezec do formatu pro IFJcode17 (zadne bile znaky -> esc sekvence)
-char* string_convert(char* source);
+char* string_convert_constant(char* source);
 
-
-
-
-/*
-
-int generate_if_then_else();
-
-int generate_while_loop();
-
-int generate_input();
-
-void generate_Dim();
-
-int generate_Dim_expr();
-
-int generate_func_declaration();
-
-int generate_func_definition();
-
-int generate_func_call();
-
-int generate_print();
-
-int generate_assignment();
-
-*/
-
+//prevede promennou retezec do formatu IFJcode17, v mezikodu
+void string_convert_input(TToken* t);

@@ -6,20 +6,20 @@
 
 
 TToken* token_init () {
-	TToken* t;
+    TToken* t;
 
-	if ((t = malloc(sizeof(TToken))) == NULL)
-		exit(-1);
-	t->int_v = 0;
-	t->float_v = 0.0;
-	t->string = NULL;
-	return t;
+    if ((t = malloc(sizeof(TToken))) == NULL)
+        exit(-1);
+    t->int_v = 0;
+    t->float_v = 0.0;
+    t->string = NULL;
+    return t;
 }
 
 void token_free (TToken* t) {
-	if (t->string != NULL)
-		free(t->string);
-	free(t);
+    if (t->string != NULL)
+        free(t->string);
+    free(t);
 }
 
 
@@ -39,6 +39,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     int done = 0;
     int dot = 0;
     int nonzero = 0;
+
     
     if (t == NULL) {                //FIRST USE
         t = token_init();
@@ -81,7 +82,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 c = getchar();
             }
         }
-        //getchar();                  //to get line feed
+      //  getchar();                  //to get line feed
     }
     if (c == '/') {
         state = DIV;
@@ -102,7 +103,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 }
             }
             c = tolower(getchar());
-            while (isblank(c)) {
+            while (isblank(c)){
                 c = tolower(getchar());
             }
         }
@@ -111,93 +112,91 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
             *storage = c;
         }
     }
-    
-    if (state == 0) { 
-        if (c == '_') {
-            state = ID;
-            push(s,c);
-        }
 
-        else if ((c >= 'a') && (c <= 'z')) {
-            state = ID;
-            push(s,c);
-        }
-            
-        else if ((c >= '0') && (c <= '9')) {
-            state = INT_V;
-            push(s, c);
-        }
-
-        else if (c == '!') {
-            state = EXCL_M;
-        }
-
-        else if (c == ',') {
-            state = COLON;
-            done = 1;
-        }
-
-        else if (c == ';') {
-            state = SEMICOLON;
-            done = 1;
-        }
-
-        else if (c == '=') {
-            state = ASSIGN;
-        }
-
-        else if (c == '<') {
-            state = LESS;
-        }
-
-        else if (c == '>') {
-            state = GREAT;
-        }
-
-        else if (c == '+') {
-            state = ADD;
-            done = 1;
-        }
-        
-        else if (c == '-') {
-            state = SUB;
-            done = 1;
-        }
-
-        else if (c == '*') {
-            state = MUL;
-            done = 1;
-        }
-
-        else if (c == '\\') {
-            state = INTDIV;
-            done = 1;
-        }
-
-        else if (c == 10) {
-            state = EOL;
-            done = 1; 
-        }
-
-        else if (c == '(') {
-            state = BRACKET_L;
-            done = 1;
-        }
-
-        else if (c == ')') {
-            state = BRACKET_R;
-            done = 1;
-        }
-
-        else if (c == EOF) {
-            state = EOF;
-        }
-
-        else {
-            state = SCAN_ERR;
-        }
+    if (c == '_') {
+        state = ID;
+        push(s,c);
     }
 
+    else if ((c >= 'a') && (c <= 'z')) {
+        state = ID;
+        push(s,c);
+    }
+        
+    else if ((c >= '0') && (c <= '9')) {
+        state = INT_V;
+        push(s, c);
+    }
+
+    else if (c == '!') {
+        state = EXCL_M;
+    }
+
+    else if (c == ',') {
+        state = COLON;
+        done = 1;
+    }
+
+    else if (c == ';') {
+        state = SEMICOLON;
+        done = 1;
+    }
+
+    else if (c == '=') {
+        state = ASSIGN;
+    }
+
+    else if (c == '<') {
+        state = LESS;
+    }
+
+    else if (c == '>') {
+        state = GREAT;
+    }
+
+    else if (c == '+') {
+        state = ADD;
+        done = 1;
+    }
+    
+    else if (c == '-') {
+        state = SUB;
+        done = 1;
+    }
+
+    else if (c == '*') {
+        state = MUL;
+        done = 1;
+    }
+
+    else if (c == '\\') {
+        state = INTDIV;
+        done = 1;
+    }
+
+    else if (c == 10) {
+        state = EOL;
+        done = 1; 
+    }
+
+    else if (c == '(') {
+        state = BRACKET_L;
+        done = 1;
+    }
+
+    else if (c == ')') {
+        state = BRACKET_R;
+        done = 1;
+    }
+
+    else if (c == EOF) {
+        state = EOF;
+    }
+
+    else {
+        state = SCAN_ERR;
+    }
+    
     while((done == 0) && ((c = tolower(getchar())) != EOF)) {
         if (isblank(c)) {
             if (state == EXCL_M) {
@@ -240,7 +239,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     state = EXPONENT;
                     push(s,c);
                 }
-                else {
+             else {
                     done = 1;
                     *storage = c;
                 }
@@ -263,7 +262,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 }
                 break;
 
-            case EXPONENT:
+           case EXPONENT:
                 if (signed_exp == 0) {
                     if (c == '-') {
                         push(s,c);
@@ -297,7 +296,6 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     }   
                 }
                 break;
-                
             case EXCL_M:
                 if (c == '\"') {
                     state = STRING_V;
@@ -311,7 +309,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
 
                     }
                     //c = getchar();
-                    //break;
+                   // break;
                 }
                 else {
                     state = SCAN_ERR;
@@ -343,18 +341,6 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     done = 1;
                     *storage = c;
                 }
-                break;
-
-            case GREAT:
-                if (c == '=') {
-                    state = GREATEQ;
-                    done = 1;
-                }
-                else {
-                    done = 1;
-                    *storage = c;
-                }
-
                 break;
             
             case DIV:
@@ -416,5 +402,5 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     free(tmp_s);
     free_stack(s);
 
-	return t;
+    return t;
 }

@@ -1,6 +1,3 @@
-
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -45,4 +42,3 @@ int top2_stack(Tstack* s);
 void pop2(Tstack*s);
 
 void flush_stack(Tstack* s);
-

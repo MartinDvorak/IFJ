@@ -1,6 +1,7 @@
 
 #include "codegen.h"
 
+/****ZPRACOVANI VYRAZU****************************************************************/
 
 //prida prvek do pole operandu 
 void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_array){
@@ -94,8 +95,8 @@ void operand_array_destructor(TExpr_operand* operand_array, int size){
 }
 
 
-
-void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation* op_arr){
+//generovani kodu pro vyraz
+void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation* op_arr, int* expr_ret_id){
 	
 	int operand_index = 0;	//kolik operandu v poli se uz proslo
 	int operator_index = 0;	//kolik operatoru v poli se uz proslo
@@ -125,7 +126,7 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 						printf("PUSHS float@%g\n", operand_array[operand_index].float_v);
 						break;
 					case STRING_V:
-						str_out = string_convert(operand_array[operand_index].string);				
+						str_out = string_convert_constant(operand_array[operand_index].string);				
 						printf("PUSHS string@%s\n", str_out);
 						free(str_out);
 						break;
@@ -140,55 +141,26 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 
 			if(act.l_convert){
 				//levy operand konverze
-				if(act.op == 'M'){
-					//konverze na int
-					printf("CREATEFRAME\n");
-					printf("DEFVAR TF@$tmp1\n");
-					printf("DEFVAR TF@$tmp2\n");
+				printf("CREATEFRAME\n");
+				printf("DEFVAR TF@$tmp1\n");
+				printf("DEFVAR TF@$tmp2\n");
 
-					printf("POPS TF@$tmp1\n");
-					printf("POPS TF@$tmp2\n");
-					printf("FLOAT2REINTS\n");
-					printf("PUSHS TF@$tmp2\n");
-					printf("PUSHS TF@$tmp1\n");
-					printf("CREATEFRAME\n");  //vycisteni TF
-				}
-				else{
-					//ve vsech ostatnich pripadech konverze na float
-					printf("CREATEFRAME\n");
-					printf("DEFVAR TF@$tmp1\n");
-					printf("DEFVAR TF@$tmp2\n");
-
-					printf("POPS TF@$tmp1\n");
-					printf("POPS TF@$tmp2\n");
-					printf("INT2FLOATS\n");
-					printf("PUSHS TF@$tmp2\n");
-					printf("PUSHS TF@$tmp1\n");
-					printf("CREATEFRAME\n");  //vycisteni TF
-				}
+				printf("POPS TF@$tmp1\n");
+				printf("POPS TF@$tmp2\n");
+				printf("INT2FLOATS\n");
+				printf("PUSHS TF@$tmp2\n");
+				printf("PUSHS TF@$tmp1\n");
+				printf("CREATEFRAME\n");  //vycisteni TF
 			}
 			if(act.r_convert){
 				//pravy operand konverze
-				if(act.op == 'M'){
-					//konverze na int
-					printf("CREATEFRAME\n");
-					printf("DEFVAR TF@$tmp1\n");
+				printf("CREATEFRAME\n");
+				printf("DEFVAR TF@$tmp1\n");
 
-					printf("POPS TF@$tmp1\n");
-					printf("FLOAT2REINTS\n");
-					printf("PUSHS TF@$tmp1\n");
-					printf("CREATEFRAME\n");  //vycisteni TF
-				}
-				else{
-					//ve vsech ostatnich pripadech konverze na float
-					printf("CREATEFRAME\n");
-					printf("DEFVAR TF@$tmp1\n");
-
-					printf("POPS TF@$tmp1\n");
-					printf("INT2FLOATS\n");
-					printf("PUSHS TF@$tmp1\n");
-					printf("CREATEFRAME\n");  //vycisteni TF
-				}
+				printf("POPS TF@$tmp1\n");
+				printf("INT2FLOATS\n");
+				printf("PUSHS TF@$tmp1\n");
+				printf("CREATEFRAME\n");  //vycisteni TF
 			}
 
 			switch(act.op){
@@ -229,7 +201,7 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 					printf("CREATEFRAME\n");
 					printf("DEFVAR TF@tmp_op\n");
 					printf("DEFVAR TF@tmp1\n");
-					
+
 					printf("POPS TF@tmp_op\n");
 					printf("INT2FLOATS\n");
 					printf("POPS TF@tmp1\n");
@@ -266,18 +238,18 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 		if(postfix[i+1] == '\0'){
 			//konec vyrazu, ulozeni vysledku vyrazu
 			printf("DEFVAR LF@$expr_retval%d\n", ret_id);
-			printf("POPS LF@$expr_retval\n");
+			printf("POPS LF@$expr_retval%d\n", ret_id);
 			printf("CLEARS\n");
+			*expr_ret_id = ret_id;
 			ret_id++; //inkrement unique id navratove hodnoty
 		}
 	}
 }
 
 
+/****KONEC ZPRACOVANI VYRAZU**********************************************************/
 
 
-
-/*****************************************************************************************************/
 
 //zatim jen prototyp
 void codegen_Dim(TToken* t){
@@ -305,8 +277,43 @@ void codegen_Dim(TToken* t){
 }
 
 
+void codegen_scope(){
+
+	printf("CREATEFRAME\n");
+
+}
+
+void codegen_input(TToken* t){
+
+	Tdata* data = NULL;
+	search_tree(root_local,t->string,data);
+
+	switch(data->type){
+
+		case DOUBLE:
+			printf("READ LF@%s double\n", t->string);
+			break;
+		case INTEGER:
+			printf("READ LF@%s int\n", t->string);
+			break;
+		case STRING:
+			printf("READ LF@%s string\n", t->string);
+			//prevod retezce na format IFJcode17 (bez bilych znaku)
+			string_convert_input(t);
+			break;
+	}
+}
+
+
+void codegen_print(int expr_ret_id){
+
+	printf("WRITE LF@expr_retval%d\n", expr_ret_id);
+}
+
+/****POMOCNE*****************************************************************************/
+
 //prevede retezec na vystup. format; prototyp, nevim jiste jestli funguje dobre + nejakej leak
-char* string_convert(char* source){
+char* string_convert_constant(char* source){
 
 	int out_len = 0;
 
@@ -349,4 +356,118 @@ char* string_convert(char* source){
 	}
 
 	return out;
+}
+
+//prevede promennou retezec do formatu IFJcode17, v mezikodu
+void string_convert_input(TToken* t){
+
+	printf("CREATEFRAME\n");
+	printf("DEFVAR TF@$input\n");
+	printf("MOVE TF@$input LF@%s\n", t->string);	//vstupni retezec do tmp promenne
+	printf("DEFVAR TF@$output\n");		//promenna pro vystupni retezec
+
+	printf("DEFVAR TF@$input_len\n");
+	printf("STRLEN TF@$input_len TF@$input\n");	//zjisteni delky vstupniho retezce
+
+	printf("DEFVAR TF@$i\n");	//pocitadlo cyklu
+	printf("MOVE TF@$i int@0\n");
+
+	/*WHILE LOOP***********************************************************/
+	printf("LABEL $loop\n");
+	printf("JUMPIFEQ $end_loop TF@$input_len int@0 \n"); //while STRLEN != 0
+
+		printf("DEFVAR TF@$char_no\n");
+		printf("STR2INT TF@$char_no TF@$input \n");	//zjisteni ASCII znaku
+
+
+		/*IF char = \000 - /032******************************/
+		printf("DEFVAR TF@$state\n");	//bool state
+		printf("GT TF@$state TF@$char_no int@32\n");
+		printf("JUMPIFEQ $GT32 TF@$state bool@true\n");			//if char < 32
+
+			//char je mezi 00 a 32
+			/*IF STATEMENT, PODLE VELIKOSTI, PO DESETI*/
+			printf("DEFVAR TF@$char_state\n");
+			printf("GT TF@$char_state TF@$char_no int@9\n");
+			printf("JUMPIFEQ $g9 TF@$char_state bool@true\n");
+
+				//0-9
+				printf("DEFVAR TF@$converted_char_no\n");
+				printf("ADD TF@$char_no TF@$char_no int@48\n");	//posunu se z cisla na znak
+				printf("INT2CHAR TF@$converted_char_no TF@$char_no\n"); // prevedu na znak
+
+				printf("CONCAT TF@$output TF@$output string@\\00 \n");
+				printf("CONCAT TF@$output TF@$output TF@$converted_char_no\n");	//pripojim na vystupni string
+
+			printf("JUMP $endif_chs\n");
+			printf("LABEL $g9\n");
+			printf("GT TF@$char_state TF@$char_no int@19\n");
+			printf("JUMPIFEQ $g19 TF@$char_state bool@true\n");
+
+				//10-19
+				printf("DEFVAR TF@$converted_char_no\n");
+				printf("SUB TF@$char_no TF@$char_no int@10\n"); //dostanu jednotky
+				printf("ADD TF@$char_no TF@$char_no int@48\n");	//posunu se z cisla na znak, jednotky
+				printf("INT2CHAR TF@$converted_char_no TF@$char_no\n"); // prevedu na znak, jednotky
+
+				printf("CONCAT TF@$output TF@$output string@\\01 \n");	//uz pripojuji 1, jako "+10"
+				printf("CONCAT TF@$output TF@$output TF@$converted_char_no\n");	//pripojim na vystupni string
+
+			printf("JUMP $endif_chs\n");
+			printf("LABEL $g19\n");
+			printf("GT TF@$char_state TF@$char_no int@29\n");
+			printf("JUMPIFEQ $g29 TF@$char_state bool@true\n");
+
+				//20-29
+				printf("DEFVAR TF@$converted_char_no\n");
+				printf("SUB TF@$char_no TF@$char_no int@20\n"); //dostanu jednotky
+				printf("ADD TF@$char_no TF@$char_no int@48\n");	//posunu se z cisla na znak, jednotky
+				printf("INT2CHAR TF@$converted_char_no TF@$char_no\n"); // prevedu na znak, jednotky
+
+				printf("CONCAT TF@$output TF@$output string@\\02 \n");	//uz pripojuji 2, jako "+20"
+				printf("CONCAT TF@$output TF@$output TF@$converted_char_no\n");	//pripojim na vystupni string
+
+			printf("JUMP $endif_chs\n");
+			printf("LABEL $g29\n");
+
+				//30-32
+				printf("DEFVAR TF@$converted_char_no\n");
+				printf("SUB TF@$char_no TF@$char_no int@30\n"); //dostanu jednotky
+				printf("ADD TF@$char_no TF@$char_no int@48\n");	//posunu se z cisla na znak, jednotky
+				printf("INT2CHAR TF@$converted_char_no TF@$char_no\n"); // prevedu na znak, jednotky
+
+				printf("CONCAT TF@$output TF@$output string@\\03 \n");	//uz pripojuji 3, jako "+30"
+				printf("CONCAT TF@$output TF@$output TF@$converted_char_no\n");	//pripojim na vystupni string
+
+			printf("LABEL $endif_chs\n");
+
+
+		printf("JUMP $endif\n");
+		printf("LABEL $GT32\n");	//vetsi nez \032
+		printf("JUMPIFNEQ $normal_char TF@$char_no int@92\n");	//else if char == 92
+
+			//char == 92, pouze pripoji retezec \092
+			printf("CONCAT TF@$output TF@$output string@\\092\n");
+
+		printf("LABEL $endif\n");
+		printf("LABEL $normal_char\n");							//else
+
+			//normalni char, pouze kopiruje vstup na vystup
+			printf("DEFVAR TF@$char\n");
+			printf("GETCHAR TF@$char TF@$input TF@$i\n");
+			printf("CONCAT TF@$output TF@$output TF@$char\n");
+
+		printf("LABEL $endif\n");	//konec if
+		/*END IF********************************************/
+
+
+
+		printf("ADD TF@$i TF@$i int@1\n");	//i++
+	printf("JUMP $loop\n");
+	printf("LABEL $end_loop\n");	//end loop
+	/*END WHILE LOOP*******************************************************/
+
+	//zapsani formatovaneho retezce
+	printf("MOVE LF@%s\n TF@$output", t->string);
+	printf("CREATEFRAME\n");
 }
