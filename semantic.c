@@ -310,7 +310,7 @@ int semantic_insert(Ttnode_ptr* root, char* name, Tdata* data)
 int semantic_insert_id(Ttnode_ptr* root,Ttnode_ptr root_check, char* name, Tdata* data)
 {
 	Tdata tmp;
-	if( (insert_tree(root,name,data)) && (search_tree(root_check,name,&tmp)) )
+	if( (insert_tree(root,name,data)) && (!search_tree(root_check,name,&tmp)) )
 	{
 		return TRUE;
 	}
