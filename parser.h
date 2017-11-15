@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <stddef.h>
+//#include <stddef.h>
+
 
 #include "symbtab.h"
 #include "stack.h"

@@ -84,7 +84,7 @@ int semantic_check_lside_rside(int l_side, int r_side)
 		return TRUE;
 	}
 	
-	ERROR_RETURN = 6;
+	ERROR_RETURN = 4;
 	return FALSE;
 	
 }
@@ -350,6 +350,7 @@ int semantic_check_params(Ttnode_ptr root,char* name, char* param)
 					ERROR_RETURN = 3;
 					return FALSE;
 				}
+				return TRUE;
 		}
 	}
 	ERROR_RETURN = 3;
@@ -384,7 +385,9 @@ int semantic_exp(char* string, int* type_array,Toperation* arr, int* num_arr,int
 		if(string[str_num] == 'i')
 		{
 			// TODO pro komplikovanejsi strukturu predelat insert
+			printf("%d\n", type_array[num_type]);
 			push(s,type_array[num_type++]);
+			
 		}
 		else{
 			
