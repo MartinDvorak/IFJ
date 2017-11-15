@@ -3,7 +3,16 @@
 #include "expr.h"
 #include "token.h"
 #include "semantic.h"
-#include "codegen.h"
+
+Ttnode_ptr root_global = NULL;
+Ttnode_ptr root_local = NULL;
+int return_type = 0;
+
+
+Tstack* LA_S = NULL;
+int storage = -2;
+
+int ERROR_RETURN = 2;
 
 
 int preprocesing_expr(TToken* t, TToken *last, int condition, int* exp_ret)
@@ -26,6 +35,7 @@ int preprocesing_expr(TToken* t, TToken *last, int condition, int* exp_ret)
 	}
 	while(TRUE)
 	{
+
 		if((t->type == EOL) || (t->type == SEMICOLON) || (t->type == THEN))
 			break;
 		
@@ -401,7 +411,12 @@ int r_side(TToken *t,int lvalue, int* r_side_type)
 	int rvalue;
 	if(t->type == ID)
 	{ // TODO zajistit preprocessing id
-		TToken tmp = *t;	//ulozeni id funkce
+		TToken tmp = *t;
+		char* f_name;	//ulozeni id funkce
+		if((f_name = malloc(sizeof(char)*strlen(t->string))) == NULL)
+			exit(99);
+		strcpy(f_name, t->string);
+
 		t = get_next(t,LA_S,&storage);
 
 		if(t->type == BRACKET_L)
@@ -426,7 +441,7 @@ int r_side(TToken *t,int lvalue, int* r_side_type)
 				{
 					// bacha na off by one
 					// TODO AZ Bude semantika od comentovat
-					if(position != strlen(param))
+					if(position != (int)strlen(param))
 						{
 							ERROR_RETURN = 4;
 							return FALSE;
@@ -437,7 +452,7 @@ int r_side(TToken *t,int lvalue, int* r_side_type)
 					{
 						/****GENEROVANI MEZIKODU****************/
 						//skok na label funkce
-						codegen_func_call(&tmp);
+						codegen_func_call(f_name);
 
 						return TRUE;
 					}
@@ -508,12 +523,15 @@ int body(TToken *t)
 		return TRUE;
 	else if(t->type == DIM)
 	{ // <BODY> -> DIM ID AS <TYPE> <=> EOL <BODY>
-		TToken tmp_codegen_id; //pomocna pro uchovani jmena promenne pro codegen
 		t = get_next(t,LA_S,&storage);
 		if(t->type == ID)
 		{	
+			char* name = NULL;	//ulozeni jmena fuknce pro codegen
+			if((name = malloc(sizeof(char)*strlen(t->string))) == NULL)
+				exit(99);
+			strcpy(name, t->string);
+
 			// TODO - insert to local_tree
-			tmp_codegen_id = *t;
 			Tdata tmp;
 			tmp.defined = 1;
 			tmp.param = NULL;	
@@ -524,17 +542,23 @@ int body(TToken *t)
 				if(type(t,&tmp,1,NULL))
 				{	
 					// semantic control
-					if(!semantic_insert(&root_local,t->string,&tmp))
+					if(!semantic_insert_id(&root_local,root_global,t->string,&tmp))
 						return FALSE;
 					//
 					t = get_next(t,LA_S,&storage);
 					int r_side_type;
+					r_side_type = R_SIDE_NONE;
+
+					/****GENEROVANI MEZIKODU********************/
+					codegen_dim(name);
+
 					if(equal(t,tmp.type, &r_side_type))
 					{
-						if (t->type == EOL)
+						if(t->type == EOL)
 						{ 
 							/****GENEROVANI MEZIKODU***************************/
-							codegen_dim(&tmp_codegen_id, r_side_type);
+							codegen_dim_r_side(name, r_side_type);
+							free(name);
 
 							t = get_next(t,LA_S,&storage);
 							return body(t);
@@ -547,11 +571,13 @@ int body(TToken *t)
 	else if(t->type == ID)
 	{ // <BODY> -> ID = <R_SIDE> EOL <BODY>
 		// TODO semanticky overit 
-		if(!semantic_find_id(t))
-			return FALSE;
+		char* name = NULL;	//ulozeni jmena fuknce pro codegen
+		if((name = malloc(sizeof(char)*strlen(t->string))) == NULL)
+			exit(99);
+		strcpy(name, t->string);
 
-		TToken tmp = *t;
-		
+		if(!semantic_find_id(t))
+			return FALSE;	
 		int lvalue;
 		if(!semantic_id_type(root_local,t,&lvalue))
 			return FALSE;
@@ -567,7 +593,8 @@ int body(TToken *t)
 				{
 
 					/****GENEROVANI MEZIKODU**********************/
-					codegen_assignment(&tmp, r_side_type);
+					codegen_assignment(name, r_side_type);
+					free(name);
 
 					t = get_next(t,LA_S,&storage);
 					return body(t);
@@ -810,7 +837,7 @@ int params_N(TToken *t, Tdata *data, int local)
 					{
 						tmp.defined = 1;
 						tmp.param = NULL;
-						if(!semantic_insert(&root_local,t->string,&tmp))
+						if(!semantic_insert_id(&root_local,root_global,t->string,&tmp))
 							return FALSE;	
 					}
 					t = get_next(t,LA_S,&storage);
@@ -939,6 +966,8 @@ int func_line(TToken* t,int local)
 						 				insert_data_tree(&root_global, name, &tmp);
 						 			}
 						 			else{
+						 				if(!semantic_check_params(root_global,name,tmp.param))
+						 					return FALSE;
 						 				free(tmp.param);
 						 			}
 						 			free(name);
@@ -955,14 +984,14 @@ int func_line(TToken* t,int local)
 	}
 	return FALSE;
 }
-int func(TToken* t)
+int func(TToken* t, int scope)
 {	// F-> epsilon
-	if((t->type == SCOPE) || (t->type == EOF))
+	if(((t->type == SCOPE) && (!scope)) || (t->type == EOF))
 		return TRUE;
 	else if(t->type == DECLARE)
 	{ // F-> DECLARE <Func_line> <F>
 		t = get_next(t,LA_S,&storage);
-		return (func_line(t,0) && func(t));	
+		return (func_line(t,0) && func(t,scope));	
 	} 
 	else if (t->type == FUNCTION)
 	{// F-> <Func_line> <BODY> END Function <F>
@@ -981,7 +1010,7 @@ int func(TToken* t)
 							codegen_end_function();
 
 							t = get_next(t,LA_S,&storage);
-							return func(t);
+							return func(t, scope);
 						}
 					}
 				}
@@ -989,7 +1018,7 @@ int func(TToken* t)
 	else if (t->type == EOL)
 	{
 		t = get_next(t,LA_S,&storage);
-		return func(t);
+		return func(t, scope);
 	}
 
 	return FALSE;
@@ -1037,22 +1066,20 @@ int scope(TToken *t)
 	return FALSE;
 }
 
-int parser_FREEBASIC(TToken *t)
+int parser_start(TToken *t)
 { // S-> FMF
 	// insert build in fce
 	//TODO 
 	semantic_insert_build_in();
+	codegen_file_BEGIN();
 	t = get_next(t,LA_S,&storage);
-	if ((t->type == SCOPE) || (t->type == DECLARE) || (t->type == FUNCTION) ||(t->type == EOF)||(t->type == EOL))
-		return (func(t) && (scope(t)) && (func(t)) && (semantic_call_undefined_fce()));
+	if ((t->type == SCOPE) || (t->type == DECLARE) || (t->type == FUNCTION) ||(t->type == EOF) || (t->type == EOL))
+		return (func(t,0) && (scope(t)) && (func(t,1)) && (semantic_call_undefined_fce()));
 	return FALSE;	 
 }
 
-int main(int argc, char **argv)
+int parser_FREEBASIC()
 {
-	(void)argc;
-	(void)argv;
-
 	TToken* token = NULL;
 	token = token_init();
 
@@ -1060,9 +1087,8 @@ int main(int argc, char **argv)
 	init_tree(&root_local);
 
 
-	int res = parser_FREEBASIC(token);
-	printf("ERRRRRROR >>>>__%d__<<<<<\n",res);
-	printf(">>>>>>>%d<<<<<<<<<<<<<\n", ERROR_RETURN);
+	int res = parser_start(token);
+
 	free_tree(&root_local);
 	free_tree(&root_global);
 	
@@ -1070,378 +1096,7 @@ int main(int argc, char **argv)
 	token_free(token);
 
 	
-	if(res != TRUE)
-		return ERROR_RETURN;
-	return 0;
+	return res;
 }
 
-void semantic_return_type(int* glob_var,int local,int ret_type)
-{
-	if(local)
-	{
-		*glob_var = ret_type;
-	}
-	else{
-		*glob_var = 0;
-	}
-}
-
-int semantic_check_lside_rside(int l_side, int r_side)
-{
-	if(l_side == r_side)
-	{
-		return TRUE;
-	}
-	else if ((l_side == INTEGER) && (r_side == DOUBLE))
-	{	// covreze Double-> int
-		return TRUE;
-	}
-	else if ((l_side == DOUBLE) && (r_side == INTEGER))
-	{ // INT -> DOUBLE
-		return TRUE;
-	}
-	
-	ERROR_RETURN = 6;
-	return FALSE;
-	
-}
-
-int semantic_id_type_convert(TToken* t)
-{
-	Tdata tmp;
-				
-	switch(t->type)
-	{
-		case INTEGER:
-		case INT_V:
-				return INTEGER;
-		case STRING:
-		case STRING_V:
-				return STRING;
-		case DOUBLE:
-		case FLOAT_V:
-				return DOUBLE;
-		case ID:
-				search_tree(root_local,t->string,&tmp);
-				return tmp.type;
-		default:
-			return 0;						
-
-	}
-}
-
-int semantic_call_undefined_fce()
-{
-	if(search_in_pre_order(root_global))
-		{
-			ERROR_RETURN = 3;
-			return FALSE;
-		}
-
-	return TRUE;
-}
-
-
-void semantic_insert_build_in()
-{	Tdata tmp;
-
-	tmp.type = INTEGER;
-	tmp.defined = 1;
-	
-	if((tmp.param = malloc(sizeof(char)*5)) == NULL)
-		exit(99);
-	tmp.param = strcpy(tmp.param,"s");
-	semantic_insert(&root_global,"length",&tmp);
-
-	tmp.type = STRING;
-	tmp.defined = 1;
-	
-	if((tmp.param = malloc(sizeof(char)*5)) == NULL)
-		exit(99);
-	tmp.param = strcpy(tmp.param,"sii");
-	semantic_insert(&root_global,"substr",&tmp);
-	
-	tmp.type = INTEGER;
-	tmp.defined = 1;
-	
-	if((tmp.param = malloc(sizeof(char)*5)) == NULL)
-		exit(99);	
-	tmp.param = strcpy(tmp.param,"si");
-	semantic_insert(&root_global,"asc",&tmp);
-	
-	tmp.type = STRING;
-	tmp.defined = 1;
-
-	if((tmp.param = malloc(sizeof(char)*5)) == NULL)
-		exit(99);	
-	tmp.param = strcpy(tmp.param,"s");
-	semantic_insert(&root_global,"chr",&tmp);
-}
-
-
-int semantic_convert_data_type (char c)
-{
-	switch(c)
-	{
-		case 'i': return INTEGER;
-		case 'f': return DOUBLE;
-		case 's': return STRING; 
-		default: return 0;
-	}
-}
-
-int semantic_id(Ttnode_ptr root, TToken* t, char data_type)
-{
-	Tdata tmp;
-	int predict;
-	if(t->type == ID)
-	{
-		if(!search_tree(root,t->string,&tmp))
-		{
-			ERROR_RETURN = 3;
-			return FALSE;	
-		}
-		predict = tmp.type;
-	}
-	else{
-		switch(t->type)
-		{
-			case INT_V: predict = INTEGER;
-				break;
-			case FLOAT_V: predict = DOUBLE;
-				break;
-			case STRING_V: predict = STRING;
-				break;		
-		}
-	}	
-	int type = semantic_convert_data_type(data_type);
-	if(predict == type)
-		return TRUE;
-	else if ((predict == INTEGER) &&(type == DOUBLE))
-	{
-		// TODO implicit INT -> FLOAT
-		return TRUE;
-	}
-	else if((predict == DOUBLE) &&(type == INTEGER))
-	{
-		// TODO implicit FLOAT -> INT
-		return TRUE;	
-	}
-	else{
-		ERROR_RETURN = 4;
-		return FALSE;
-	}
-}
-int semantic_id_type(Ttnode_ptr root,TToken *t, int* type)
-{
-	Tdata tmp;
-	if(!search_tree(root,t->string,&tmp))
-	{
-		ERROR_RETURN = 3;
-		return FALSE;	
-	}
-	*type = tmp.type;
-	return TRUE;
-}
-
-int semantic_id_param(TToken *t, char* param, int* position)
-{
-	int desizion = t->type;
-	
-	if (t->type == ID)
-	{
- 		Tdata tmp;
-		if(!(search_tree(root_local,t->string,&tmp)))
-			{
-				ERROR_RETURN = 3;
-				return FALSE;
-			}
-		desizion = tmp.type;
-	}
-	
-	// nasel jsem parametr ale mit nema, nebo je vic napsal vic paramentru nez je treba
-	if(strlen(param) < (*position)+1)
-		{
-			ERROR_RETURN = 4;
-			return FALSE;
-		}
-	
-	int convert = semantic_convert_data_type(param[(*position)++]);
-
-
-	switch(desizion)
-	{
-		case INT_V:
-		case INTEGER: desizion = INTEGER;
-					break;
-		case FLOAT_V:
-		case DOUBLE: desizion = DOUBLE;
-					break;
-		case STRING_V:
-		case STRING: desizion = STRING;
-					break;
-	}
-
-	if(desizion == convert)
-	{
-		return TRUE;
-	}
-	else if((desizion == INTEGER) && (convert == DOUBLE))
-	{
-		//TODO implicit convert INT -> FLOAT
-		return TRUE; 
-	}
-	else if((desizion == DOUBLE) && (convert == INTEGER))
-	{
-		//TODO implicit convert FLOAT -> INT
-		return TRUE;
-	}
-	ERROR_RETURN = 4;
-	return FALSE;
-}
-
-
-int semantic_fce_param(Ttnode_ptr root, TToken* t, char** param)
-{
-	Tdata tmp;
-	if(search_tree(root,t->string,&tmp))
-	{
-		*param = tmp.param; 
-		return TRUE;
-	}
-	ERROR_RETURN = 3;
-	return FALSE;
-}
-
-int semantic_insert(Ttnode_ptr* root, char* name, Tdata* data)
-{
-	if(insert_tree(root,name,data))
-	{
-		return TRUE;
-	}
-	ERROR_RETURN = 3;
-	return FALSE;
-	// exit code 3    
-}
-int semantic_check_define(Ttnode_ptr* root, char* name)
-{
-	Tdata tmp;
-	if(search_tree(*root,name,&tmp))
-	{
-		if (insert_define_tree(root,name,1,1)){
-			return 0;
-		}
-		return 1;
-	}
-	return -1;
-}
-
-void semantic_flag_use(Ttnode_ptr* root,TToken* t)
-{
-	insert_define_tree(root,t->string,1,-1);
-
-}
-
-int semantic_find_id(TToken* t)
-{
-	if(ifdefined(root_local,t->string))
-		return TRUE;
-	ERROR_RETURN = 3;
-	return FALSE;
-} 
-	
-
-
-int semantic_exp(char* string, TExpr_operand *operand_array,Toperation* arr, int* num_arr,int* exp_ret)
-{
-	Tstack* s = NULL;
-	s = stack_init();
-	int str_num = 0;
-	int num_type = 0;
-	
-	while(string[str_num] != '$')
-	{
-		if(string[str_num] == 'i')
-		{
-			// TODO pro komplikovanejsi strukturu predelat insert
-			push(s,operand_array[num_type++].semantic_type);
-		}
-		else{
-			
-			Toperation tmp;
-			
-			int left = top2_stack(s);
-			int right = top_stack(s);
-			char c = string[str_num];
-			
-			if(((left == STRING)||(right == STRING))&&((c == '-')||(c == '*')||(c == '/')||(c == 'M')))
-			{// nepovolena operace nad stringem
-				free_stack(s);
-				ERROR_RETURN = 4;
-				return FALSE;
-			}
-			else if(left == right)
-			{
-				if((c == '/')&&(left == INTEGER))
-				{
-					tmp.op = c;
-					tmp.l_convert = 1;
-					tmp.r_convert = 1;
-					arr[(*num_arr)++] = tmp;
-					pop2(s);
-					push(s,DOUBLE);
-
-				}
-				else if((c == 'M')&&(left = DOUBLE))
-				{
-					free_stack(s);
-					ERROR_RETURN = 4;
-					return FALSE;
-				}
-				else{
-					tmp.op = c;
-					tmp.l_convert = 0;
-					tmp.r_convert = 0;
-					arr[(*num_arr)++] = tmp;
-					pop(s);
-				}
-			}
-			else if(c == 'M')
-			{// modulo nelze jinde nez int/int
-				free_stack(s);
-				ERROR_RETURN = 4;
-				return FALSE;
-			}
-			else if((left == INTEGER)&&(right == DOUBLE))
-			{
-				tmp.op = c;
-				tmp.l_convert = 1;
-				tmp.r_convert = 0;
-				arr[(*num_arr)++] = tmp;
-				pop2(s);
-				push(s,DOUBLE);
-
-			}
-			else if((left == DOUBLE)&&(right == INTEGER))
-			{
-				tmp.op = c;
-				tmp.l_convert = 0;
-				tmp.r_convert = 1;
-				arr[(*num_arr)++] = tmp;
-				pop(s);
-			}
-			else{
-				free_stack(s);
-				ERROR_RETURN = 4;
-				return FALSE;
-			}
-		}
-		str_num++;
-	}
-
-	/// tohle pak zachovat nejak zde je implicitni hodnota celeho vyrazu
-	*exp_ret = top_stack(s);
-	free_stack(s);
-	return TRUE;
-}
 

@@ -20,9 +20,11 @@ void operand_array_destructor(TExpr_operand* operand_array, int size);
 void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation* op_arr);
 
 
-void codegen_dim(TToken* t, int r_side_type);
+void codegen_dim(char* name);
 
-void codegen_assignment(TToken* t, int r_side_type);
+void codegen_dim_r_side(char* name, int r_side_type);
+
+void codegen_assignment(char* name, int r_side_type);
 
 //vytvori ramec LF
 void codegen_scope();
@@ -68,7 +70,7 @@ void codegen_loop_end(int actual_loop_id);
 /****************/
 
 //pouze skoci na kod funkce
-void codegen_func_call(TToken* t);
+void codegen_func_call(char* f_name);
 
 //vytvori prazdny ramec pro fci
 void codegen_empty_func_frame();

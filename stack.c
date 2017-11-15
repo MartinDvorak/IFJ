@@ -33,7 +33,7 @@ int pop(Tstack* s)
 
 void flush_stack(Tstack* s)
 {
-	s->top == -1;
+	s->top = -1;
 }
 
 void pop2(Tstack*s)
@@ -64,12 +64,14 @@ int top_stack(Tstack* s)
 {
 	if (s->top != -1)
 		return s->bottom[s->top];
+	return -1;
 }
 
 int top2_stack(Tstack* s)
 {
 	if (s->top != -1)
 		return s->bottom[s->top-1];
+	return -1;
 }
 
 
@@ -77,6 +79,7 @@ int read_top_pop(Tstack* s)
 {
 	if(s->top != -1)
 		return s->bottom[s->top--];
+	return -1;
 }
 
 void stack_push_lt(Tstack* s)
@@ -113,6 +116,7 @@ int top_stack_terminal(Tstack* s)
 	for(int i=s->top; i >= 0; i--)
 		if((s->bottom[i] != 'E')&&(s->bottom[i] != '<')) 
 			return s->bottom[i];
+	return -1;
 }
 
 

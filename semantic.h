@@ -3,6 +3,7 @@
 #include <string.h>
 #include "symbtab.h"
 #include "token.h"
+#include "parser.h"
 
 
 #ifndef OPSTR
@@ -50,6 +51,9 @@ int semantic_fce_param(Ttnode_ptr root, TToken* t, char** param);
 // vlozi pokud neexistuje jinak false
 int semantic_insert(Ttnode_ptr* root, char* name, Tdata* data);
 
+// vlozi a podiva se do druheho stromu jejistli tam neni chova se najko semantic_insert
+int semantic_insert_id(Ttnode_ptr* root,Ttnode_ptr root_check, char* name, Tdata* data);
+
 // false neexistuje, v typu bude hodnota type promene
 int semantic_id_type(Ttnode_ptr root,TToken* t,int* type );
 
@@ -71,3 +75,5 @@ void semantic_return_type(int* glob_var,int local,int ret_type);
 int semantic_check_define(Ttnode_ptr* root, char* name);
 
 void semantic_flag_use(Ttnode_ptr* root,TToken* t);
+
+int semantic_check_params(Ttnode_ptr root,char* name, char* param);

@@ -3,7 +3,7 @@
 <F>-> epsilon
 <M>-> epsilon
 
-<M> -> SCOPE EOL <BODY> END SCOPE EOL
+<M> -> SCOPE EOL <BODY> END SCOPE EOL                               
 <F> -> DECLARATION <FUNC_LINE> EOL <F>
 <F> -> <FUNC_LINE> EOL <BODY> END FUNCTION EOL <F>
 
@@ -49,4 +49,3 @@ EXPRESION
 <E> -> <E> <OP> <E>
 <OP> -> {+,-,\,/,*,....}
 <E> -> {ID, CONSTANT}
-f

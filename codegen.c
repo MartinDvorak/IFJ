@@ -1,4 +1,3 @@
-
 #include "codegen.h"
 
 
@@ -12,72 +11,71 @@ void codegen_file_BEGIN(){
 //prida prvek do pole operandu 
 void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_array){
 
-	TExpr_operand tmp;
-
 	if(t->type == INT_V){
 		//int konstanta
-		tmp.semantic_type = INTEGER;
-		tmp.type = INT_V;
-		tmp.int_v = t->int_v;
-		tmp.name = NULL;
-		tmp.string = NULL;
+		operand_array[*ptr_to_array].semantic_type = INTEGER;
+		operand_array[*ptr_to_array].type = INT_V;
+		operand_array[*ptr_to_array].int_v = t->int_v;
+		operand_array[*ptr_to_array].name = NULL;
+		operand_array[*ptr_to_array].string = NULL;
 	}
 	else if(t->type == FLOAT_V){
 		//float konstanta
-		tmp.semantic_type = DOUBLE;
-		tmp.type = FLOAT_V;
-		tmp.float_v = t->float_v;
-		tmp.name = NULL;
-		tmp.string = NULL;
+		operand_array[*ptr_to_array].semantic_type = DOUBLE;
+		operand_array[*ptr_to_array].type = FLOAT_V;
+		operand_array[*ptr_to_array].float_v = t->float_v;
+		operand_array[*ptr_to_array].name = NULL;
+		operand_array[*ptr_to_array].string = NULL;
 	}
 	else if(t->type == STRING_V){
 		//string konstanta
-		tmp.semantic_type = STRING;
-		tmp.type = STRING_V;
-		if((tmp.string =  malloc(sizeof(char)*(strlen(t->string)+1))) == NULL){
+		operand_array[*ptr_to_array].semantic_type = STRING;
+		operand_array[*ptr_to_array].type = STRING_V;
+		if((operand_array[*ptr_to_array].string =  malloc(sizeof(char)*(strlen(t->string)+1))) == NULL){
 			exit(99);
 		}
-		memcpy(tmp.string, t->string, strlen(t->string));
-		tmp.name = NULL;
+		strcpy(operand_array[*ptr_to_array].string, t->string);
+		operand_array[*ptr_to_array].name = NULL;
 	}
 	else if(t->type == ID){
 		//promenna
-		Tdata* symbTmp = NULL;
+		Tdata symb;
+		Tdata* symbTmp = &symb;
 		search_tree(root_local,t->string,symbTmp);
 		if(symbTmp->type == INTEGER){
 			//promenna integer
-			tmp.semantic_type = INTEGER;
-			tmp.type = INTEGER;
-			if((tmp.name =  malloc(sizeof(char)*(strlen(t->string)+1))) == NULL){
+			operand_array[*ptr_to_array].semantic_type = INTEGER;
+			operand_array[*ptr_to_array].type = INTEGER;
+			if((operand_array[*ptr_to_array].name =  malloc(sizeof(char)*(strlen(t->string)+1))) == NULL){
 			exit(99);
 			}
-			memcpy(tmp.name,t->string, strlen(t->string));
-			tmp.string = NULL;
+			strcpy(operand_array[*ptr_to_array].name,t->string);
+			operand_array[*ptr_to_array].string = NULL;
 		}
 		else if(symbTmp->type == DOUBLE){
 			//promenna float
-			tmp.semantic_type = DOUBLE;
-			tmp.type = DOUBLE;
-			if((tmp.name =  malloc(sizeof(char)*(strlen(t->string)+1))) == NULL){
+			operand_array[*ptr_to_array].semantic_type = DOUBLE;
+			operand_array[*ptr_to_array].type = DOUBLE;
+			if((operand_array[*ptr_to_array].name =  malloc(sizeof(char)*(strlen(t->string)+1))) == NULL){
 			exit(99);
 			}
-			memcpy(tmp.name,t->string, strlen(t->string));
-			tmp.string = NULL;
+			strcpy(operand_array[*ptr_to_array].name,t->string);
+			operand_array[*ptr_to_array].string = NULL;
 		}
 		else if(symbTmp->type == STRING){
 			//promenna string
-			tmp.semantic_type = STRING;
-			tmp.type = STRING;
-			if((tmp.name =  malloc(sizeof(char)*(strlen(t->string)+1))) == NULL){
+			operand_array[*ptr_to_array].semantic_type = STRING;
+			operand_array[*ptr_to_array].type = STRING;
+			if((operand_array[*ptr_to_array].name =  malloc(sizeof(char)*(strlen(t->string)+1))) == NULL){
 			exit(99);
 			}
-			memcpy(tmp.name,t->string, strlen(t->string));
-			tmp.string = NULL;
+			strcpy(operand_array[*ptr_to_array].name,t->string);
+			operand_array[*ptr_to_array].string = NULL;
 		}
 	}
 
 	//pridani do pole operandu
-	operand_array[*ptr_to_array++] = tmp;
+	*ptr_to_array += 1;
 }
 
 
@@ -107,7 +105,7 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 	int operand_index = 0;	//kolik operandu v poli se uz proslo
 	int operator_index = 0;	//kolik operatoru v poli se uz proslo
 	
-	for(int i = 0; postfix[i] != '\0'; i++){
+	for(int i = 0; postfix[i] != '$'; i++){
 
 		if(postfix[i] == 'i'){
 			//promenna nebo konstanta
@@ -153,7 +151,6 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 				printf("INT2FLOATS\n");
 				printf("PUSHS TF@$tmp2\n");
 				printf("PUSHS TF@$tmp1\n");
-				printf("CREATEFRAME\n");  //vycisteni TF
 			}
 			if(act.r_convert){
 				//pravy operand konverze
@@ -163,7 +160,6 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 				printf("POPS TF@$tmp1\n");
 				printf("INT2FLOATS\n");
 				printf("PUSHS TF@$tmp1\n");
-				printf("CREATEFRAME\n");  //vycisteni TF
 			}
 
 			switch(act.op){
@@ -183,7 +179,6 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 						printf("POPS TF@$tmp2\n");
 						printf("CONCAT TF@$tmp_res TF@$tmp2 TF@$tmp1\n");
 						printf("PUSHS TF@$tmp_res\n");
-						printf("CREATEFRAME\n");
 					} 
 					else{
 						//integery nebo floaty
@@ -255,63 +250,68 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 
 
 //zatim jen prototyp
-void codegen_Dim(TToken* t, int r_side_type){
+void codegen_dim(char* name){
 
-	Tdata* tdata = NULL;
+	Tdata data;
+	Tdata* tdata = &data;
 
-	search_tree(root_local, t->string, tdata);
+	search_tree(root_local, name, tdata);
 
-	printf("DEFVAR LF@%s\n", t->string);
+	printf("DEFVAR LF@%s\n", name);
 
 	int type = tdata->type;
+
+	switch(type){
+
+				case INTEGER:
+					printf("MOVE LF@%s int@0\n", name);
+					break;
+				case DOUBLE: 
+					printf("MOVE LF@%s float@0.0\n", name);
+					break;
+				case STRING:
+					printf("MOVE LF@%s string@!\"\"\n", name);
+					break;
+			}
+}
+
+void codegen_dim_r_side(char* name, int r_side_type){
 
 	switch(r_side_type){
 
 		case R_SIDE_NONE:
-			switch(type){
-
-				case INTEGER:
-					printf("MOVE LF@%s int@0", t->string);
-					break;
-				case DOUBLE: 
-					printf("MOVE LF@%s float@0.0", t->string);
-					break;
-				case STRING:
-					printf("MOVE LF@%s string@\"\"", t->string);
-					break;
-			}
 			break;
 		case R_SIDE_EXPR:
 			//expression
-			printf("POPS LF@%s\n", t->string);
+			printf("POPS LF@%s\n", name);
 			printf("CLEARS\n");
 			break;
 		case R_SIDE_BUILD_IN:
 			//build in function call
-			printf("MOVE LF@%s TF@&retval_function\n", t->string);
+			printf("MOVE LF@%s TF@&retval_function\n", name);
 			break;
 		case R_SIDE_FCALL:
 			//function call
-			printf("MOVE LF@%s TF@&retval_function\n", t->string);
+			printf("MOVE LF@%s TF@&retval_function\n", name);
 			break;
 	}
 }
 
-void codegen_assignment(TToken* t, int r_side_type){
+void codegen_assignment(char* name, int r_side_type){
 
 	switch(r_side_type){
 		case R_SIDE_EXPR:
 			//expression
-			printf("POPS LF@%s\n", t->string);
+			printf("POPS LF@%s\n", name);
 			printf("CLEARS\n");
 			break;
 		case R_SIDE_BUILD_IN:
 			//build in function call
-			printf("MOVE LF@%s TF@&retval_function\n", t->string);
+			printf("MOVE LF@%s TF@&retval_function\n", name);
 			break;
 		case R_SIDE_FCALL:
 			//function call
-			printf("MOVE LF@%s TF@&retval_function\n", t->string);
+			printf("MOVE LF@%s TF@&retval_function\n", name);
 			break;
 	}
 }
@@ -433,9 +433,9 @@ void codegen_func_return(){
 }
 
 //pouze skoci na kod funkce
-void codegen_func_call(TToken* t){
+void codegen_func_call(char* f_name){
 
-	printf("CALL @func@%s\n", t->string);
+	printf("CALL @func@%s\n", f_name);
 
 }
 
@@ -450,21 +450,21 @@ void codegen_func_call_give_param(TToken* t, int param_no){
 	switch(t->type){
 
 		case ID:
-			printf("DEFVAR TF@f_param%d\n", param_no);
-			printf("MOVE TF@f_param%d LF@%s\n", param_no, t->string);
+			printf("DEFVAR TF@$f_param%d\n", param_no);
+			printf("MOVE TF@$f_param%d LF@%s\n", param_no, t->string);
 			break;
 		case FLOAT_V:
-			printf("DEFVAR TF@f_param%d\n", param_no);
-			printf("MOVE TF@f_param%d float@%g\n", param_no, t->float_v);
+			printf("DEFVAR TF@$f_param%d\n", param_no);
+			printf("MOVE TF@$f_param%d float@%g\n", param_no, t->float_v);
 			break;
 		case INT_V:
-			printf("DEFVAR TF@f_param%d\n", param_no);
-			printf("MOVE TF@f_param%d int@%d\n", param_no, t->int_v);
+			printf("DEFVAR TF@$f_param%d\n", param_no);
+			printf("MOVE TF@$f_param%d int@%d\n", param_no, t->int_v);
 			break;
 		case STRING_V:
-			printf("DEFVAR TF@f_param%d\n", param_no);
+			printf("DEFVAR TF@$f_param%d\n", param_no);
 			char* str = string_convert_constant(t->string);
-			printf("MOVE TF@f_param%d string@%s\n", param_no, str);
+			printf("MOVE TF@$f_param%d string@%s\n", param_no, str);
 			break;
 	}
 }

@@ -1,3 +1,6 @@
+#ifndef PARSER_H_
+#define PARSER_H_
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,17 +10,27 @@
 #include "stack.h"
 #include "expr.h"
 #include "token.h"
+#include "codegen.h"
 
 #define TRUE        1
 #define FALSE       0
 
 // GLOBAL VARIABLES FOR symbtab
 //*************************************************
+
 #ifndef ST_GV
 #define ST_GV
+
+/*
 Ttnode_ptr root_global = NULL;
 Ttnode_ptr root_local = NULL;
 int return_type = 0;
+*/
+
+extern Ttnode_ptr root_global;
+extern Ttnode_ptr root_local;
+extern int return_type;
+
 #endif
 
 //***********************************************
@@ -25,8 +38,13 @@ int return_type = 0;
 //***********************************************
 #ifndef LA_GV
 #define LA_GV
+/*
 Tstack* LA_S = NULL;
 int storage = -2;
+*/
+
+extern Tstack* LA_S;
+extern int storage;
 #endif
 
 //***********************************************
@@ -34,7 +52,10 @@ int storage = -2;
 //***********************************************
 #ifndef ERR_GV
 #define ERR_GV
-int ERROR_RETURN = 2; //syntax error
+//int ERROR_RETURN = 2; //syntax error
+
+extern int ERROR_RETURN;
+
 #endif
 
 //***********************************************
@@ -46,12 +67,15 @@ int scope(TToken *t);
 
 int func_line(TToken *t, int declared);
 
-int func(TToken *t);
+// scope = FALSE -> nebyl jeste, TRUE -> uz byl 
+int func(TToken *t, int scope);
 
 // 0 - param, 1 - type
 int type(TToken *t, Tdata* data, int type_or_param, int* to_symbtab);
 
-int parser_FREEBASIC(TToken *t);
+int parser_start(TToken *t);
+
+int parser_FREEBASIC();
 
 void add_char_to_param(TToken *t, Tdata *data);
 
@@ -77,3 +101,6 @@ int expr_n(TToken *t);
 int r_side(TToken *t,int l_value, int* r_side_type);
 
 int build_in_fce(TToken *t);
+
+
+#endif //PARSER_H_
