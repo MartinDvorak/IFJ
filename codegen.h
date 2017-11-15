@@ -26,6 +26,12 @@ void codegen_dim_r_side(char* name, int r_side_type);
 
 void codegen_assignment(char* name, int r_side_type);
 
+//s konverzi retezce
+void codegen_input(TToken* t);
+
+//print jednoho vyrazu
+void codegen_print();
+
 //vytvori ramec LF
 void codegen_scope();
 
@@ -41,11 +47,14 @@ void codegen_end_function();
 //navratova hodnota funkce
 void codegen_func_return();
 
-//s konverzi retezce
-void codegen_input(TToken* t);
+//pouze skoci na kod funkce
+void codegen_func_call(char* f_name);
 
-//print jednoho vyrazu
-void codegen_print();
+//vytvori prazdny ramec pro fci
+void codegen_empty_func_frame();
+
+//prida parametr na LF s poradovym cislem 
+void codegen_func_call_give_param(TToken* t, int param_no);
 
 /**IF-THEN-ELSE**/
 //skok na else vetev, bool hodnota vyhodnoceni vyrazu je na vrcholu datoveho zasobniku, vycisti ho 
@@ -68,15 +77,6 @@ void codegen_loop_cond(int actual_loop_id);
 void codegen_loop_end(int actual_loop_id);
 
 /****************/
-
-//pouze skoci na kod funkce
-void codegen_func_call(char* f_name);
-
-//vytvori prazdny ramec pro fci
-void codegen_empty_func_frame();
-
-//prida parametr na LF s poradovym cislem 
-void codegen_func_call_give_param(TToken* t, int param_no);
 
 //prevede retezec do formatu pro IFJcode17 (zadne bile znaky -> esc sekvence)
 char* string_convert_constant(char* source);

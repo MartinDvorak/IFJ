@@ -413,7 +413,7 @@ int r_side(TToken *t,int lvalue, int* r_side_type)
 	{ // TODO zajistit preprocessing id
 		TToken tmp = *t;
 		char* f_name;	//ulozeni id funkce
-		if((f_name = malloc(sizeof(char)*strlen(t->string))) == NULL)
+		if((f_name = malloc(sizeof(char)*(strlen(t->string)+1))) == NULL)
 			exit(99);
 		strcpy(f_name, t->string);
 
@@ -453,6 +453,7 @@ int r_side(TToken *t,int lvalue, int* r_side_type)
 						/****GENEROVANI MEZIKODU****************/
 						//skok na label funkce
 						codegen_func_call(f_name);
+						free(f_name);
 
 						return TRUE;
 					}
@@ -527,7 +528,7 @@ int body(TToken *t)
 		if(t->type == ID)
 		{	
 			char* name = NULL;	//ulozeni jmena fuknce pro codegen
-			if((name = malloc(sizeof(char)*strlen(t->string))) == NULL)
+			if((name = malloc(sizeof(char)*(strlen(t->string)+1))) == NULL)
 				exit(99);
 			strcpy(name, t->string);
 
@@ -572,7 +573,7 @@ int body(TToken *t)
 	{ // <BODY> -> ID = <R_SIDE> EOL <BODY>
 		// TODO semanticky overit 
 		char* name = NULL;	//ulozeni jmena fuknce pro codegen
-		if((name = malloc(sizeof(char)*strlen(t->string))) == NULL)
+		if((name = malloc(sizeof(char)*(strlen(t->string)+1))) == NULL)
 			exit(99);
 		strcpy(name, t->string);
 

@@ -316,42 +316,10 @@ void codegen_assignment(char* name, int r_side_type){
 	}
 }
 
-
-
-//vytvori LF
-void codegen_scope(){
-
-	printf("CREATEFRAME\n");
-	printf("PUSHFRAME\n");
-
-}
-
-//vytvori navesti, prevede TF na LF
-void codegen_func_definition(TToken* t){
-
-	printf("LABEL @func@%s\n", t->string);
-	printf("PUSHFRAME\n");
-}
-
-//zkopiruje skutecny parametr do formalniho na LF
-void codegen_func_param(TToken* t, int param_no){
-
-	printf("DEFVAR LF@%s\n", t->string);
-	printf("MOVE LF@%s LF@$f_param%d\n", t->string, param_no);
-
-}
-
-//prevede LF na TF a navrati se zpet z funkce (RETURN), , navratova hodnota predat ?
-void codegen_end_function(){
-
-	printf("POPFRAME\n");
-	printf("RETURN\n");
-}
-
-
 void codegen_input(TToken* t){
 
-	Tdata* data = NULL;
+	Tdata sdata;
+	Tdata* data = &sdata;
 	search_tree(root_local,t->string,data);
 
 	switch(data->type){
@@ -380,49 +348,37 @@ void codegen_print(){
 	printf("CLEARS\n");
 }
 
-//skok na else vetev, bool hodnota vyhodnoceni vyrazu je na vrcholu datoveho zasobniku, vycisti ho 
-void codegen_if_cond_jump(int actual_if_id){
+//vytvori LF
+void codegen_scope(){
 
-	printf("DEFVAR LF$if_cond_state_%d\n", actual_if_id);
-	printf("POPS LF$if_cond_state_%d\n", actual_if_id);
-	printf("JUMPIFNEQ $else_branch_%d LF$if_cond_state_%d bool@true\n", actual_if_id, actual_if_id);
-	printf("CLEARS\n");
-}
-
-//vytvori skok na konec if-st za then vetvi a vytvori label pro skok na else vetev
-void codegen_else_label(int actual_if_id){
-
-	printf("JUMP $end_if_%d\n", actual_if_id);
-	printf("LABEL $else_branch_%d\n", actual_if_id);
+	printf("CREATEFRAME\n");
+	printf("PUSHFRAME\n");
 
 }
 
-//vygeneruje pouze label pro skok na konec if-statementu
-void codegen_if_end_label(int actual_if_id){
 
-	printf("LABEL $end_if_%d\n", actual_if_id);
+/****FUNKCE, DEFINICE A VOLANI**********************************************************************/
+
+//vytvori navesti, prevede TF na LF
+void codegen_func_definition(TToken* t){
+
+	printf("LABEL @func@%s\n", t->string);
+	printf("PUSHFRAME\n");
 }
 
-//nadefinuje promennou pro skok ven z cyklu a nevesti pro navrat na vyhodnoceni podminky
-void codegen_loop_top_label(int actual_loop_id){
+//zkopiruje skutecny parametr do formalniho na LF
+void codegen_func_param(TToken* t, int param_no){
 
-	printf("DEFVAR LF@loop_state_%d\n", actual_loop_id);
-	printf("LABEL $loop_top_%d\n", actual_loop_id);
+	printf("DEFVAR LF@%s\n", t->string);
+	printf("MOVE LF@%s LF@$f_param%d\n", t->string, param_no);
+
 }
 
-void codegen_loop_cond(int actual_loop_id){
+//prevede LF na TF a navrati se zpet z funkce (RETURN), , navratova hodnota predat ?
+void codegen_end_function(){
 
-	//ziskani vyhodnoceni podminky ze zasobniku
-	printf("POPS LF@loop_state_%d\n", actual_loop_id);
-	printf("CLEARS\n");	
-
-	printf("JUMPIFNEQ $loop_end_%d LF@loop_state_%d bool@true\n", actual_loop_id, actual_loop_id);
-}
-
-void codegen_loop_end(int actual_loop_id){
-
-	printf("JUMP $loop_top_%d\n", actual_loop_id);
-	printf("LABEL $loop_end_%d\n", actual_loop_id);
+	printf("POPFRAME\n");
+	printf("RETURN\n");
 }
 
 void codegen_func_return(){
@@ -469,6 +425,57 @@ void codegen_func_call_give_param(TToken* t, int param_no){
 	}
 }
 
+
+/****IF THEN ELSE STATEMENT************************************************************************/
+
+//skok na else vetev, bool hodnota vyhodnoceni vyrazu je na vrcholu datoveho zasobniku, vycisti ho 
+void codegen_if_cond_jump(int actual_if_id){
+
+	printf("DEFVAR LF$if_cond_state_%d\n", actual_if_id);
+	printf("POPS LF$if_cond_state_%d\n", actual_if_id);
+	printf("JUMPIFNEQ $else_branch_%d LF$if_cond_state_%d bool@true\n", actual_if_id, actual_if_id);
+	printf("CLEARS\n");
+}
+
+//vytvori skok na konec if-st za then vetvi a vytvori label pro skok na else vetev
+void codegen_else_label(int actual_if_id){
+
+	printf("JUMP $end_if_%d\n", actual_if_id);
+	printf("LABEL $else_branch_%d\n", actual_if_id);
+
+}
+
+//vygeneruje pouze label pro skok na konec if-statementu
+void codegen_if_end_label(int actual_if_id){
+
+	printf("LABEL $end_if_%d\n", actual_if_id);
+}
+
+
+/****WHILE LOOP***********************************************************************************/
+
+//nadefinuje promennou pro skok ven z cyklu a nevesti pro navrat na vyhodnoceni podminky
+void codegen_loop_top_label(int actual_loop_id){
+
+	printf("DEFVAR LF@loop_state_%d\n", actual_loop_id);
+	printf("LABEL $loop_top_%d\n", actual_loop_id);
+}
+
+void codegen_loop_cond(int actual_loop_id){
+
+	//ziskani vyhodnoceni podminky ze zasobniku
+	printf("POPS LF@loop_state_%d\n", actual_loop_id);
+	printf("CLEARS\n");	
+
+	printf("JUMPIFNEQ $loop_end_%d LF@loop_state_%d bool@true\n", actual_loop_id, actual_loop_id);
+}
+
+void codegen_loop_end(int actual_loop_id){
+
+	printf("JUMP $loop_top_%d\n", actual_loop_id);
+	printf("LABEL $loop_end_%d\n", actual_loop_id);
+}
+
 void codegen_buildin_length(TToken* t){
 
 	printf("CREATEFRAME\n");
@@ -484,6 +491,9 @@ void codegen_buildin_length(TToken* t){
 		printf("STRLEN TF@&retval_function string@%s\n", str);
 	}
 }
+
+
+/****BUILD IN FUNKCE*********************************************************************************/
 
 void codegen_buildin_asc(TToken* string_token, TToken* position_token){
 
@@ -604,52 +614,41 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 	printf("LABEL $*end_loop\n");	//end loop
 }
 
-/****POMOCNE*****************************************************************************/
+/****PREVOD RETEZCU********************************************************************************************/
 
-//prevede retezec na vystup. format; prototyp, nevim jiste jestli funguje dobre + nejakej leak
+//prevede retezec na vystup. format
 char* string_convert_constant(char* source){
 
-	int out_len = 0;
+	int src_len = strlen(source);
+	int out_len;
 
-	for(int i = 0; source[i] != '\0'; i++){
-		//delka vystupniho retezce
-		if(((source[i] >= 0) && (source[i] <= 32)) || (source[i] == 92))
-			out_len+=4;
-		else
-			out_len++;
+	for(out_len = 0; out_len < src_len; out_len++){
+		if((source[out_len] >= 0 && source[out_len] <= 32) || (source[out_len] == 92))
+			out_len+= 3;
 	}
+	
+	char* output;
+	output = malloc(sizeof(char)*(out_len+1));
 
-	char* out;
-	if((out = malloc(sizeof(char)*(out_len+1))) == NULL){
-		exit(99);
-	}
+	for(int i = 0, j = 0; i < src_len; i++, j++){
+		if((source[i] >= 0 && source[i] <= 32) || (source[i] == 92)){
+			output[j] = '\\';
+			output[j+1] = '0';
 
-	for(int i = 0, j = 0; source[i] != '\0'; i++, j++){
-		//kopirovani znaku
-		if(((source[i] >= 0)  && (source[i] <= 32)) || (source[i] == 92)){
-			//escape sekvence
-			out[j] = '\\';
-			out[j+1] = '0';
-
-			char* tmp = NULL;
-			if((tmp = malloc(sizeof(char)*3)) == NULL){
+			char* tmp;
+			if((tmp = malloc(sizeof(char)*3)) == NULL)
 				exit(99);
-			}
-
 			sprintf(tmp, "%02d", source[i]);
-			out[j+2] = tmp[0];
-			out[j+3] = tmp[1];
+			output[j+2] = tmp[0];
+			output[j+3] = tmp[1];
+			free(tmp);
 			j+=3;
-
-			free(tmp);		
 		}
 		else{
-			//normalni znak
-			out[j] = source[i];
-		}
+			output[j] = source[i];
+		}		
 	}
-
-	return out;
+	return output;
 }
 
 //prevede promennou retezec do formatu IFJcode17, v mezikodu

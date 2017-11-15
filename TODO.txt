@@ -2,9 +2,9 @@
 FUNKCE, vyrazy, r side, return
 	pretypovani!!!!!!!!!!!!!!!!!!! 
 		hlavne l side a r side
-	overit navratove hodntoy
+	overit navratove hodnoty
 
 
-jak predat prazdny string konstanta ? jako string@"" ?
+jak predat prazdny string konstanta ? jako string@!"" ?
 
 
