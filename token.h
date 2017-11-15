@@ -1,12 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-
 #include "stack.h"
 
-#define TRUE 1
-#define FALSE 0
+#define TRUE        1
+#define FALSE       0
 
 #define AS          10  //10 - 44 keywords
 #define ASC         11
@@ -44,9 +42,9 @@
 #define STATIC      43
 #define TRUE_KW     44
 
-#define ID          50   //identifikátor
+#define ID          50   //identificator
 #define INT_V       51
-#define FLOAT_V     52
+#define FLOAT_V   	52
 #define STRING_V    53
 #define ASSIGN      54  //=
 #define EQ          55  //==
@@ -60,13 +58,11 @@
 #define MUL         63  //*
 #define DIV         64  //"/"
 #define INTDIV      65  //"\"
-
-#define EOL			66  // '\n' - end of line
-#define BRACKET_L   67  // (
-#define BRACKET_R	68	// )
-//#define EOF 		69  // end of file
-#define COLON		70  // , 
-#define SEMICOLON	69  // ;
+#define EOL			66	//'\n' - end of line
+#define BRACKET_L	67  // (
+#define BRACKET_R 	68  // )
+#define SEMICOLON	69 	// ;
+#define COLON		70  // ,
 //#define EOF -1
 //my preciouses
 #define EXCL_M		71	// !
@@ -74,8 +70,6 @@
 #define L_COMMENT	89  //in line comment
 #define B_COMMENT	90	//in block commnet
 #define SCAN_ERR	666 //lexem error
-
-
 
 
 #ifndef TTOKEN
@@ -94,8 +88,6 @@ TToken* token_init();
 
 void token_free(TToken* t);
 
-//TToken* give_me(TToken* t);
+TToken *get_next(TToken *t, Tstack* s, int *storage);
 
-TToken* get_next (TToken* t, Tstack* s, int *storage);
-
-void foo(int type);
+int valid_ES(Tstack* s);

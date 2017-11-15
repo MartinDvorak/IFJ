@@ -22,6 +22,40 @@ void token_free (TToken* t) {
     free(t);
 }
 
+int valid_ES(Tstack* s) {
+    
+    int c;
+    int tmp = 0;
+
+    c = tolower(getchar());
+     if (c == '\\' || c == '\"' || c == 't' || c == 'n') {
+        push(s, c);
+    }
+    else if (c >= '0' && c <= '2') {
+        tmp = c - '0';
+        printf("%d\n", tmp);
+        push(s, c);
+        for (int i = 0; i < 2; i++) {
+            c = tolower(getchar());
+            if (c >= '0' && c <= '9') {
+                push(s,c);
+                tmp = (tmp*10) + (c - '0');
+            }
+            else {
+                return 0;
+            }
+        }
+        if (tmp > 255) {
+            return 0;
+        }
+    }
+    else {
+        return 0;
+    }
+
+    return 1;
+}    
+
 
 TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost lex.analyzatoru
 
@@ -39,7 +73,6 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     int done = 0;
     int dot = 0;
     int nonzero = 0;
-
     
     if (t == NULL) {                //FIRST USE
         t = token_init();
@@ -82,7 +115,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 c = getchar();
             }
         }
-      //  getchar();                  //to get line feed
+        //getchar();                  //to get line feed
     }
     if (c == '/') {
         state = DIV;
@@ -103,7 +136,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 }
             }
             c = tolower(getchar());
-            while (isblank(c)){
+            while (isblank(c)) {
                 c = tolower(getchar());
             }
         }
@@ -112,91 +145,93 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
             *storage = c;
         }
     }
+    
+    if (state == 0) { 
+        if (c == '_') {
+            state = ID;
+            push(s,c);
+        }
 
-    if (c == '_') {
-        state = ID;
-        push(s,c);
-    }
+        else if ((c >= 'a') && (c <= 'z')) {
+            state = ID;
+            push(s,c);
+        }
+            
+        else if ((c >= '0') && (c <= '9')) {
+            state = INT_V;
+            push(s, c);
+        }
 
-    else if ((c >= 'a') && (c <= 'z')) {
-        state = ID;
-        push(s,c);
-    }
+        else if (c == '!') {
+            state = EXCL_M;
+        }
+
+        else if (c == ',') {
+            state = COLON;
+            done = 1;
+        }
+
+        else if (c == ';') {
+            state = SEMICOLON;
+            done = 1;
+        }
+
+        else if (c == '=') {
+            state = ASSIGN;
+        }
+
+        else if (c == '<') {
+            state = LESS;
+        }
+
+        else if (c == '>') {
+            state = GREAT;
+        }
+
+        else if (c == '+') {
+            state = ADD;
+            done = 1;
+        }
         
-    else if ((c >= '0') && (c <= '9')) {
-        state = INT_V;
-        push(s, c);
+        else if (c == '-') {
+            state = SUB;
+            done = 1;
+        }
+
+        else if (c == '*') {
+            state = MUL;
+            done = 1;
+        }
+
+        else if (c == '\\') {
+            state = INTDIV;
+            done = 1;
+        }
+
+        else if (c == 10) {
+            state = EOL;
+            done = 1; 
+        }
+
+        else if (c == '(') {
+            state = BRACKET_L;
+            done = 1;
+        }
+
+        else if (c == ')') {
+            state = BRACKET_R;
+            done = 1;
+        }
+
+        else if (c == EOF) {
+            state = EOF;
+        }
+
+        else {
+            state = SCAN_ERR;
+        }
     }
 
-    else if (c == '!') {
-        state = EXCL_M;
-    }
-
-    else if (c == ',') {
-        state = COLON;
-        done = 1;
-    }
-
-    else if (c == ';') {
-        state = SEMICOLON;
-        done = 1;
-    }
-
-    else if (c == '=') {
-        state = ASSIGN;
-    }
-
-    else if (c == '<') {
-        state = LESS;
-    }
-
-    else if (c == '>') {
-        state = GREAT;
-    }
-
-    else if (c == '+') {
-        state = ADD;
-        done = 1;
-    }
-    
-    else if (c == '-') {
-        state = SUB;
-        done = 1;
-    }
-
-    else if (c == '*') {
-        state = MUL;
-        done = 1;
-    }
-
-    else if (c == '\\') {
-        state = INTDIV;
-        done = 1;
-    }
-
-    else if (c == 10) {
-        state = EOL;
-        done = 1; 
-    }
-
-    else if (c == '(') {
-        state = BRACKET_L;
-        done = 1;
-    }
-
-    else if (c == ')') {
-        state = BRACKET_R;
-        done = 1;
-    }
-
-    else if (c == EOF) {
-        state = EOF;
-    }
-
-    else {
-        state = SCAN_ERR;
-    }
-    
     while((done == 0) && ((c = tolower(getchar())) != EOF)) {
         if (isblank(c)) {
             if (state == EXCL_M) {
@@ -239,7 +274,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     state = EXPONENT;
                     push(s,c);
                 }
-             else {
+                else {
                     done = 1;
                     *storage = c;
                 }
@@ -262,7 +297,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 }
                 break;
 
-           case EXPONENT:
+            case EXPONENT:
                 if (signed_exp == 0) {
                     if (c == '-') {
                         push(s,c);
@@ -296,20 +331,21 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     }   
                 }
                 break;
+                
             case EXCL_M:
                 if (c == '\"') {
                     state = STRING_V;
                     while (((c = tolower(getchar())) != '\"') && (c != '\n')) {
                         push(s, c);
-                        /*if (c == '\\') {
-                            c = tolower(getchar());
-                            if (c != '\\' && c != '\"' && c != 't' && c != 'n') {
+                        if (c == '\\') {
+                            if (valid_ES(s) == 0) {
+                                state = SCAN_ERR;
                             }
-                        }*/
+                        }
 
                     }
                     //c = getchar();
-                   // break;
+                    //break;
                 }
                 else {
                     state = SCAN_ERR;
@@ -341,6 +377,18 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     done = 1;
                     *storage = c;
                 }
+                break;
+
+            case GREAT:
+                if (c == '=') {
+                    state = GREATEQ;
+                    done = 1;
+                }
+                else {
+                    done = 1;
+                    *storage = c;
+                }
+
                 break;
             
             case DIV:

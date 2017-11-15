@@ -68,12 +68,12 @@ int param_f(TToken *t, char* string, int* position);
 
 int param_fn(TToken *t, char* string, int* position);
 
-int preprocesing_expr(TToken *t,TToken *last,int condition,int* exp_ret, int* exp_ret_id);
+int preprocesing_expr(TToken *t,TToken *last,int condition,int* exp_ret);
 
-int equal(TToken *t, int l_value);
+int equal(TToken *t, int l_value, int* r_side_type);
 
 int expr_n(TToken *t);
 
-int r_side(TToken *t,int l_value);
+int r_side(TToken *t,int l_value, int* r_side_type);
 
 int build_in_fce(TToken *t);
