@@ -55,7 +55,7 @@ int semantic_exp(char* string, int* type_array, Toperation* arr, int* num_of_arr
 
 int semantic_check_lside_rside(int l_side, int r_side);
 
-void semantic_return_type(int* glob_var,int local,int ret_type);
+int semantic_return_type(int* glob_var,int local,int ret_type, char* name, int flag);
 
 int semantic_check_define(Ttnode_ptr* root, char* name);
 

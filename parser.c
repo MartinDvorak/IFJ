@@ -794,7 +794,8 @@ int func_line(TToken* t,int local)
 						 	if(type(t,&tmp,1,NULL))
 						 	{
 						 		// semantic
-						 		semantic_return_type(&return_type,local,tmp.type);
+						 		if(!semantic_return_type(&return_type,local,tmp.type,name,flag))
+						 			return FALSE;
 						 		// end  semantic
 
 						 		t = get_next(t,LA_S,&storage);
@@ -824,6 +825,7 @@ int func_line(TToken* t,int local)
 	}
 	return FALSE;
 }
+
 int func(TToken* t, int scope)
 {	// F-> epsilon
 	if(((t->type == SCOPE) && (!scope)) || (t->type == EOF))
@@ -920,6 +922,8 @@ int parser_FREEBASIC()
 
 	int res = parser_start(token);
 
+	if(token->type == SCAN_ERR)
+		ERROR_RETURN = 1;
 	free_tree(&root_local);
 	free_tree(&root_global);
 	

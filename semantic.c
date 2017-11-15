@@ -58,15 +58,27 @@ int semantic_id_type_convert(int type)
 */
 
 
-void semantic_return_type(int* glob_var,int local,int ret_type)
+int semantic_return_type(int* glob_var,int local,int ret_type, char *name,int flag)
 {
 	if(local)
 	{
 		*glob_var = ret_type;
+		Tdata tmp;
+		if(!search_tree(root_global,name,&tmp))
+		{
+			ERROR_RETURN = 3;
+			return FALSE;
+		}
+		if((ret_type != tmp.type) && (flag == 1))
+		{
+			ERROR_RETURN = 4;
+			return FALSE;
+		}
 	}
 	else{
 		*glob_var = 0;
 	}
+	return TRUE;
 }
 
 int semantic_check_lside_rside(int l_side, int r_side)
@@ -324,7 +336,9 @@ int semantic_check_define(Ttnode_ptr* root, char* name)
 	Tdata tmp;
 	if(search_tree(*root,name,&tmp))
 	{
-		if (!insert_define_tree(root,name,1,1)){
+		if (!insert_define_tree(root,name,1,1))
+		{
+			ERROR_RETURN = 3;
 			return 0;
 		}
 		return 1;
@@ -385,7 +399,6 @@ int semantic_exp(char* string, int* type_array,Toperation* arr, int* num_arr,int
 		if(string[str_num] == 'i')
 		{
 			// TODO pro komplikovanejsi strukturu predelat insert
-			printf("%d\n", type_array[num_type]);
 			push(s,type_array[num_type++]);
 			
 		}
