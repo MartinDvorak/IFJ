@@ -144,22 +144,14 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 				//levy operand konverze
 				printf("CREATEFRAME\n");
 				printf("DEFVAR TF@$tmp1\n");
-				printf("DEFVAR TF@$tmp2\n");
 
 				printf("POPS TF@$tmp1\n");
-				printf("POPS TF@$tmp2\n");
 				printf("INT2FLOATS\n");
-				printf("PUSHS TF@$tmp2\n");
 				printf("PUSHS TF@$tmp1\n");
 			}
 			if(act.r_convert){
 				//pravy operand konverze
-				printf("CREATEFRAME\n");
-				printf("DEFVAR TF@$tmp1\n");
-
-				printf("POPS TF@$tmp1\n");
 				printf("INT2FLOATS\n");
-				printf("PUSHS TF@$tmp1\n");
 			}
 
 			switch(act.op){
@@ -169,12 +161,10 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 						(operand_array[operand_index-1].type == STRING_V)){
 						//jde o retezce
 						printf("CREATEFRAME\n");
-						printf("DEFVAR TF@$tmp_op\n");
 						printf("DEFVAR TF@$tmp1\n");
 						printf("DEFVAR TF@$tmp2\n");
 						printf("DEFVAR TF@$tmp_res\n");
 
-						printf("POPS TF@$tmp_op\n");
 						printf("POPS TF@$tmp1\n");
 						printf("POPS TF@$tmp2\n");
 						printf("CONCAT TF@$tmp_res TF@$tmp2 TF@$tmp1\n");
@@ -197,10 +187,8 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 				case 'M':
 					//prevede oba na float, podeli, osekne na int
 					printf("CREATEFRAME\n");
-					printf("DEFVAR TF@tmp_op\n");
 					printf("DEFVAR TF@tmp1\n");
-
-					printf("POPS TF@tmp_op\n");
+					
 					printf("INT2FLOATS\n");
 					printf("POPS TF@tmp1\n");
 					printf("INT2FLOATS\n");
