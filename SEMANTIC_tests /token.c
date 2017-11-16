@@ -138,7 +138,6 @@ int valid_ES(Tstack* s) {
 void skip_BC (int *state) {
 
     int com1, com2;
-    int c;
 
     com1 = getchar();
     while (1) {
@@ -183,7 +182,6 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     "static", "true"};
     
     int c;
-    char com1, com2;
     int state = 0;
     char *tmp_s = NULL;
     int signed_exp = 0;

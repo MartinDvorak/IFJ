@@ -1,6 +1,0 @@
-declare function funkce(x as integer,s as string,y as integer) as integer
-
-scope
-dim x as integer
-x = funkce(10,!"strvoe",7)
-end scope

@@ -1,8 +1,0 @@
-scope
-dim x as integer
-if (x<!"Kunda") then
-print !"spravne";
-else 
-print !"spatne";
-end if
-end scope

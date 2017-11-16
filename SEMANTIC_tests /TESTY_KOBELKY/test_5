@@ -2,8 +2,6 @@
 
 SCOPE
 
-/' Toto je komentář
-
 print 42;
 
-END SCOPE
+END SCOPE /' Toto je komentář '
