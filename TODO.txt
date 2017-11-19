@@ -1,8 +1,7 @@
 
-FUNKCE, vyrazy, r side, return
-	pretypovani!!!!!!!!!!!!!!!!!!! 
-		hlavne l side a r side
-	overit navratove hodnoty
+navratove hodnoty build in funkci !!
+
+je mozne INT2FLOAT var1 var1 ?? (stejne promenne)
 
 
 jak predat prazdny string konstanta ? jako string@!"" ?

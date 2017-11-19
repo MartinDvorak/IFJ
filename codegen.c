@@ -263,7 +263,7 @@ void codegen_dim(char* name){
 			}
 }
 
-void codegen_dim_r_side(char* name, int r_side_type){
+void codegen_dim_r_side(char* name, int r_side_type, int convert_func_result){
 
 	switch(r_side_type){
 
@@ -280,12 +280,14 @@ void codegen_dim_r_side(char* name, int r_side_type){
 			break;
 		case R_SIDE_FCALL:
 			//function call
+			if(convert_func_result == INT2DOUBLE) printf("INT2FLOAT TF@&retval_function TF@&retval_function\n");
+			if(convert_func_result == DOUBLE2INT) printf("FLOAT2R2OINT TF@&retval_function TF@&retval_function\n");
 			printf("MOVE LF@%s TF@&retval_function\n", name);
 			break;
 	}
 }
 
-void codegen_assignment(char* name, int r_side_type){
+void codegen_assignment(char* name, int r_side_type, int convert_func_result){
 
 	switch(r_side_type){
 		case R_SIDE_EXPR:
@@ -299,6 +301,8 @@ void codegen_assignment(char* name, int r_side_type){
 			break;
 		case R_SIDE_FCALL:
 			//function call
+			if(convert_func_result == INT2DOUBLE) printf("INT2FLOAT TF@&retval_function TF@&retval_function\n");
+			if(convert_func_result == DOUBLE2INT) printf("FLOAT2R2OINT TF@&retval_function TF@&retval_function\n");
 			printf("MOVE LF@%s TF@&retval_function\n", name);
 			break;
 	}
@@ -389,21 +393,26 @@ void codegen_empty_func_frame(){
 	printf("CREATEFRAME\n");
 }
 
-void codegen_func_call_give_param(TToken* t, int param_no){
+void codegen_func_call_give_param(TToken* t, int param_no, int covert_param){
 
 	switch(t->type){
 
 		case ID:
 			printf("DEFVAR TF@$f_param%d\n", param_no);
 			printf("MOVE TF@$f_param%d LF@%s\n", param_no, t->string);
+			if(covert_param == INT2DOUBLE) printf("INT2FLOAT TF@$f_param%d TF@$f_param%d\n", param_no, param_no);
+			if(covert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@$f_param%d TF@$f_param%d\n", param_no, param_no);
 			break;
 		case FLOAT_V:
 			printf("DEFVAR TF@$f_param%d\n", param_no);
 			printf("MOVE TF@$f_param%d float@%g\n", param_no, t->float_v);
+			if(covert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@$f_param%d TF@$f_param%d\n", param_no, param_no);
 			break;
 		case INT_V:
 			printf("DEFVAR TF@$f_param%d\n", param_no);
 			printf("MOVE TF@$f_param%d int@%d\n", param_no, t->int_v);
+			if(covert_param == INT2DOUBLE) printf("INT2FLOAT TF@$f_param%d TF@$f_param%d\n", param_no, param_no);
+
 			break;
 		case STRING_V:
 			printf("DEFVAR TF@$f_param%d\n", param_no);
@@ -483,7 +492,7 @@ void codegen_buildin_length(TToken* t){
 
 /****BUILD IN FUNKCE*********************************************************************************/
 
-void codegen_buildin_asc(TToken* string_token, TToken* position_token){
+void codegen_buildin_asc(TToken* string_token, TToken* position_token, int convert_param){
 
 	printf("CREATEFRAME\n");
 	printf("DEFVAR TF@&retval_function\n");	//chova se jako by byla funkci
@@ -492,11 +501,18 @@ void codegen_buildin_asc(TToken* string_token, TToken* position_token){
 
 	if(position_token->type == ID){
 		printf("MOVE TF@$position LF@%s\n", position_token->string);
+		if(convert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@$position TF@$position\n");
+		printf("ADD TF@$position TF@$position int@1\n");	//indexovani od 1, ne od nuly
+	}
+	else if(position_token->type == INT_V){
+		printf("MOVE TF@$position int@%d\n", position_token->int_v);
+		if(convert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@$position TF@$position\n");
 		printf("ADD TF@$position TF@$position int@1\n");	//indexovani od 1, ne od nuly
 	}
 	else{
-		//INT_V
-		printf("MOVE TF@$position int@%d\n", position_token->int_v);
+		//FLOAT_V
+		printf("MOVE TF@$position float@%g\n", position_token->float_v);
+		printf("FLOAT2R2OINT TF@$position TF@$position\n");
 		printf("ADD TF@$position TF@$position int@1\n");	//indexovani od 1, ne od nuly
 	}
 
@@ -511,22 +527,32 @@ void codegen_buildin_asc(TToken* string_token, TToken* position_token){
 	}
 }
 
-void codegen_buildin_chr(TToken* t){
+void codegen_buildin_chr(TToken* t, int convert_param){
 
 	printf("CREATEFRAME\n");
 	printf("DEFVAR TF@&retval_function\n");	//chova se jako by byla funkci
+	printf("DEFVAR TF@$value\n");
 
 	if(t->type == ID){
 
-		printf("INT2CHAR TF@&retval_function LF@%s\n", t->string);
+		printf("MOVE TF@$value LF@%s\n", t->string);
+		if(convert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@&value TF@&value\n");
+		printf("INT2CHAR TF@&retval_function TF@$value\n");
 	}
-	else{
+	else if(t->type == INT_V){
 		//type == INT_V
 		printf("INT2CHAR TF@&retval_function int@%d\n", t->int_v);	
 	}
+	else{
+		//FLOAT_V
+		printf("MOVE TF@$value float@%g\n", t->float_v);
+		printf("FLOAT2R2OINT TF@&value TF@&value\n");
+		printf("INT2CHAR TF@&retval_function TF@&value\n");	
+
+	}
 }
 
-void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len_token){
+void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len_token, int convert_param2, int convert_param3){
 
 	printf("CREATEFRAME\n");
 	printf("DEFVAR TF@&retval_function\n");	//chova se jako by byla funkci
@@ -544,20 +570,32 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 	printf("DEFVAR TF@*index\n");
 	if(beg_token->type == ID){
 		printf("MOVE TF@*index LF@%s\n", beg_token->string);
+		if(convert_param2 == DOUBLE2INT) printf("FLOAT2R2OINT TF@*index TF@*index\n");
+	}
+	else if(beg_token->type == INT_V){
+		//type == INT_V 
+		printf("MOVE TF@*index int@%d\n", beg_token->int_v);
 	}
 	else{
-		//type == INT_V
-		printf("MOVE TF@*index int@%d\n", beg_token->int_v);
+		//FLOAT_V
+		printf("MOVE TF@*index float@%g\n", beg_token->float_v);	
+		if(convert_param2 == DOUBLE2INT) printf("FLOAT2R2OINT TF@*index TF@*index\n");
 	}
 	printf("ADD TF@*index TF@*index int@1\n");	//posun o 1, index od 1 ne od nuly
 
 	printf("DEFVAR TF@*out_len\n");
 	if(len_token->type == ID){
 		printf("MOVE TF@*out_len LF@%s\n", len_token->string);
+		if(convert_param3 == DOUBLE2INT) printf("FLOAT2R2OINT TF@*out_len TF@*out_len\n");
+	}
+	else if(len_token->type == INT_V){
+		//type == INT_V nebo FLOAT_V
+		printf("MOVE TF@*out_len int@%d\n", len_token->int_v);
 	}
 	else{
-		//type == INT_V
-		printf("MOVE TF@*out_len int@%d\n", len_token->int_v);
+		//FLOAT_V
+		printf("MOVE TF@*out_len float@%g\n", len_token->float_v);
+		if(convert_param3 == DOUBLE2INT) printf("FLOAT2R2OINT TF@*out_len TF@*out_len\n");	
 	}
 
 	printf("DEFVAR TF@*str_len\n");

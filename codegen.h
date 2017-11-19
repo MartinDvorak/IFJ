@@ -4,6 +4,10 @@
 #define R_SIDE_EXPR 		1
 #define R_SIDE_BUILD_IN 	2
 #define R_SIDE_NONE			3
+#define FUNC_RETURN 		4
+
+#define INT2DOUBLE			10
+#define DOUBLE2INT			11
 
 
 //vypise zacatek vypisu mezikodu, tj. ".IFJcode17"
@@ -22,9 +26,9 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 
 void codegen_dim(char* name);
 
-void codegen_dim_r_side(char* name, int r_side_type);
+void codegen_dim_r_side(char* name, int r_side_type, int convert_func_result);
 
-void codegen_assignment(char* name, int r_side_type);
+void codegen_assignment(char* name, int r_side_type, int convert_func_result);
 
 //s konverzi retezce
 void codegen_input(TToken* t);
@@ -54,7 +58,7 @@ void codegen_func_call(char* f_name);
 void codegen_empty_func_frame();
 
 //prida parametr na LF s poradovym cislem 
-void codegen_func_call_give_param(TToken* t, int param_no);
+void codegen_func_call_give_param(TToken* t, int param_no, int convert_param);
 
 /**IF-THEN-ELSE**/
 //skok na else vetev, bool hodnota vyhodnoceni vyrazu je na vrcholu datoveho zasobniku, vycisti ho 
@@ -89,8 +93,8 @@ void string_convert_input(TToken* t);
 
 void codegen_buildin_length(TToken* t);
 
-void codegen_buildin_asc(TToken* string_token, TToken* position_token);
+void codegen_buildin_asc(TToken* string_token, TToken* position_token, int convert_param);
 
-void codegen_buildin_chr(TToken* t);
+void codegen_buildin_chr(TToken* t, int convert_param);
 
-void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len_token);
+void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len_token, int convert_param2, int convert_param3);

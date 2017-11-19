@@ -209,7 +209,7 @@ int build_in_fce(TToken *t)
 				{
 					tmp = *t;
 					// TODO semantickou kontrolu dat typu
-					if(!semantic_id(root_local,t,'s'))
+					if(!semantic_id(root_local,t,'s', NULL))
 						return FALSE;
 					//end
 					t = get_next(t,LA_S,&storage);
@@ -228,6 +228,8 @@ int build_in_fce(TToken *t)
 		{ // Substr(s as string, i as integer, n as integer) as STRING
 			TToken tmp2;
 			TToken tmp3;
+			int convert_param2;
+			int convert_param3;
 			t = get_next(t,LA_S,&storage);
 			if(t->type == BRACKET_L)
 			{
@@ -236,7 +238,7 @@ int build_in_fce(TToken *t)
 				{
 					tmp = *t;
 					// TODO semantickou kontrolu dat typu
-					if(!semantic_id(root_local,t,'s'))
+					if(!semantic_id(root_local,t,'s', NULL))
 						return FALSE;
 					//
 					t = get_next(t,LA_S,&storage);
@@ -247,7 +249,7 @@ int build_in_fce(TToken *t)
 						{
 							tmp2 = *t;
 							// TODO sementicka kontrola typu
-							if(!semantic_id(root_local,t,'i'))
+							if(!semantic_id(root_local,t,'i', &convert_param2))
 								return FALSE;
 							//
 							t = get_next(t,LA_S,&storage);
@@ -258,7 +260,7 @@ int build_in_fce(TToken *t)
 								{
 									tmp3 = *t;
 									// TODO sementicko kontrolu dat typu
-									if(!semantic_id(root_local,t,'i'))
+									if(!semantic_id(root_local,t,'i', &convert_param3))
 										return FALSE;
 									//
 									t = get_next(t,LA_S,&storage);
@@ -266,7 +268,7 @@ int build_in_fce(TToken *t)
 									{
 
 										/****GENEROVANI MEZIKODU****************/
-										codegen_buildin_substr(&tmp, &tmp2, &tmp3);
+										codegen_buildin_substr(&tmp, &tmp2, &tmp3, convert_param2, convert_param3);
 
 
 										t = get_next(t,LA_S,&storage);
@@ -283,6 +285,7 @@ int build_in_fce(TToken *t)
 		}
 		else if(t->type == ASC)
 		{ // Asc(s as string, i as integer) as integer
+			int convert_param = 0;
 			TToken tmp2; //save position
 			t = get_next(t,LA_S,&storage);
 			if(t->type == BRACKET_L)
@@ -293,7 +296,7 @@ int build_in_fce(TToken *t)
 
 					tmp = *t;
 					// TODO semantickou kontrolu dat typu
-					if(!semantic_id(root_local,t,'s'))
+					if(!semantic_id(root_local,t,'s', NULL))
 						return FALSE;
 					//end
 					t = get_next(t,LA_S,&storage);
@@ -305,7 +308,7 @@ int build_in_fce(TToken *t)
 							
 							tmp2 = *t;
 							// TODO sementicka kontrola typu
-							if(!semantic_id(root_local,t,'i'))
+							if(!semantic_id(root_local,t,'i', &convert_param))
 								return FALSE;
 							//
 							t = get_next(t,LA_S,&storage);
@@ -313,7 +316,7 @@ int build_in_fce(TToken *t)
 							{	
 
 								/****GENEROVANI MEZIKODU**************/
-								codegen_buildin_asc(&tmp, &tmp2);
+								codegen_buildin_asc(&tmp, &tmp2, convert_param);
 
 								t = get_next(t,LA_S,&storage);
 								return TRUE;
@@ -327,6 +330,7 @@ int build_in_fce(TToken *t)
 		}
 		else if(t->type == CHR)
 		{ // Chr(i as integer) as string
+			int convert_param;
 			t = get_next(t,LA_S,&storage);
 			if(t->type == BRACKET_L)
 			{
@@ -334,7 +338,7 @@ int build_in_fce(TToken *t)
 				if((t->type == ID)||(t->type == INT_V)||(t->type == FLOAT_V)||(t->type == STRING_V))
 				{
 					// TODO semantickou kontrolu dat typu
-					if(!semantic_id(root_local,t,'i'))
+					if(!semantic_id(root_local,t,'i', &convert_param))
 						return FALSE;
 					//
 					t = get_next(t,LA_S,&storage);
@@ -342,7 +346,7 @@ int build_in_fce(TToken *t)
 					{
 
 						/****GENEROVANI MEZIKODU*******************/
-						codegen_buildin_chr(&tmp);
+						codegen_buildin_chr(&tmp, convert_param);
 
 						t = get_next(t,LA_S,&storage);
 						return TRUE;
@@ -356,6 +360,8 @@ int build_in_fce(TToken *t)
 //volani funkce
 int param_fn(TToken *t, char* param, int* position)
 {
+	int convert_param = 0;
+
 	static int param_no = 2; //zacim od indexu 2, index 1 v param_f
 
 	if(t->type == BRACKET_R){
@@ -368,11 +374,11 @@ int param_fn(TToken *t, char* param, int* position)
 		t = get_next(t,LA_S,&storage);
 		if((t->type == ID )||(t->type == FLOAT_V) ||(t->type == INT_V) ||(t->type == STRING_V))
 		{
-			if(!semantic_id_param(t,param,position))
+			if(!semantic_id_param(t,param,position, &convert_param))
 				return FALSE;
 
 			/****GENEROVANI MEZIKODU*******************/
-			codegen_func_call_give_param(t,param_no);
+			codegen_func_call_give_param(t,param_no, convert_param);
 			param_no++;
 
 			t = get_next(t,LA_S,&storage);
@@ -385,6 +391,8 @@ int param_fn(TToken *t, char* param, int* position)
 //volani funkce
 int param_f(TToken *t, char* param, int* position)
 {
+	int convert_param = 0;
+
 	if(t->type == BRACKET_R){
 	
 		/****GENEROVANI MEZIKODU********************/
@@ -393,12 +401,12 @@ int param_f(TToken *t, char* param, int* position)
 	}
 	else if((t->type == ID )||(t->type == FLOAT_V) ||(t->type == INT_V) ||(t->type == STRING_V))
 	{
-		if(!semantic_id_param(t,param,position))
+		if(!semantic_id_param(t,param,position, &convert_param))
 			return FALSE;
 
 		/****GENEROVANI MEZIKODU*******************/
 		codegen_empty_func_frame();
-		codegen_func_call_give_param(t,1);
+		codegen_func_call_give_param(t,1, convert_param);
 
 		t = get_next(t,LA_S,&storage);
 		return(param_fn(t,param,position));
@@ -406,7 +414,7 @@ int param_f(TToken *t, char* param, int* position)
 	return FALSE;
 }
 
-int r_side(TToken *t,int lvalue, int* r_side_type)
+int r_side(TToken *t,int lvalue, int* r_side_type, int* convert_func_result)
 { // zkontrolovat zda se prava strana rovna typove leve
 	int rvalue;
 	if(t->type == ID)
@@ -431,7 +439,7 @@ int r_side(TToken *t,int lvalue, int* r_side_type)
 				return FALSE;
 			if(!semantic_id_type(root_global,t,&rvalue))
 				return FALSE;
-			if(!semantic_check_lside_rside(lvalue,rvalue))
+			if(!semantic_check_lside_rside(lvalue,rvalue, *r_side_type, convert_func_result))
 				return FALSE;
 			semantic_flag_use(&root_global,t);
 			/// end
@@ -466,7 +474,7 @@ int r_side(TToken *t,int lvalue, int* r_side_type)
 			if(t->type == EOL)
 			{
 				// 
-				if(!semantic_check_lside_rside(lvalue,rvalue))
+				if(!semantic_check_lside_rside(lvalue,rvalue, *r_side_type, convert_func_result))
 					return FALSE;
 				return TRUE;
 			}
@@ -494,7 +502,7 @@ int r_side(TToken *t,int lvalue, int* r_side_type)
 			if(t->type == EOL)
 			{
 				// 
-				if(!semantic_check_lside_rside(lvalue,rvalue))
+				if(!semantic_check_lside_rside(lvalue,rvalue, *r_side_type, convert_func_result))
 					return FALSE;
 				return TRUE;
 			}
@@ -505,14 +513,14 @@ int r_side(TToken *t,int lvalue, int* r_side_type)
 }
 
 
-int equal(TToken *t,int lvalue, int* r_side_type)
+int equal(TToken *t,int lvalue, int* r_side_type, int* convert_func_result)
 {
 	if (t->type == EOL)
 		return TRUE;
 	else if (t->type == ASSIGN)
 	{
 		t = get_next(t,LA_S,&storage);
-		return r_side(t,lvalue, r_side_type);
+		return r_side(t,lvalue, r_side_type, convert_func_result);
 	}
 	return FALSE;
 }	
@@ -553,12 +561,13 @@ int body(TToken *t)
 					/****GENEROVANI MEZIKODU********************/
 					codegen_dim(name);
 
-					if(equal(t,tmp.type, &r_side_type))
+					int convert_func_result = 0;
+					if(equal(t,tmp.type, &r_side_type, &convert_func_result))
 					{
 						if(t->type == EOL)
 						{ 
 							/****GENEROVANI MEZIKODU***************************/
-							codegen_dim_r_side(name, r_side_type);
+							codegen_dim_r_side(name, r_side_type, convert_func_result);
 							free(name);
 
 							t = get_next(t,LA_S,&storage);
@@ -588,13 +597,14 @@ int body(TToken *t)
 		{
 			t = get_next(t,LA_S,&storage);
 			int r_side_type;
-			if(r_side(t,lvalue, &r_side_type))
+			int convert_func_result = 0;
+			if(r_side(t,lvalue, &r_side_type, &convert_func_result))
 			{
 				if(t->type == EOL)
 				{
 
 					/****GENEROVANI MEZIKODU**********************/
-					codegen_assignment(name, r_side_type);
+					codegen_assignment(name, r_side_type, convert_func_result);
 					free(name);
 
 					t = get_next(t,LA_S,&storage);
@@ -742,7 +752,8 @@ int body(TToken *t)
 				ERROR_RETURN = 6;
 				return FALSE;
 			}
-			if(!semantic_check_lside_rside(return_type,rvalue))
+			int convert_func_result = 0;
+			if(!semantic_check_lside_rside(return_type,rvalue, FUNC_RETURN, &convert_func_result))
 				return FALSE;
 
 			/****GENEROVANI MEZIKODU*************/

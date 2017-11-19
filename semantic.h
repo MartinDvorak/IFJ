@@ -41,10 +41,10 @@ int semantic_convert_data_type (char c);
 // promenou v tokenu vezme najde ve stromu - neni err
 // a pote porovna s datovym typev c char data_type
 // indikuje implicitni konverze
-int semantic_id(Ttnode_ptr root, TToken* t, char data_type);
+int semantic_id(Ttnode_ptr root, TToken* t, char data_type, int* convert_param);
 
 // stejne jako semantic_id akorat vstup je string param a pohybuje se pomoci position
-int semantic_id_param(TToken *t, char* param, int* position);
+int semantic_id_param(TToken *t, char* param, int* position, int* convert_param);
 
 // nalezne jestli existuje fce a tomom vrátí jeji parametry v  char*param
 int semantic_fce_param(Ttnode_ptr root, TToken* t, char** param);
@@ -69,7 +69,7 @@ int semantic_call_undefined_fce();
 int semantic_exp(char* string, TExpr_operand* operand_array, Toperation* arr, int* num_of_arr, int* exp_ret);
 
 
-int semantic_check_lside_rside(int l_side, int r_side);
+int semantic_check_lside_rside(int l_side, int r_side, int r_side_type, int* convert_func_result);
 
 int semantic_return_type(int* glob_var,int local,int ret_type, char* name, int flag);
 

@@ -28,18 +28,24 @@ int semantic_return_type(int* glob_var,int local,int ret_type, char *name,int fl
 	return TRUE;
 }
 
-int semantic_check_lside_rside(int l_side, int r_side)
+int semantic_check_lside_rside(int l_side, int r_side, int r_side_type, int* convert_func_result)
 {
+	//pokud jde o funkci, zde konvertuje return hodnotu podle predpokladane, ne podle l_side type!!!!!!
+
 	if(l_side == r_side)
 	{
 		return TRUE;
 	}
 	else if ((l_side == INTEGER) && (r_side == DOUBLE))
 	{	// covreze Double-> int
+		if((r_side_type == R_SIDE_EXPR) || (r_side_type == FUNC_RETURN)) printf("FLOAT2R2OINTS\n");
+		if(r_side_type == R_SIDE_FCALL) *convert_func_result = DOUBLE2INT;
 		return TRUE;
 	}
 	else if ((l_side == DOUBLE) && (r_side == INTEGER))
 	{ // INT -> DOUBLE
+		if((r_side_type == R_SIDE_EXPR) || (r_side_type == FUNC_RETURN)) printf("INT2FLOATS\n");
+		if(r_side_type == R_SIDE_FCALL) *convert_func_result = INT2DOUBLE;
 		return TRUE;
 	}
 	
@@ -132,7 +138,7 @@ int semantic_convert_data_type (char c)
 	}
 }
 
-int semantic_id(Ttnode_ptr root, TToken* t, char data_type)
+int semantic_id(Ttnode_ptr root, TToken* t, char data_type, int* convert_param)
 {
 	Tdata tmp;
 	int predict;
@@ -161,12 +167,12 @@ int semantic_id(Ttnode_ptr root, TToken* t, char data_type)
 		return TRUE;
 	else if ((predict == INTEGER) &&(type == DOUBLE))
 	{
-		// TODO implicit INT -> FLOAT
+		*convert_param = INT2DOUBLE;
 		return TRUE;
 	}
 	else if((predict == DOUBLE) &&(type == INTEGER))
 	{
-		// TODO implicit FLOAT -> INT
+		*convert_param = DOUBLE2INT;
 		return TRUE;	
 	}
 	else{
@@ -186,7 +192,7 @@ int semantic_id_type(Ttnode_ptr root,TToken *t, int* type)
 	return TRUE;
 }
 
-int semantic_id_param(TToken *t, char* param, int* position)
+int semantic_id_param(TToken *t, char* param, int* position, int* convert_param)
 {
 	int desizion = t->type;
 	
@@ -230,12 +236,12 @@ int semantic_id_param(TToken *t, char* param, int* position)
 	}
 	else if((desizion == INTEGER) && (convert == DOUBLE))
 	{
-		//TODO implicit convert INT -> FLOAT
+		*convert_param = INT2DOUBLE;
 		return TRUE; 
 	}
 	else if((desizion == DOUBLE) && (convert == INTEGER))
 	{
-		//TODO implicit convert FLOAT -> INT
+		*convert_param = DOUBLE2INT;
 		return TRUE;
 	}
 	ERROR_RETURN = 4;
