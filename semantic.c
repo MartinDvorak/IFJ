@@ -5,15 +5,27 @@
 
 
 
-void semantic_return_type(int* glob_var,int local,int ret_type)
+int semantic_return_type(int* glob_var,int local,int ret_type, char *name,int flag)
 {
 	if(local)
 	{
 		*glob_var = ret_type;
+		Tdata tmp;
+		if(!search_tree(root_global,name,&tmp))
+		{
+			ERROR_RETURN = 3;
+			return FALSE;
+		}
+		if((ret_type != tmp.type) && (flag == 1))
+		{
+			ERROR_RETURN = 4;
+			return FALSE;
+		}
 	}
 	else{
 		*glob_var = 0;
 	}
+	return TRUE;
 }
 
 int semantic_check_lside_rside(int l_side, int r_side)
@@ -31,7 +43,7 @@ int semantic_check_lside_rside(int l_side, int r_side)
 		return TRUE;
 	}
 	
-	ERROR_RETURN = 6;
+	ERROR_RETURN = 4;
 	return FALSE;
 	
 }
@@ -271,13 +283,16 @@ int semantic_check_define(Ttnode_ptr* root, char* name)
 	Tdata tmp;
 	if(search_tree(*root,name,&tmp))
 	{
-		if (!insert_define_tree(root,name,1,1)){
+		if (!insert_define_tree(root,name,1,1))
+		{
+			ERROR_RETURN = 3;
 			return 0;
 		}
 		return 1;
 	}
 	return -1;
 }
+
 
 int semantic_check_params(Ttnode_ptr root,char* name, char* param)
 {
@@ -297,6 +312,7 @@ int semantic_check_params(Ttnode_ptr root,char* name, char* param)
 					ERROR_RETURN = 3;
 					return FALSE;
 				}
+				return TRUE;
 		}
 	}
 	ERROR_RETURN = 3;

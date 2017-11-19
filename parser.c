@@ -205,7 +205,7 @@ int build_in_fce(TToken *t)
 			if(t->type == BRACKET_L)
 			{
 				t = get_next(t,LA_S,&storage);
-				if((t->type == ID) ||(t->type == STRING_V))
+				if((t->type == ID)||(t->type == INT_V)||(t->type == FLOAT_V)||(t->type == STRING_V))
 				{
 					tmp = *t;
 					// TODO semantickou kontrolu dat typu
@@ -232,7 +232,7 @@ int build_in_fce(TToken *t)
 			if(t->type == BRACKET_L)
 			{
 				t = get_next(t,LA_S,&storage);
-				if((t->type == ID)||(t->type == STRING_V))
+				if((t->type == ID)||(t->type == INT_V)||(t->type == FLOAT_V)||(t->type == STRING_V))
 				{
 					tmp = *t;
 					// TODO semantickou kontrolu dat typu
@@ -243,7 +243,7 @@ int build_in_fce(TToken *t)
 					if(t->type == COLON)
 					{
 						t = get_next(t,LA_S,&storage);
-						if((t->type == ID)||(t->type == INT_V))
+						if((t->type == ID)||(t->type == INT_V)||(t->type == FLOAT_V)||(t->type == STRING_V))
 						{
 							tmp2 = *t;
 							// TODO sementicka kontrola typu
@@ -254,7 +254,7 @@ int build_in_fce(TToken *t)
 							if(t->type == COLON)
 							{
 								t = get_next(t,LA_S,&storage);
-								if((t->type == ID)||(t->type == INT_V))
+								if((t->type == ID)||(t->type == INT_V)||(t->type == FLOAT_V)||(t->type == STRING_V))
 								{
 									tmp3 = *t;
 									// TODO sementicko kontrolu dat typu
@@ -288,7 +288,7 @@ int build_in_fce(TToken *t)
 			if(t->type == BRACKET_L)
 			{
 				t = get_next(t,LA_S,&storage);
-				if((t->type == ID) ||(t->type == STRING_V))
+				if((t->type == ID)||(t->type == INT_V)||(t->type == FLOAT_V)||(t->type == STRING_V))
 				{
 
 					tmp = *t;
@@ -300,7 +300,7 @@ int build_in_fce(TToken *t)
 					if(t->type == COLON)
 					{
 						t = get_next(t,LA_S,&storage);
-						if((t->type == ID)||(t->type == INT_V))
+						if((t->type == ID)||(t->type == INT_V)||(t->type == FLOAT_V)||(t->type == STRING_V))
 						{	
 							
 							tmp2 = *t;
@@ -331,7 +331,7 @@ int build_in_fce(TToken *t)
 			if(t->type == BRACKET_L)
 			{
 				t = get_next(t,LA_S,&storage);
-				if((t->type == ID)||(t->type == INT_V))
+				if((t->type == ID)||(t->type == INT_V)||(t->type == FLOAT_V)||(t->type == STRING_V))
 				{
 					// TODO semantickou kontrolu dat typu
 					if(!semantic_id(root_local,t,'i'))
@@ -875,7 +875,7 @@ int param(TToken* t, Tdata* data, int local)
 				{
 					tmp.defined = 1;
 					tmp.param = NULL;
-					if(!semantic_insert(&root_local,t->string,&tmp))
+					if(!semantic_insert_id(&root_local,root_global,t->string,&tmp))
 						return FALSE;
 				}
 				//
@@ -955,7 +955,8 @@ int func_line(TToken* t,int local)
 						 	if(type(t,&tmp,1,NULL))
 						 	{
 						 		// semantic
-						 		semantic_return_type(&return_type,local,tmp.type);
+						 		if(!semantic_return_type(&return_type,local,tmp.type,name,flag))
+						 			return FALSE;
 						 		// end  semantic
 
 						 		t = get_next(t,LA_S,&storage);
@@ -1011,7 +1012,7 @@ int func(TToken* t, int scope)
 							codegen_end_function();
 
 							t = get_next(t,LA_S,&storage);
-							return func(t, scope);
+							return func(t,scope);
 						}
 					}
 				}
@@ -1019,7 +1020,7 @@ int func(TToken* t, int scope)
 	else if (t->type == EOL)
 	{
 		t = get_next(t,LA_S,&storage);
-		return func(t, scope);
+		return func(t,scope);
 	}
 
 	return FALSE;
@@ -1090,6 +1091,8 @@ int parser_FREEBASIC()
 
 	int res = parser_start(token);
 
+	if(token->type == SCAN_ERR)
+		ERROR_RETURN = 1;
 	free_tree(&root_local);
 	free_tree(&root_global);
 	

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "symbtab.h"
 #include "token.h"
 #include "parser.h"
@@ -70,7 +71,7 @@ int semantic_exp(char* string, TExpr_operand* operand_array, Toperation* arr, in
 
 int semantic_check_lside_rside(int l_side, int r_side);
 
-void semantic_return_type(int* glob_var,int local,int ret_type);
+int semantic_return_type(int* glob_var,int local,int ret_type, char* name, int flag);
 
 int semantic_check_define(Ttnode_ptr* root, char* name);
 

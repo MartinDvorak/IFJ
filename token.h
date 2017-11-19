@@ -91,3 +91,8 @@ void token_free(TToken* t);
 TToken *get_next(TToken *t, Tstack* s, int *storage);
 
 int valid_ES(Tstack* s);
+
+//vraci posledni nacteny znak tedy EOL
+int skip_LC(int *state);
+
+void skip_BC(int *state);
