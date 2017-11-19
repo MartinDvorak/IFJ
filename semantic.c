@@ -80,7 +80,17 @@ int semantic_return_type(int* glob_var,int local,int ret_type, char *name,int fl
 	}
 	return TRUE;
 }
-
+int semantico_convert_buildin(int type)
+{
+	switch(type)
+	{
+		case LENGTH:return INTEGER; 
+		case SUBSTR:return STRING;
+		case ASC:return INTEGER;
+		case CHR:return STRING;
+		default: return 0; 
+	}
+}
 int semantic_check_lside_rside(int l_side, int r_side)
 {
 	if(l_side == r_side)

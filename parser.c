@@ -405,6 +405,8 @@ int r_side(TToken *t,int lvalue)
 	else if ((t->type == LENGTH) || (t->type == SUBSTR) || (t->type == ASC) ||(t->type == CHR) )
 	{ // BUILD IN FUNCTION
 		// TODO SEMANTICKA KONTROLA
+		if(!semantic_check_lside_rside(lvalue,semantico_convert_buildin(t->type)))
+			return FALSE;
 		if(build_in_fce(t))
 		{
 			if(t->type == EOL)
