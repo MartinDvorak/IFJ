@@ -591,7 +591,7 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 		printf("MOVE TF@*index float@%g\n", beg_token->float_v);	
 		if(convert_param2 == DOUBLE2INT) printf("FLOAT2R2OINT TF@*index TF@*index\n");
 	}
-	printf("ADD TF@*index TF@*index int@1\n");	//posun o 1, index od 1 ne od nuly
+	printf("SUB TF@*index TF@*index int@1\n");	//posun o 1, index od 1 ne od nuly
 
 	printf("DEFVAR TF@*out_len\n");
 	if(len_token->type == ID){
@@ -625,12 +625,12 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 	printf("DEFVAR TF@*end_index\n");
 	printf("JUMPIFEQ $*else_branch TF@*state bool@true\n");		// if(out_len < 0) ||	(out_len > Length(in_string))
 
-		printf("MOVE TF@*end_index TF@*str_len\n");				//end_index = length(in_string)
+		printf("ADD TF@*end_index TF@*index TF@*out_len\n");	//end_index = index = out_len
 
 	printf("JUMP $*end_if\n");
 	printf("LABEL $*else_branch\n");			//else
 
-		printf("ADD TF@*end_index TF@*index TF@*out_len\n");	//end_index = index = out_len
+		printf("MOVE TF@*end_index TF@*str_len\n");				//end_index = length(in_string)		
 
 	printf("LABEL $*end_if\n");					//end if 
 
@@ -639,8 +639,8 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 
 	/**WHILE LOOP**/
 	printf("LABEL $*loop_top\n");
-	printf("GT TF@*state_loop TF@*index TF@*end_index\n");
-	printf("JUMPIFEQ $*end_loop TF@*state_loop bool@true\n");	//while (index <= end_index)
+	printf("LT TF@*state_loop TF@*index TF@*end_index\n");
+	printf("JUMPIFEQ $*end_loop TF@*state_loop bool@false\n");	//while (index <= end_index)
 
 		printf("GETCHAR TF@*tmp_char TF@*input TF@*index\n");
 		printf("CONCAT TF@&retval_function TF@&retval_function TF@*tmp_char\n");	//ret = ret = char[index]

@@ -1,7 +1,6 @@
-#Codegen
+# Codegen
  ->	POTREBA OTESTOVAT!! 
- 	-> zatim nefunguje funkce SubStr, bezi mimo meze retezce
- 	->krom ni uz se muze testovat vsechno
+ 
 # Parser  
  -> ./LL_rules.txt >> pravidla pro Parser
 

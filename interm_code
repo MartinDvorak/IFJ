@@ -8,7 +8,7 @@ DEFVAR LF@s2
 MOVE LF@s2 string@
 DEFVAR LF@s1len
 MOVE LF@s1len int@0
-PUSHS string@toto\032je\032nejaky\032text
+PUSHS string@Toto\032je\032nejaky\032text
 POPS LF@s1
 CLEARS
 PUSHS LF@s1
@@ -65,7 +65,7 @@ DEFVAR TF@*input
 MOVE TF@*input LF@s2
 DEFVAR TF@*index
 MOVE TF@*index LF@s1len
-ADD TF@*index TF@*index int@1
+SUB TF@*index TF@*index int@1
 DEFVAR TF@*out_len
 MOVE TF@*out_len int@4
 DEFVAR TF@*str_len
@@ -81,93 +81,26 @@ DEFVAR TF@*state
 POPS TF@*state
 DEFVAR TF@*end_index
 JUMPIFEQ $*else_branch TF@*state bool@true
-MOVE TF@*end_index TF@*str_len
+ADD TF@*end_index TF@*index TF@*out_len
 JUMP $*end_if
 LABEL $*else_branch
-ADD TF@*end_index TF@*index TF@*out_len
+MOVE TF@*end_index TF@*str_len
 LABEL $*end_if
 DEFVAR TF@*state_loop
 DEFVAR TF@*tmp_char
 LABEL $*loop_top
-GT TF@*state_loop TF@*index TF@*end_index
-JUMPIFEQ $*end_loop TF@*state_loop bool@true
+LT TF@*state_loop TF@*index TF@*end_index
+JUMPIFEQ $*end_loop TF@*state_loop bool@false
 GETCHAR TF@*tmp_char TF@*input TF@*index
 CONCAT TF@&retval_function TF@&retval_function TF@*tmp_char
 ADD TF@*index TF@*index int@1
 JUMP $*loop_top
 LABEL $*end_loop
 MOVE LF@s1 TF@&retval_function
-PUSHS string@4\032znaky\032od\032
-CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
-PUSHS LF@s1len
-CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
-PUSHS string@.\032znaku\032v\032\092"
-CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
-PUSHS LF@s2
-CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
-PUSHS string@\092":
-CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
 PUSHS LF@s1
 CREATEFRAME
 DEFVAR TF@$retval_expr
 POPS TF@$retval_expr
 WRITE TF@$retval_expr
 CLEARS
-PUSHS string@\092n
-CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
-PUSHS string@zadejte\032serazenou\032posloupnost\032vsech\032malych\032pismen\032a-h,\032
-CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
-PUSHS string@pricemz\032se\032pismena\032nesmeji\032v\032posloupnosti\032opakovat
-CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
-READ LF@s1 string
-DEFVAR LF@loop_state_0
-LABEL $loop_top_0
-PUSHS LF@s1
-PUSHS string@abcdefgh
-EQS
-NOTS
-POPS LF@loop_state_0
-CLEARS
-JUMPIFNEQ $loop_end_0 LF@loop_state_0 bool@true
-PUSHS string@\092nspatne\032zadana\032posloupnost,\032zkuste\032znovu
-CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
-READ LF@s1 string
-JUMP $loop_top_0
-LABEL $loop_end_0
 Vystup z prekladace::1::

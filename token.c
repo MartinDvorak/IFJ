@@ -33,7 +33,6 @@ int valid_ES(Tstack* s) {
     }
     else if (c >= '0' && c <= '2') {
         tmp = c - '0';
-        printf("%d\n", tmp);
         push(s, c);
         for (int i = 0; i < 2; i++) {
             c = tolower(getchar());
@@ -59,7 +58,7 @@ int valid_ES(Tstack* s) {
 void skip_BC (int *state) {
 
     int com1, com2;
-    
+
     com1 = getchar();
     while (1) {
         com2 = getchar();
@@ -67,7 +66,7 @@ void skip_BC (int *state) {
             break;
         }
         else if (com2 == EOF) {
-        *state = SCAN_ERR;
+        *state = EOF;
             break;
         }
         else {
@@ -259,7 +258,8 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
         }
     }
 
-    while((done == 0) && ((c = tolower(getchar())) != EOF)) {
+    while((done == 0) && ((c = tolower(getchar())) != EOF)) {          //while((done == 0) && ((c = tolower(getchar())) != EOF))
+        //c = tolower(getchar()); //
         if (isblank(c)) {
             if (state == EXCL_M) {
                 state = SCAN_ERR;
@@ -362,7 +362,16 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
             case EXCL_M:
                 if (c == '\"') {
                     state = STRING_V;
-                    while (((c = tolower(getchar())) != '\"') && (c != '\n')) {
+                    while (((c = getchar()) != '\"')) {
+                        if (c == '\n') {
+                            state = SCAN_ERR;
+                            *storage = c;
+                            break;
+                        }
+                        if (c == EOF) {
+                            state = SCAN_ERR;
+                            break;
+                        }
                         push(s, c);
                         if (c == '\\') {
                             if (valid_ES(s) == 0) {
@@ -371,8 +380,6 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                         }
 
                     }
-                    //c = getchar();
-                    //break;
                 }
                 else {
                     state = SCAN_ERR;
@@ -415,22 +422,21 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     done = 1;
                     *storage = c;
                 }
-
                 break;
             
-            case DIV:
-                if (c == '/') {
-                    state = B_COMMENT;
-                }
-                else {
-                    *storage = c;
-                }
+            case SCAN_ERR:
+                done = 1;
                 break;
         }
     }
 
+
     if (state == EXPONENT) {
         state = FLOAT_V;
+    }
+
+    if ((!nonzero) && (state == FLOAT_V)) {
+        state = SCAN_ERR;
     }
 
     if ((tmp_s = malloc(sizeof(char)*(s->top + 3))) == NULL) {
@@ -443,7 +449,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     }
     tmp_s[i] = '\0'; 
 
-    //printf("%s\n", tmp_s);
+
     if (state == ID) {
         for (int i = 0; i < 35; i++) {
             if ((strcmp(tmp_s, keywords[i])) == 0) {
