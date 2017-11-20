@@ -236,7 +236,15 @@ int build_in_fce(TToken *t)
 				t = get_next(t,LA_S,&storage);
 				if((t->type == ID)||(t->type == INT_V)||(t->type == FLOAT_V)||(t->type == STRING_V))
 				{
-					tmp = *t;
+
+					/**GENEROVANI MEZIKODU*************************/
+					tmp.type = t->type;
+					tmp.int_v = t->int_v;
+					tmp.float_v = t->float_v;
+					if((tmp.string = malloc(sizeof(char)*(strlen(t->string)+1))) == NULL)
+						exit(99);
+					strcpy(tmp.string, t->string);
+
 					// TODO semantickou kontrolu dat typu
 					if(!semantic_id(root_local,t,'s', NULL))
 						return FALSE;
@@ -247,7 +255,14 @@ int build_in_fce(TToken *t)
 						t = get_next(t,LA_S,&storage);
 						if((t->type == ID)||(t->type == INT_V)||(t->type == FLOAT_V)||(t->type == STRING_V))
 						{
-							tmp2 = *t;
+							/**GENEROVANI MEZIKODU*************************/
+							tmp2.type = t->type;
+							tmp2.int_v = t->int_v;
+							tmp2.float_v = t->float_v;
+							if((tmp2.string = malloc(sizeof(char)*(strlen(t->string)+1))) == NULL)
+								exit(99);
+							strcpy(tmp2.string, t->string);
+
 							// TODO sementicka kontrola typu
 							if(!semantic_id(root_local,t,'i', &convert_param2))
 								return FALSE;
@@ -258,7 +273,15 @@ int build_in_fce(TToken *t)
 								t = get_next(t,LA_S,&storage);
 								if((t->type == ID)||(t->type == INT_V)||(t->type == FLOAT_V)||(t->type == STRING_V))
 								{
-									tmp3 = *t;
+									/**GENEROVANI MEZIKODU*************************/
+									tmp3.type = t->type;
+									tmp3.int_v = t->int_v;
+									tmp3.float_v = t->float_v;
+									if((tmp3.string = malloc(sizeof(char)*(strlen(t->string)+1))) == NULL)
+										exit(99);
+									strcpy(tmp3.string, t->string);
+
+
 									// TODO sementicko kontrolu dat typu
 									if(!semantic_id(root_local,t,'i', &convert_param3))
 										return FALSE;
@@ -269,6 +292,10 @@ int build_in_fce(TToken *t)
 
 										/****GENEROVANI MEZIKODU****************/
 										codegen_buildin_substr(&tmp, &tmp2, &tmp3, convert_param2, convert_param3);
+										free(tmp.string);
+										free(tmp2.string);
+										free(tmp3.string);
+
 
 
 										t = get_next(t,LA_S,&storage);
@@ -484,6 +511,9 @@ int r_side(TToken *t,int lvalue, int* r_side_type, int* convert_func_result)
 	{ // BUILD IN FUNCTION
 		// TODO SEMANTICKA KONTROLA
 		*r_side_type = R_SIDE_BUILD_IN;
+
+		if(!semantic_check_lside_rside(lvalue,semantico_convert_buildin(t->type),R_SIDE_BUILD_IN, convert_func_result))
+			return FALSE;
 
 		if(build_in_fce(t))
 		{
@@ -922,15 +952,15 @@ int func_line(TToken* t,int local)
 			if(local)
 			{
 				int prom = semantic_check_define(&root_global,t->string);
+
+				/*****GENEROVANI MEZIKODU*************************/
+					codegen_func_definition(t);
+
 				if(prom == 0)// redefinace
 					return FALSE;
 				else if(prom == -1){ // prvni def
 					if(!semantic_insert(&root_global, t->string, &tmp))
 						return FALSE; // neni prvni def					//
-
-					/*****GENEROVANI MEZIKODU*************************/
-					codegen_func_definition(t);
-
 				}
 				else{
 					flag = 1;

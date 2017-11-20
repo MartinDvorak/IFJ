@@ -28,6 +28,18 @@ int semantic_return_type(int* glob_var,int local,int ret_type, char *name,int fl
 	return TRUE;
 }
 
+int semantico_convert_buildin(int type)
+{
+	switch(type)
+	{
+		case LENGTH:return INTEGER; 
+		case SUBSTR:return STRING;
+		case ASC:return INTEGER;
+		case CHR:return STRING;
+		default: return 0; 
+	}
+}
+
 int semantic_check_lside_rside(int l_side, int r_side, int r_side_type, int* convert_func_result)
 {
 	//pokud jde o funkci, zde konvertuje return hodnotu podle predpokladane, ne podle l_side type!!!!!!
@@ -40,12 +52,14 @@ int semantic_check_lside_rside(int l_side, int r_side, int r_side_type, int* con
 	{	// covreze Double-> int
 		if((r_side_type == R_SIDE_EXPR) || (r_side_type == FUNC_RETURN)) printf("FLOAT2R2OINTS\n");
 		if(r_side_type == R_SIDE_FCALL) *convert_func_result = DOUBLE2INT;
+		if(r_side_type == R_SIDE_BUILD_IN) *convert_func_result = DOUBLE2INT;
 		return TRUE;
 	}
 	else if ((l_side == DOUBLE) && (r_side == INTEGER))
 	{ // INT -> DOUBLE
 		if((r_side_type == R_SIDE_EXPR) || (r_side_type == FUNC_RETURN)) printf("INT2FLOATS\n");
 		if(r_side_type == R_SIDE_FCALL) *convert_func_result = INT2DOUBLE;
+		if(r_side_type == R_SIDE_BUILD_IN) *convert_func_result = INT2DOUBLE;
 		return TRUE;
 	}
 	

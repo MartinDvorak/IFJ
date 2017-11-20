@@ -1,4 +1,5 @@
 #include "semantic.h"
+#include <string.h>
 
 #define R_SIDE_FCALL 		0
 #define R_SIDE_EXPR 		1

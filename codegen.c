@@ -82,7 +82,7 @@ void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_a
 //uvolni cele pole operandu 
 void operand_array_destructor(TExpr_operand* operand_array, int size){
 
-	for(int i = 0; i < size; i++){
+	for(int i = 0; i < (size-1); i++){
 		//pruchod pres prvky
 		if(operand_array[i].type == STRING_V){
 			//konstanta string
@@ -127,7 +127,7 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 						printf("PUSHS float@%g\n", operand_array[operand_index].float_v);
 						break;
 					case STRING_V:
-						str_out = string_convert_constant(operand_array[operand_index].string);				
+						str_out = string_convert_constant(operand_array[operand_index].string);	
 						printf("PUSHS string@%s\n", str_out);
 						free(str_out);
 						break;
@@ -258,7 +258,7 @@ void codegen_dim(char* name){
 					printf("MOVE LF@%s float@0.0\n", name);
 					break;
 				case STRING:
-					printf("MOVE LF@%s string@!\"\"\n", name);
+					printf("MOVE LF@%s string@\n", name);
 					break;
 			}
 }
@@ -276,6 +276,8 @@ void codegen_dim_r_side(char* name, int r_side_type, int convert_func_result){
 			break;
 		case R_SIDE_BUILD_IN:
 			//build in function call
+			if(convert_func_result == INT2DOUBLE) printf("INT2FLOAT TF@&retval_function TF@&retval_function\n");
+			if(convert_func_result == DOUBLE2INT) printf("FLOAT2R2OINT TF@&retval_function TF@&retval_function\n");
 			printf("MOVE LF@%s TF@&retval_function\n", name);
 			break;
 		case R_SIDE_FCALL:
@@ -297,6 +299,8 @@ void codegen_assignment(char* name, int r_side_type, int convert_func_result){
 			break;
 		case R_SIDE_BUILD_IN:
 			//build in function call
+			if(convert_func_result == INT2DOUBLE) printf("INT2FLOAT TF@&retval_function TF@&retval_function\n");
+			if(convert_func_result == DOUBLE2INT) printf("FLOAT2R2OINT TF@&retval_function TF@&retval_function\n");
 			printf("MOVE LF@%s TF@&retval_function\n", name);
 			break;
 		case R_SIDE_FCALL:
@@ -325,7 +329,7 @@ void codegen_input(TToken* t){
 		case STRING:
 			printf("READ LF@%s string\n", t->string);
 			//prevod retezce na format IFJcode17 (bez bilych znaku)
-			string_convert_input(t);
+			//string_convert_input(t); //nejspis zbytecne!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			break;
 	}
 }
@@ -336,13 +340,14 @@ void codegen_print(){
 	printf("CREATEFRAME\n");
 	printf("DEFVAR TF@$retval_expr\n");
 	printf("POPS TF@$retval_expr\n");
-	printf("WRITE TF@retval_expr\n");
+	printf("WRITE TF@$retval_expr\n");
 	printf("CLEARS\n");
 }
 
 //vytvori LF
 void codegen_scope(){
 
+	printf("LABEL &&&scope\n");
 	printf("CREATEFRAME\n");
 	printf("PUSHFRAME\n");
 
@@ -354,7 +359,8 @@ void codegen_scope(){
 //vytvori navesti, prevede TF na LF
 void codegen_func_definition(TToken* t){
 
-	printf("LABEL @func@%s\n", t->string);
+	printf("JUMP &&&scope\n");
+	printf("LABEL @func&%s\n", t->string);
 	printf("PUSHFRAME\n");
 }
 
@@ -383,7 +389,7 @@ void codegen_func_return(){
 //pouze skoci na kod funkce
 void codegen_func_call(char* f_name){
 
-	printf("CALL @func@%s\n", f_name);
+	printf("CALL @func&%s\n", f_name);
 
 }
 
@@ -428,9 +434,9 @@ void codegen_func_call_give_param(TToken* t, int param_no, int covert_param){
 //skok na else vetev, bool hodnota vyhodnoceni vyrazu je na vrcholu datoveho zasobniku, vycisti ho 
 void codegen_if_cond_jump(int actual_if_id){
 
-	printf("DEFVAR LF$if_cond_state_%d\n", actual_if_id);
-	printf("POPS LF$if_cond_state_%d\n", actual_if_id);
-	printf("JUMPIFNEQ $else_branch_%d LF$if_cond_state_%d bool@true\n", actual_if_id, actual_if_id);
+	printf("DEFVAR LF@$if_cond_state_%d\n", actual_if_id);
+	printf("POPS LF@$if_cond_state_%d\n", actual_if_id);
+	printf("JUMPIFNEQ $else_branch_%d LF@$if_cond_state_%d bool@true\n", actual_if_id, actual_if_id);
 	printf("CLEARS\n");
 }
 
@@ -473,6 +479,9 @@ void codegen_loop_end(int actual_loop_id){
 	printf("LABEL $loop_end_%d\n", actual_loop_id);
 }
 
+
+/****BUILD IN FUNKCE*********************************************************************************/
+
 void codegen_buildin_length(TToken* t){
 
 	printf("CREATEFRAME\n");
@@ -489,8 +498,6 @@ void codegen_buildin_length(TToken* t){
 	}
 }
 
-
-/****BUILD IN FUNKCE*********************************************************************************/
 
 void codegen_buildin_asc(TToken* string_token, TToken* position_token, int convert_param){
 
@@ -556,6 +563,7 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 
 	printf("CREATEFRAME\n");
 	printf("DEFVAR TF@&retval_function\n");	//chova se jako by byla funkci
+	printf("MOVE TF@&retval_function string@\n");
 
 	printf("DEFVAR TF@*input\n");
 	if(string_token->type == ID){
@@ -563,8 +571,10 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 	}
 	else{
 		//STRING_V
-		char* str = string_convert_constant(string_token->string);
+		char* str;
+		str = string_convert_constant(string_token->string);
 		printf("MOVE TF@*input string@%s\n", str);
+		free(str);
 	}
 
 	printf("DEFVAR TF@*index\n");
@@ -604,7 +614,7 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 	printf("PUSHS TF@*out_len\n");
 	printf("PUSHS int@0\n");
 	printf("LTS\n");
-	printf("PUSHSTF@*out_len\n");
+	printf("PUSHS TF@*out_len\n");
 	printf("PUSHS TF@*str_len\n");
 	printf("GTS\n");
 	printf("ORS\n");							// (out_len < 0) ||	(out_len > Length(in_string))
@@ -646,34 +656,40 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 char* string_convert_constant(char* source){
 
 	int src_len = strlen(source);
-	int out_len;
-
-	for(out_len = 0; out_len < src_len; out_len++){
-		if((source[out_len] >= 0 && source[out_len] <= 32) || (source[out_len] == 92))
-			out_len+= 3;
+	int out_len = 0;
+	int i;
+	for(i = 0; i < src_len; i++){
+		if((source[i] >= 0 && source[i] <= 32) || (source[i] == 92))
+			out_len+= 4;
+		else
+			out_len++;
 	}
+	out_len++; //pro '\0'
+
 	
-	char* output;
+	char* output = NULL;
 	output = malloc(sizeof(char)*(out_len+1));
 
 	for(int i = 0, j = 0; i < src_len; i++, j++){
 		if((source[i] >= 0 && source[i] <= 32) || (source[i] == 92)){
-			output[j] = '\\';
-			output[j+1] = '0';
+			strcpy(&output[j],"\\");
+			strcpy(&output[j+1],"0");
 
-			char* tmp;
+			char* tmp = NULL;
 			if((tmp = malloc(sizeof(char)*3)) == NULL)
 				exit(99);
 			sprintf(tmp, "%02d", source[i]);
-			output[j+2] = tmp[0];
-			output[j+3] = tmp[1];
+			memcpy(&output[j+2], &tmp[0], sizeof(char));
+			memcpy(&output[j+3], &tmp[1], sizeof(char));
 			free(tmp);
 			j+=3;
 		}
 		else{
-			output[j] = source[i];
+			memcpy(&output[j], &source[i], sizeof(char));
 		}		
 	}
+
+	output[out_len-1] = '\0';
 	return output;
 }
 
@@ -693,10 +709,11 @@ void string_convert_input(TToken* t){
 
 	/*WHILE LOOP***********************************************************/
 	printf("LABEL $loop\n");
+	//ma tu byt i ? oprava !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	printf("JUMPIFEQ $end_loop TF@$input_len int@0 \n"); //while STRLEN != 0
 
 		printf("DEFVAR TF@$char_no\n");
-		printf("STRI2INT TF@$char_no TF@$input \n");	//zjisteni ASCII znaku
+		printf("STRI2INT TF@$char_no TF@$input TF@$i\n");	//zjisteni ASCII hodnoty znaku
 
 
 		/*IF char = \000 - /032******************************/
@@ -768,7 +785,7 @@ void string_convert_input(TToken* t){
 			//char == 92, pouze pripoji retezec \092
 			printf("CONCAT TF@$output TF@$output string@\\092\n");
 
-		printf("LABEL $endif\n");
+		printf("JUMP $endif\n");
 		printf("LABEL $normal_char\n");							//else
 
 			//normalni char, pouze kopiruje vstup na vystup
@@ -787,5 +804,5 @@ void string_convert_input(TToken* t){
 	/*END WHILE LOOP*******************************************************/
 
 	//zapsani formatovaneho retezce
-	printf("MOVE LF@%s\n TF@$output", t->string);
+	printf("MOVE LF@%s TF@$output\n", t->string);
 }

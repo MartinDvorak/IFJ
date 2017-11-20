@@ -1,9 +1,1 @@
-
-navratove hodnoty build in funkci !!
-
-je mozne INT2FLOAT var1 var1 ?? (stejne promenne)
-
-
-jak predat prazdny string konstanta ? jako string@!"" ?
-
-
+substring - cyklus bezi az mimo meze retezce ?!?!?!

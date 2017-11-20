@@ -68,6 +68,7 @@ int semantic_call_undefined_fce();
 // zkontroluje dat type a pretypuje popripade promenne
 int semantic_exp(char* string, TExpr_operand* operand_array, Toperation* arr, int* num_of_arr, int* exp_ret);
 
+int semantico_convert_buildin(int type);
 
 int semantic_check_lside_rside(int l_side, int r_side, int r_side_type, int* convert_func_result);
 
