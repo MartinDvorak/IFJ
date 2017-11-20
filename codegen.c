@@ -660,8 +660,21 @@ char* string_convert_constant(char* source){
 	int i;
 	for(i = 0; i < src_len; i++){
 		if((source[i] >= 0 && source[i] <= 32) || (source[i] == 92))
-			out_len+= 4;
+			if((source[i] == 92) && ((source[i+1] == 'n') || (source[i+1] == '"') || (source[i+1] == '\\') || (source[i+1] == 't'))){
+				//povolene escape sekvence IFJ17
+				out_len+=4;
+				i++;
+			}
+			else if((source[i] == 92) && isdigit(source[i+1]) && isdigit(source[i+2]) && isdigit(source[i+3])){
+				//escape sekvence - ASCII hodnota
+				out_len+=4;
+				i+=3;
+			}
+			else{
+				out_len+= 4;
+			}
 		else
+			//normalni znak
 			out_len++;
 	}
 	out_len++; //pro '\0'
@@ -672,6 +685,50 @@ char* string_convert_constant(char* source){
 
 	for(int i = 0, j = 0; i < src_len; i++, j++){
 		if((source[i] >= 0 && source[i] <= 32) || (source[i] == 92)){
+			if(source[i] == 92){
+				//mozna escape sekvence
+				if(source[i+1] == 'n'){
+					strcpy(&output[j],"\\");
+					strcpy(&output[j+1],"0");
+					strcpy(&output[j+2],"1");
+					strcpy(&output[j+3],"0");
+					j+=3;
+					i++; //preskocit jeden znak navic
+
+				}
+				else if(source[i+1] == '"'){
+					strcpy(&output[j],"\\");
+					strcpy(&output[j+1],"0");
+					strcpy(&output[j+2],"3");
+					strcpy(&output[j+3],"4");
+					j+=3;
+					i++; //preskocit jeden znak navic
+				}
+				else if(source[i+1] == 't'){
+					strcpy(&output[j],"\\");
+					strcpy(&output[j+1],"0");
+					strcpy(&output[j+2],"0");
+					strcpy(&output[j+3],"9");
+					j+=3;
+					i++; //preskocit jeden znak navic
+				}
+				else if(source[i+1] == '\\'){
+					strcpy(&output[j],"\\");
+					strcpy(&output[j+1],"0");
+					strcpy(&output[j+2],"9");
+					strcpy(&output[j+3],"2");
+					j+=3;
+					i++; //preskocit jeden znak navic
+				}
+				else if((source[i+1] >= '0') && (source[i+1] <= '9') &&
+						(source[i+2] >= '0') && (source[i+2] <= '9') &&
+						(source[i+3] >= '0') && (source[i+3] <= '9')){
+					//escape ASCII hodnota
+					strcpy(&output[j],"\\");
+
+				}
+			}
+			else{
 			strcpy(&output[j],"\\");
 			strcpy(&output[j+1],"0");
 
@@ -683,6 +740,7 @@ char* string_convert_constant(char* source){
 			memcpy(&output[j+3], &tmp[1], sizeof(char));
 			free(tmp);
 			j+=3;
+			}
 		}
 		else{
 			memcpy(&output[j], &source[i], sizeof(char));
