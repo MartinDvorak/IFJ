@@ -43,6 +43,8 @@ void codegen_scope();
 //vytvori navesti, prevede TF na LF
 void codegen_func_definition(TToken* t);
 
+void codegen_implicit_func_return(TToken* t);
+
 //zkopiruje skutecny parametr do formalniho na LF
 void codegen_func_param(TToken* t, int param_no);
 

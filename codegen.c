@@ -318,6 +318,8 @@ void codegen_input(TToken* t){
 	Tdata* data = &sdata;
 	search_tree(root_local,t->string,data);
 
+	printf("WRITE string@?\\032\n");
+
 	switch(data->type){
 
 		case DOUBLE:
@@ -329,7 +331,6 @@ void codegen_input(TToken* t){
 		case STRING:
 			printf("READ LF@%s string\n", t->string);
 			//prevod retezce na format IFJcode17 (bez bilych znaku)
-			//string_convert_input(t); //nejspis zbytecne!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			break;
 	}
 }
@@ -362,6 +363,24 @@ void codegen_func_definition(TToken* t){
 	printf("JUMP &&&scope\n");
 	printf("LABEL @func&%s\n", t->string);
 	printf("PUSHFRAME\n");
+	printf("DEFVAR LF@&retval_function\n");
+}
+
+//vlozi do navratove hodnoty implicitni podle nav. typu, pro pripad, ze se ve funkci nenachazi return
+void codegen_implicit_func_return(TToken* t){
+
+	if(t->type == INTEGER){
+		printf("MOVE LF@&retval_function int@0\n");
+	}
+	else if(t->type == DOUBLE){
+		printf("MOVE LF@&retval_function float@0.0\n");
+	}
+	else{
+		//t->type == STRING
+		printf("MOVE LF@&retval_function string@\n");
+
+	}
+
 }
 
 //zkopiruje skutecny parametr do formalniho na LF
@@ -381,7 +400,6 @@ void codegen_end_function(){
 
 void codegen_func_return(){
 
-	printf("DEFVAR LF@&retval_function\n");
 	printf("POPS LF@&retval_function\n");
 	printf("CLEARS\n");
 }
@@ -655,10 +673,10 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 //prevede retezec na vystup. format
 char* string_convert_constant(char* source){
 
-	int src_len = strlen(source);
+	//int src_len = strlen(source);
 	int out_len = 0;
 	int i;
-	for(i = 0; i < src_len; i++){
+	for(i = 0; source[i] != '\0'; i++){
 		if((source[i] >= 0 && source[i] <= 32) || (source[i] == 92))
 			if((source[i] == 92) && ((source[i+1] == 'n') || (source[i+1] == '"') || (source[i+1] == '\\') || (source[i+1] == 't'))){
 				//povolene escape sekvence IFJ17
@@ -683,7 +701,7 @@ char* string_convert_constant(char* source){
 	char* output = NULL;
 	output = malloc(sizeof(char)*(out_len+1));
 
-	for(int i = 0, j = 0; i < src_len; i++, j++){
+	for(int i = 0, j = 0; source[i] != '\0' ; i++, j++){
 		if((source[i] >= 0 && source[i] <= 32) || (source[i] == 92)){
 			if(source[i] == 92){
 				//mozna escape sekvence

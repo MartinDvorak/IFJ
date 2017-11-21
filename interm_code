@@ -1,13 +1,20 @@
 .IFJcode17
+JUMP &&&scope
+LABEL @func&foo
+PUSHFRAME
+DEFVAR LF@&retval_function
+MOVE LF@&retval_function string@
+POPFRAME
+RETURN
 LABEL &&&scope
 CREATEFRAME
 PUSHFRAME
-DEFVAR LF@s1
-MOVE LF@s1 string@
-PUSHS string@Toto\032je\009\032nejaky\032text\010
-POPS LF@s1
-CLEARS
-PUSHS LF@s1
+DEFVAR LF@a
+MOVE LF@a string@
+CREATEFRAME
+CALL @func&foo
+MOVE LF@a TF@&retval_function
+PUSHS LF@a
 CREATEFRAME
 DEFVAR TF@$retval_expr
 POPS TF@$retval_expr

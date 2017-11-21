@@ -47,7 +47,7 @@
 #define FLOAT_V   	52
 #define STRING_V    53
 #define ASSIGN      54  //=
-#define EQ          55  //==
+//#define EQ          55  //==
 #define NEQ         56  //<>
 #define LESS        57  //<
 #define GREAT       58  //>

@@ -779,7 +779,6 @@ int body(TToken *t)
 			
 			if(return_type == 0)
 			{	
-				ERROR_RETURN = 6;
 				return FALSE;
 			}
 			int convert_func_result = 0;
@@ -865,8 +864,10 @@ int params_N(TToken *t, Tdata *data, int local)
 		if (t->type == ID)
 		{
 			/****GENEROVANI MEZIKODU**********************/
+			if(local){
 			codegen_func_param(t, called_per_function);
 			called_per_function++;
+			}
 
 			t = get_next(t,LA_S,&storage);
 			if(t->type == AS)
@@ -999,6 +1000,9 @@ int func_line(TToken* t,int local)
 						 		if(!semantic_return_type(&return_type,local,tmp.type,name,flag))
 						 			return FALSE;
 						 		// end  semantic
+
+						 		/**GENEROVANI MEZIKODU**********************/
+						 		codegen_implicit_func_return(t);
 
 						 		t = get_next(t,LA_S,&storage);
 						 		if(t->type == EOL)

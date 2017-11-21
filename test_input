@@ -1,5 +1,8 @@
-Scope
-Dim s1 As String
-s1 = !"Toto je\009 nejaky text\n"
-Print s1;
-End Scope
+
+function foo() as string 
+end function 
+scope 
+dim a as string 
+a = foo() 
+print a; 
+end scope

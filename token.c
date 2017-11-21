@@ -66,7 +66,7 @@ void skip_BC (int *state) {
             break;
         }
         else if (com2 == EOF) {
-        *state = EOF;
+        *state = SCAN_ERR;
             break;
         }
         else {
@@ -108,7 +108,8 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     int done = 0;
     int dot = 0;
     int nonzero = 0;
-    
+
+
     if (t == NULL) {                //FIRST USE
         t = token_init();
     }
@@ -204,6 +205,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
 
         else if (c == '=') {
             state = ASSIGN;
+            done = 1;
         }
 
         else if (c == '<') {
@@ -342,20 +344,25 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     }
                     else {
                         state = SCAN_ERR;
+                        done = 1;
+                        *storage = c;
                     }
                 }
                 else if ((c >= '0') && (c <='9')) {
                     push(s,c);
                     nonzero = 1;
                 }
+                else if (isspace(c)) {
+                    done = 1;
+                    *storage = c;
+                }
                 else {
-                    if (!nonzero) {
+                    done = 1;
+                    *storage = c;
+                    //state = SCAN_ERR;
+                    /*if (!nonzero) {
                         state = SCAN_ERR;
-                    }
-                    else {
-                        done = 1;
-                        *storage = c;
-                    }   
+                    }*/
                 }
                 break;
                 
@@ -387,17 +394,6 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 done = 1;
                 break;
 
-            case ASSIGN:
-                if (c == '=') {
-                    state = EQ;
-                    done = 1;
-                }
-                else {
-                    done = 1;
-                    *storage = c;
-                }
-                break;
-
             case LESS:
                 if (c == '=') {
                     state = LESSEQ;
@@ -424,19 +420,19 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 }
                 break;
             
-            case SCAN_ERR:
+            /*case SCAN_ERR:
                 done = 1;
-                break;
+                *storage = c;
+                break;*/
         }
     }
 
+    if ((nonzero == 0) && (state == EXPONENT)) {
+        state = SCAN_ERR;
+    }
 
     if (state == EXPONENT) {
         state = FLOAT_V;
-    }
-
-    if ((!nonzero) && (state == FLOAT_V)) {
-        state = SCAN_ERR;
     }
 
     if ((tmp_s = malloc(sizeof(char)*(s->top + 3))) == NULL) {
