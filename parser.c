@@ -1002,7 +1002,9 @@ int func_line(TToken* t,int local)
 						 		// end  semantic
 
 						 		/**GENEROVANI MEZIKODU**********************/
+						 		if(local){
 						 		codegen_implicit_func_return(t);
+						 		}
 
 						 		t = get_next(t,LA_S,&storage);
 						 		if(t->type == EOL)
