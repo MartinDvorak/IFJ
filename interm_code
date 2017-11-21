@@ -1,23 +1,72 @@
 .IFJcode17
-JUMP &&&scope
-LABEL &func&foo
-PUSHFRAME
-DEFVAR LF@&retval_function
-MOVE LF@&retval_function string@
-POPFRAME
-RETURN
 LABEL &&&scope
 CREATEFRAME
 PUSHFRAME
+DEFVAR LF@i1
+MOVE LF@i1 int@0
+PUSHS int@10
+POPS LF@i1
+CLEARS
+DEFVAR LF@i2
+MOVE LF@i2 int@0
+PUSHS int@10
+POPS LF@i2
+CLEARS
+DEFVAR LF@loop_state_0
+LABEL $loop_top_0
+PUSHS LF@i1
+PUSHS int@0
+GTS
+POPS LF@loop_state_0
+CLEARS
+JUMPIFNEQ $loop_end_0 LF@loop_state_0 bool@true
+DEFVAR LF@loop_state_1
+LABEL $loop_top_1
+PUSHS LF@i2
+PUSHS int@0
+GTS
+POPS LF@loop_state_1
+CLEARS
+JUMPIFNEQ $loop_end_1 LF@loop_state_1 bool@true
 DEFVAR LF@a
-MOVE LF@a string@
-CREATEFRAME
-CALL &func&foo
-MOVE LF@a TF@&retval_function
+MOVE LF@a int@0
+PUSHS int@42
+POPS LF@a
+CLEARS
+PUSHS LF@a
+PUSHS LF@i1
+ADDS
+PUSHS LF@i2
+ADDS
+POPS LF@a
+CLEARS
 PUSHS LF@a
 CREATEFRAME
 DEFVAR TF@$retval_expr
 POPS TF@$retval_expr
 WRITE TF@$retval_expr
 CLEARS
+PUSHS LF@i2
+PUSHS int@1
+SUBS
+POPS LF@i2
+CLEARS
+JUMP $loop_top_1
+LABEL $loop_end_1
+PUSHS string@\010
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS LF@i1
+PUSHS int@1
+SUBS
+POPS LF@i1
+CLEARS
+PUSHS int@10
+POPS LF@i2
+CLEARS
+JUMP $loop_top_0
+LABEL $loop_end_0
 Vystup z prekladace::1::

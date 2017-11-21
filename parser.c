@@ -246,8 +246,10 @@ int build_in_fce(TToken *t)
 					strcpy(tmp.string, t->string);
 
 					// TODO semantickou kontrolu dat typu
-					if(!semantic_id(root_local,t,'s', NULL))
+					if(!semantic_id(root_local,t,'s', NULL)){
+						free(tmp.string);
 						return FALSE;
+					}
 					//
 					t = get_next(t,LA_S,&storage);
 					if(t->type == COLON)
@@ -264,8 +266,11 @@ int build_in_fce(TToken *t)
 							strcpy(tmp2.string, t->string);
 
 							// TODO sementicka kontrola typu
-							if(!semantic_id(root_local,t,'i', &convert_param2))
+							if(!semantic_id(root_local,t,'i', &convert_param2)){
+								free(tmp.string);
+								free(tmp2.string);
 								return FALSE;
+							}
 							//
 							t = get_next(t,LA_S,&storage);
 							if(t->type == COLON)
@@ -283,8 +288,12 @@ int build_in_fce(TToken *t)
 
 
 									// TODO sementicko kontrolu dat typu
-									if(!semantic_id(root_local,t,'i', &convert_param3))
+									if(!semantic_id(root_local,t,'i', &convert_param3)){
+										free(tmp.string);
+										free(tmp2.string);
+										free(tmp3.string);
 										return FALSE;
+									}
 									//
 									t = get_next(t,LA_S,&storage);
 									if(t->type == BRACKET_R)
@@ -447,11 +456,7 @@ int r_side(TToken *t,int lvalue, int* r_side_type, int* convert_func_result)
 	if(t->type == ID)
 	{ // TODO zajistit preprocessing id
 		TToken tmp = *t;
-		char* f_name;	//ulozeni id funkce
-		if((f_name = malloc(sizeof(char)*(strlen(t->string)+1))) == NULL)
-			exit(99);
-		strcpy(f_name, t->string);
-
+		
 		t = get_next(t,LA_S,&storage);
 
 		if(t->type == BRACKET_L)
@@ -470,6 +475,12 @@ int r_side(TToken *t,int lvalue, int* r_side_type, int* convert_func_result)
 				return FALSE;
 			semantic_flag_use(&root_global,t);
 			/// end
+
+			char* f_name;	//ulozeni id funkce
+			if((f_name = malloc(sizeof(char)*(strlen(t->string)+1))) == NULL)
+				exit(99);
+			strcpy(f_name, t->string);
+
 			t = get_next(t,LA_S,&storage);
 			if(param_f(t,param,&position))
 				if(t->type == BRACKET_R)
@@ -479,6 +490,7 @@ int r_side(TToken *t,int lvalue, int* r_side_type, int* convert_func_result)
 					if(position != (int)strlen(param))
 						{
 							ERROR_RETURN = 4;
+							free(f_name);
 							return FALSE;
 						}
 					
@@ -493,6 +505,7 @@ int r_side(TToken *t,int lvalue, int* r_side_type, int* convert_func_result)
 						return TRUE;
 					}
 				}
+				free(f_name);
 		} 
 		else if(preprocesing_expr(t,&tmp,0,&rvalue))
 		{ // <r_side> -> <expr> EOL
@@ -581,8 +594,10 @@ int body(TToken *t)
 				if(type(t,&tmp,1,NULL))
 				{	
 					// semantic control
-					if(!semantic_insert_id(&root_local,root_global,t->string,&tmp))
+					if(!semantic_insert_id(&root_local,root_global,t->string,&tmp)){
+						free(name);
 						return FALSE;
+					}
 					//
 					t = get_next(t,LA_S,&storage);
 					int r_side_type;
@@ -616,11 +631,15 @@ int body(TToken *t)
 			exit(99);
 		strcpy(name, t->string);
 
-		if(!semantic_find_id(t))
+		if(!semantic_find_id(t)){
+			free(name);
 			return FALSE;	
+		}
 		int lvalue;
-		if(!semantic_id_type(root_local,t,&lvalue))
+		if(!semantic_id_type(root_local,t,&lvalue)){
+			free(name);
 			return FALSE;
+		}
 
 		t = get_next(t,LA_S,&storage);
 		if (t->type == ASSIGN)
@@ -972,14 +991,15 @@ int func_line(TToken* t,int local)
 					return FALSE;
 			}
 			//
-			char *name =NULL;
-			if ((name = malloc(sizeof(char)*strlen(t->string))) == NULL)
-				exit(99);
-			name = strcpy(name,t->string);
 			// semantic
 			t = get_next(t,LA_S,&storage);
 			if(t->type == BRACKET_L)
 			{
+				char *name =NULL;
+				if ((name = malloc(sizeof(char)*strlen(t->string))) == NULL)
+					exit(99);
+				name = strcpy(name,t->string);
+
 				//semntika -pokud bude definice fce -delam lokalni strom
 				if(local)
 				{
@@ -997,8 +1017,10 @@ int func_line(TToken* t,int local)
 						 	if(type(t,&tmp,1,NULL))
 						 	{
 						 		// semantic
-						 		if(!semantic_return_type(&return_type,local,tmp.type,name,flag))
+						 		if(!semantic_return_type(&return_type,local,tmp.type,name,flag)){
+						 			free(name);
 						 			return FALSE;
+						 		}
 						 		// end  semantic
 
 						 		/**GENEROVANI MEZIKODU**********************/
@@ -1015,19 +1037,22 @@ int func_line(TToken* t,int local)
 						 				insert_data_tree(&root_global, name, &tmp);
 						 			}
 						 			else{
-						 				if(!semantic_check_params(root_global,name,tmp.param))
+						 				if(!semantic_check_params(root_global,name,tmp.param)){
+						 					free(name);
 						 					return FALSE;
+						 				}
 						 				free(tmp.param);
 						 			}
 						 			free(name);
 						 			t = get_next(t,LA_S,&storage);
+						 			free(name);
 						 			return TRUE;
 						 		}	
 						 	}
 						}
 					}
+					free(name);
 			}
-			free(name);
 		}
 
 	}
