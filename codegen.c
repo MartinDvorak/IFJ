@@ -361,7 +361,7 @@ void codegen_scope(){
 void codegen_func_definition(TToken* t){
 
 	printf("JUMP &&&scope\n");
-	printf("LABEL @func&%s\n", t->string);
+	printf("LABEL &func&%s\n", t->string);
 	printf("PUSHFRAME\n");
 	printf("DEFVAR LF@&retval_function\n");
 }
@@ -407,7 +407,7 @@ void codegen_func_return(){
 //pouze skoci na kod funkce
 void codegen_func_call(char* f_name){
 
-	printf("CALL @func&%s\n", f_name);
+	printf("CALL &func&%s\n", f_name);
 
 }
 

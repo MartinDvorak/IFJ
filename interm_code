@@ -1,103 +1,23 @@
 .IFJcode17
-MOVE LF@&retval_function int@0
 JUMP &&&scope
-LABEL @func&factorial
+LABEL &func&foo
 PUSHFRAME
 DEFVAR LF@&retval_function
-DEFVAR LF@n
-MOVE LF@n LF@$f_param1
-MOVE LF@&retval_function int@0
-DEFVAR LF@temp_result
-MOVE LF@temp_result int@0
-DEFVAR LF@decremented_n
-MOVE LF@decremented_n int@0
-DEFVAR LF@result
-MOVE LF@result int@0
-PUSHS LF@n
-PUSHS int@2
-LTS
-DEFVAR LF@$if_cond_state_0
-POPS LF@$if_cond_state_0
-JUMPIFNEQ $else_branch_0 LF@$if_cond_state_0 bool@true
-CLEARS
-PUSHS int@1
-POPS LF@result
-CLEARS
-JUMP $end_if_0
-LABEL $else_branch_0
-PUSHS LF@n
-PUSHS int@1
-SUBS
-POPS LF@decremented_n
-CLEARS
-CREATEFRAME
-DEFVAR TF@$f_param1
-MOVE TF@$f_param1 LF@decremented_n
-CALL @func&factorial
-MOVE LF@temp_result TF@&retval_function
-PUSHS LF@n
-PUSHS LF@temp_result
-MULS
-POPS LF@result
-CLEARS
-LABEL $end_if_0
-PUSHS LF@result
-POPS LF@&retval_function
-CLEARS
+MOVE LF@&retval_function string@
 POPFRAME
 RETURN
 LABEL &&&scope
 CREATEFRAME
 PUSHFRAME
 DEFVAR LF@a
-MOVE LF@a int@0
-DEFVAR LF@vysl
-MOVE LF@vysl int@0
-PUSHS string@Zadejte\032cislo\032pro\032vypocet\032faktorialu
+MOVE LF@a string@
 CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
-WRITE string@?\032
-READ LF@a int
+CALL &func&foo
+MOVE LF@a TF@&retval_function
 PUSHS LF@a
-PUSHS int@0
-LTS
-DEFVAR LF@$if_cond_state_1
-POPS LF@$if_cond_state_1
-JUMPIFNEQ $else_branch_1 LF@$if_cond_state_1 bool@true
-CLEARS
-PUSHS string@\010Faktorial\032nelze\032spocitat\010
 CREATEFRAME
 DEFVAR TF@$retval_expr
 POPS TF@$retval_expr
 WRITE TF@$retval_expr
 CLEARS
-JUMP $end_if_1
-LABEL $else_branch_1
-CREATEFRAME
-DEFVAR TF@$f_param1
-MOVE TF@$f_param1 LF@a
-CALL @func&factorial
-MOVE LF@vysl TF@&retval_function
-PUSHS string@\010Vysledek\032je:
-CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
-PUSHS LF@vysl
-CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
-PUSHS string@\010
-CREATEFRAME
-DEFVAR TF@$retval_expr
-POPS TF@$retval_expr
-WRITE TF@$retval_expr
-CLEARS
-LABEL $end_if_1
 Vystup z prekladace::1::
