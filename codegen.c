@@ -402,6 +402,8 @@ void codegen_func_return(){
 
 	printf("POPS LF@&retval_function\n");
 	printf("CLEARS\n");
+	printf("POPFRAME\n");
+	printf("RETURN\n");
 }
 
 //pouze skoci na kod funkce
