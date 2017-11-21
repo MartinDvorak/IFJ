@@ -66,7 +66,7 @@ void skip_BC (int *state) {
             break;
         }
         else if (com2 == EOF) {
-        *state = EOF;
+        *state = SCAN_ERR;
             break;
         }
         else {
