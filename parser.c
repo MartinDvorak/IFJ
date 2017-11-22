@@ -41,8 +41,8 @@ int preprocesing_expr(TToken* t, TToken *last, int condition, int* exp_ret)
 		
 		if(strlen(string)%10 == 9)
 		{
-			int size = strlen(string)%10;
-			if ((string = realloc(string, sizeof(char)*(size+11))) == NULL)
+			int size = strlen(string);
+			if ((string = realloc(string, sizeof(char)*(size+10))) == NULL)
 				exit(99);
 		}
 

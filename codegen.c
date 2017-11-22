@@ -232,7 +232,6 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 	}
 }
 
-
 /****KONEC ZPRACOVANI VYRAZU**********************************************************/
 
 
@@ -595,7 +594,7 @@ void codegen_buildin_chr(TToken* t, int convert_param){
 	if(t->type == ID){
 
 		printf("MOVE TF@$value LF@%s\n", t->string);
-		if(convert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@$value TF@&value\n");
+		if(convert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@$value TF@$value\n");
 		printf("INT2CHAR TF@&retval_function TF@$value\n");
 	}
 	else if(t->type == INT_V){
@@ -691,12 +690,12 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 	printf("DEFVAR TF@*end_index\n");
 	printf("JUMPIFEQ $*else_branch_%d TF@*state bool@true\n", call_counter);		// if(out_len < 0) ||	(out_len > Length(in_string))
 
-		printf("ADD TF@*end_index TF@*index TF@*out_len\n");	//end_index = index = out_len
+		printf("MOVE TF@*end_index TF@*str_len\n");				//end_index = length(in_string)
 
 	printf("JUMP $*end_if_%d\n", call_counter);
 	printf("LABEL $*else_branch_%d\n", call_counter);			//else
 
-		printf("MOVE TF@*end_index TF@*str_len\n");				//end_index = length(in_string)		
+		printf("ADD TF@*end_index TF@*index TF@*out_len\n");	//end_index = index = out_len		
 
 	printf("LABEL $*end_if_%d\n", call_counter);					//end if 
 
