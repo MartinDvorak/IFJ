@@ -1123,6 +1123,8 @@ int scope(TToken *t)
 						t = get_next(t,LA_S,&storage);
 						if((t->type == EOL)||(t->type == EOF)) // oef? 
 						{
+							
+
 							t = get_next(t,LA_S,&storage);
 							return TRUE;
 						}
@@ -1167,7 +1169,7 @@ int parser_FREEBASIC()
 		ERROR_RETURN = 1;
 	free_tree(&root_local);
 	free_tree(&root_global);
-	
+
 	// TODO free token
 	token_free(token);
 

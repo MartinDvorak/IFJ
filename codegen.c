@@ -242,6 +242,8 @@ void codegen_dim(char* name){
 
 	Tdata data;
 	Tdata* tdata = &data;
+	static int call_counter = 0;
+
 
 	search_tree(root_local, name, tdata);
 
@@ -261,6 +263,8 @@ void codegen_dim(char* name){
 					printf("MOVE LF@%s string@\n", name);
 					break;
 			}
+
+	call_counter++;
 }
 
 void codegen_dim_r_side(char* name, int r_side_type, int convert_func_result){
@@ -323,7 +327,7 @@ void codegen_input(TToken* t){
 	switch(data->type){
 
 		case DOUBLE:
-			printf("READ LF@%s double\n", t->string);
+			printf("READ LF@%s float\n", t->string);
 			break;
 		case INTEGER:
 			printf("READ LF@%s int\n", t->string);
@@ -580,6 +584,8 @@ void codegen_buildin_chr(TToken* t, int convert_param){
 
 void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len_token, int convert_param2, int convert_param3){
 
+	static int call_counter = 0;	
+
 	printf("CREATEFRAME\n");
 	printf("DEFVAR TF@&retval_function\n");	//chova se jako by byla funkci
 	printf("MOVE TF@&retval_function string@\n");
@@ -642,31 +648,33 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 	printf("POPS TF@*state\n");
 
 	printf("DEFVAR TF@*end_index\n");
-	printf("JUMPIFEQ $*else_branch TF@*state bool@true\n");		// if(out_len < 0) ||	(out_len > Length(in_string))
+	printf("JUMPIFEQ $*else_branch_%d TF@*state bool@true\n", call_counter);		// if(out_len < 0) ||	(out_len > Length(in_string))
 
 		printf("ADD TF@*end_index TF@*index TF@*out_len\n");	//end_index = index = out_len
 
-	printf("JUMP $*end_if\n");
-	printf("LABEL $*else_branch\n");			//else
+	printf("JUMP $*end_if_%d\n", call_counter);
+	printf("LABEL $*else_branch_%d\n", call_counter);			//else
 
 		printf("MOVE TF@*end_index TF@*str_len\n");				//end_index = length(in_string)		
 
-	printf("LABEL $*end_if\n");					//end if 
+	printf("LABEL $*end_if_%d\n", call_counter);					//end if 
 
 	printf("DEFVAR TF@*state_loop\n");
 	printf("DEFVAR TF@*tmp_char\n");
 
 	/**WHILE LOOP**/
-	printf("LABEL $*loop_top\n");
+	printf("LABEL $*loop_top_%d\n", call_counter);
 	printf("LT TF@*state_loop TF@*index TF@*end_index\n");
-	printf("JUMPIFEQ $*end_loop TF@*state_loop bool@false\n");	//while (index <= end_index)
+	printf("JUMPIFEQ $*end_loop_%d TF@*state_loop bool@false\n", call_counter);	//while (index <= end_index)
 
 		printf("GETCHAR TF@*tmp_char TF@*input TF@*index\n");
 		printf("CONCAT TF@&retval_function TF@&retval_function TF@*tmp_char\n");	//ret = ret = char[index]
 
 	printf("ADD TF@*index TF@*index int@1\n");	//i++
-	printf("JUMP $*loop_top\n");
-	printf("LABEL $*end_loop\n");	//end loop
+	printf("JUMP $*loop_top_%d\n", call_counter);
+	printf("LABEL $*end_loop_%d\n", call_counter);	//end loop
+
+	call_counter++;
 }
 
 /****PREVOD RETEZCU********************************************************************************************/

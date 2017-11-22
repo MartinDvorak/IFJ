@@ -2,71 +2,289 @@
 LABEL &&&scope
 CREATEFRAME
 PUSHFRAME
-DEFVAR LF@i1
-MOVE LF@i1 int@0
-PUSHS int@10
-POPS LF@i1
-CLEARS
-DEFVAR LF@i2
-MOVE LF@i2 int@0
-PUSHS int@10
-POPS LF@i2
-CLEARS
-DEFVAR LF@loop_state_0
-LABEL $loop_top_0
-PUSHS LF@i1
+DEFVAR LF@res
+MOVE LF@res string@
+DEFVAR LF@tmp
+MOVE LF@tmp int@0
 PUSHS int@0
-GTS
-POPS LF@loop_state_0
+PUSHS int@1
+SUBS
+POPS LF@tmp
 CLEARS
-JUMPIFNEQ $loop_end_0 LF@loop_state_0 bool@true
-DEFVAR LF@loop_state_1
-LABEL $loop_top_1
-PUSHS LF@i2
+CREATEFRAME
+DEFVAR TF@&retval_function
+MOVE TF@&retval_function string@
+DEFVAR TF@*input
+MOVE TF@*input string@son\032hai\032nguyen
+DEFVAR TF@*index
+MOVE TF@*index int@5
+SUB TF@*index TF@*index int@1
+DEFVAR TF@*out_len
+MOVE TF@*out_len int@3
+DEFVAR TF@*str_len
+STRLEN TF@*str_len TF@*input
+PUSHS TF@*out_len
 PUSHS int@0
+LTS
+PUSHS TF@*out_len
+PUSHS TF@*str_len
 GTS
-POPS LF@loop_state_1
-CLEARS
-JUMPIFNEQ $loop_end_1 LF@loop_state_1 bool@true
-DEFVAR LF@a
-MOVE LF@a int@0
-PUSHS int@42
-POPS LF@a
-CLEARS
-PUSHS LF@a
-PUSHS LF@i1
-ADDS
-PUSHS LF@i2
-ADDS
-POPS LF@a
-CLEARS
-PUSHS LF@a
+ORS
+DEFVAR TF@*state
+POPS TF@*state
+DEFVAR TF@*end_index
+JUMPIFEQ $*else_branch_0 TF@*state bool@true
+ADD TF@*end_index TF@*index TF@*out_len
+JUMP $*end_if_0
+LABEL $*else_branch_0
+MOVE TF@*end_index TF@*str_len
+LABEL $*end_if_0
+DEFVAR TF@*state_loop
+DEFVAR TF@*tmp_char
+LABEL $*loop_top_0
+LT TF@*state_loop TF@*index TF@*end_index
+JUMPIFEQ $*end_loop_0 TF@*state_loop bool@false
+GETCHAR TF@*tmp_char TF@*input TF@*index
+CONCAT TF@&retval_function TF@&retval_function TF@*tmp_char
+ADD TF@*index TF@*index int@1
+JUMP $*loop_top_0
+LABEL $*end_loop_0
+MOVE LF@res TF@&retval_function
+PUSHS LF@res
 CREATEFRAME
 DEFVAR TF@$retval_expr
 POPS TF@$retval_expr
 WRITE TF@$retval_expr
 CLEARS
-PUSHS LF@i2
-PUSHS int@1
-SUBS
-POPS LF@i2
-CLEARS
-JUMP $loop_top_1
-LABEL $loop_end_1
-PUSHS string@\010
+CREATEFRAME
+DEFVAR TF@&retval_function
+MOVE TF@&retval_function string@
+DEFVAR TF@*input
+MOVE TF@*input string@son\032hai\032nguyen
+DEFVAR TF@*index
+MOVE TF@*index int@9
+SUB TF@*index TF@*index int@1
+DEFVAR TF@*out_len
+MOVE TF@*out_len int@120
+DEFVAR TF@*str_len
+STRLEN TF@*str_len TF@*input
+PUSHS TF@*out_len
+PUSHS int@0
+LTS
+PUSHS TF@*out_len
+PUSHS TF@*str_len
+GTS
+ORS
+DEFVAR TF@*state
+POPS TF@*state
+DEFVAR TF@*end_index
+JUMPIFEQ $*else_branch_1 TF@*state bool@true
+ADD TF@*end_index TF@*index TF@*out_len
+JUMP $*end_if_1
+LABEL $*else_branch_1
+MOVE TF@*end_index TF@*str_len
+LABEL $*end_if_1
+DEFVAR TF@*state_loop
+DEFVAR TF@*tmp_char
+LABEL $*loop_top_1
+LT TF@*state_loop TF@*index TF@*end_index
+JUMPIFEQ $*end_loop_1 TF@*state_loop bool@false
+GETCHAR TF@*tmp_char TF@*input TF@*index
+CONCAT TF@&retval_function TF@&retval_function TF@*tmp_char
+ADD TF@*index TF@*index int@1
+JUMP $*loop_top_1
+LABEL $*end_loop_1
+MOVE LF@res TF@&retval_function
+PUSHS LF@res
 CREATEFRAME
 DEFVAR TF@$retval_expr
 POPS TF@$retval_expr
 WRITE TF@$retval_expr
 CLEARS
-PUSHS LF@i1
-PUSHS int@1
-SUBS
-POPS LF@i1
+CREATEFRAME
+DEFVAR TF@&retval_function
+MOVE TF@&retval_function string@
+DEFVAR TF@*input
+MOVE TF@*input string@
+DEFVAR TF@*index
+MOVE TF@*index int@1
+SUB TF@*index TF@*index int@1
+DEFVAR TF@*out_len
+MOVE TF@*out_len int@1
+DEFVAR TF@*str_len
+STRLEN TF@*str_len TF@*input
+PUSHS TF@*out_len
+PUSHS int@0
+LTS
+PUSHS TF@*out_len
+PUSHS TF@*str_len
+GTS
+ORS
+DEFVAR TF@*state
+POPS TF@*state
+DEFVAR TF@*end_index
+JUMPIFEQ $*else_branch_2 TF@*state bool@true
+ADD TF@*end_index TF@*index TF@*out_len
+JUMP $*end_if_2
+LABEL $*else_branch_2
+MOVE TF@*end_index TF@*str_len
+LABEL $*end_if_2
+DEFVAR TF@*state_loop
+DEFVAR TF@*tmp_char
+LABEL $*loop_top_2
+LT TF@*state_loop TF@*index TF@*end_index
+JUMPIFEQ $*end_loop_2 TF@*state_loop bool@false
+GETCHAR TF@*tmp_char TF@*input TF@*index
+CONCAT TF@&retval_function TF@&retval_function TF@*tmp_char
+ADD TF@*index TF@*index int@1
+JUMP $*loop_top_2
+LABEL $*end_loop_2
+MOVE LF@res TF@&retval_function
+PUSHS LF@res
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
 CLEARS
-PUSHS int@10
-POPS LF@i2
+CREATEFRAME
+DEFVAR TF@&retval_function
+MOVE TF@&retval_function string@
+DEFVAR TF@*input
+MOVE TF@*input string@nothing
+DEFVAR TF@*index
+MOVE TF@*index int@0
+SUB TF@*index TF@*index int@1
+DEFVAR TF@*out_len
+MOVE TF@*out_len int@1
+DEFVAR TF@*str_len
+STRLEN TF@*str_len TF@*input
+PUSHS TF@*out_len
+PUSHS int@0
+LTS
+PUSHS TF@*out_len
+PUSHS TF@*str_len
+GTS
+ORS
+DEFVAR TF@*state
+POPS TF@*state
+DEFVAR TF@*end_index
+JUMPIFEQ $*else_branch_3 TF@*state bool@true
+ADD TF@*end_index TF@*index TF@*out_len
+JUMP $*end_if_3
+LABEL $*else_branch_3
+MOVE TF@*end_index TF@*str_len
+LABEL $*end_if_3
+DEFVAR TF@*state_loop
+DEFVAR TF@*tmp_char
+LABEL $*loop_top_3
+LT TF@*state_loop TF@*index TF@*end_index
+JUMPIFEQ $*end_loop_3 TF@*state_loop bool@false
+GETCHAR TF@*tmp_char TF@*input TF@*index
+CONCAT TF@&retval_function TF@&retval_function TF@*tmp_char
+ADD TF@*index TF@*index int@1
+JUMP $*loop_top_3
+LABEL $*end_loop_3
+MOVE LF@res TF@&retval_function
+PUSHS LF@res
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
 CLEARS
-JUMP $loop_top_0
-LABEL $loop_end_0
+CREATEFRAME
+DEFVAR TF@&retval_function
+MOVE TF@&retval_function string@
+DEFVAR TF@*input
+MOVE TF@*input string@nothing
+DEFVAR TF@*index
+MOVE TF@*index LF@tmp
+SUB TF@*index TF@*index int@1
+DEFVAR TF@*out_len
+MOVE TF@*out_len int@1
+DEFVAR TF@*str_len
+STRLEN TF@*str_len TF@*input
+PUSHS TF@*out_len
+PUSHS int@0
+LTS
+PUSHS TF@*out_len
+PUSHS TF@*str_len
+GTS
+ORS
+DEFVAR TF@*state
+POPS TF@*state
+DEFVAR TF@*end_index
+JUMPIFEQ $*else_branch_4 TF@*state bool@true
+ADD TF@*end_index TF@*index TF@*out_len
+JUMP $*end_if_4
+LABEL $*else_branch_4
+MOVE TF@*end_index TF@*str_len
+LABEL $*end_if_4
+DEFVAR TF@*state_loop
+DEFVAR TF@*tmp_char
+LABEL $*loop_top_4
+LT TF@*state_loop TF@*index TF@*end_index
+JUMPIFEQ $*end_loop_4 TF@*state_loop bool@false
+GETCHAR TF@*tmp_char TF@*input TF@*index
+CONCAT TF@&retval_function TF@&retval_function TF@*tmp_char
+ADD TF@*index TF@*index int@1
+JUMP $*loop_top_4
+LABEL $*end_loop_4
+MOVE LF@res TF@&retval_function
+PUSHS LF@res
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+CREATEFRAME
+DEFVAR TF@&retval_function
+MOVE TF@&retval_function string@
+DEFVAR TF@*input
+MOVE TF@*input string@\010son\032hai\032nguyen
+DEFVAR TF@*index
+MOVE TF@*index int@1
+SUB TF@*index TF@*index int@1
+DEFVAR TF@*out_len
+MOVE TF@*out_len LF@tmp
+DEFVAR TF@*str_len
+STRLEN TF@*str_len TF@*input
+PUSHS TF@*out_len
+PUSHS int@0
+LTS
+PUSHS TF@*out_len
+PUSHS TF@*str_len
+GTS
+ORS
+DEFVAR TF@*state
+POPS TF@*state
+DEFVAR TF@*end_index
+JUMPIFEQ $*else_branch_5 TF@*state bool@true
+ADD TF@*end_index TF@*index TF@*out_len
+JUMP $*end_if_5
+LABEL $*else_branch_5
+MOVE TF@*end_index TF@*str_len
+LABEL $*end_if_5
+DEFVAR TF@*state_loop
+DEFVAR TF@*tmp_char
+LABEL $*loop_top_5
+LT TF@*state_loop TF@*index TF@*end_index
+JUMPIFEQ $*end_loop_5 TF@*state_loop bool@false
+GETCHAR TF@*tmp_char TF@*input TF@*index
+CONCAT TF@&retval_function TF@&retval_function TF@*tmp_char
+ADD TF@*index TF@*index int@1
+JUMP $*loop_top_5
+LABEL $*end_loop_5
+MOVE LF@res TF@&retval_function
+PUSHS LF@res
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS string@\010END
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
 Vystup z prekladace::1::

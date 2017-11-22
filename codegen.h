@@ -88,7 +88,6 @@ void codegen_loop_end(int actual_loop_id);
 //prevede retezec do formatu pro IFJcode17 (zadne bile znaky -> esc sekvence)
 char* string_convert_constant(char* source);
 
-
 /**BUILD IN FUNKCE***********/
 
 void codegen_buildin_length(TToken* t);
