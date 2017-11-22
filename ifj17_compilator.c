@@ -8,6 +8,7 @@ int main(int argc, char ** argv)
 
 	int res = parser_FREEBASIC();
 
+/*
 	if (!res)
 	{
 		printf("Vystup z prekladace::%d::\n", ERROR_RETURN);
@@ -16,6 +17,7 @@ int main(int argc, char ** argv)
 		printf("Vystup z prekladace::%d::\n", res);	
 	} 
 	
+*/
 	if(res != TRUE)
 		return ERROR_RETURN;
 	return 0;

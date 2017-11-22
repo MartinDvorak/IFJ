@@ -457,9 +457,8 @@ void codegen_func_call_give_param(TToken* t, int param_no, int covert_param){
 //skok na else vetev, bool hodnota vyhodnoceni vyrazu je na vrcholu datoveho zasobniku, vycisti ho 
 void codegen_if_cond_jump(int actual_if_id){
 
-	printf("DEFVAR LF@$if_cond_state_%d\n", actual_if_id);
-	printf("POPS LF@$if_cond_state_%d\n", actual_if_id);
-	printf("JUMPIFNEQ $else_branch_%d LF@$if_cond_state_%d bool@true\n", actual_if_id, actual_if_id);
+	printf("PUSHS bool@true\n");
+	printf("JUMPIFNEQS $else_branch_%d\n", actual_if_id);
 	printf("CLEARS\n");
 }
 
@@ -483,17 +482,14 @@ void codegen_if_end_label(int actual_if_id){
 //nadefinuje promennou pro skok ven z cyklu a nevesti pro navrat na vyhodnoceni podminky
 void codegen_loop_top_label(int actual_loop_id){
 
-	printf("DEFVAR LF@loop_state_%d\n", actual_loop_id);
 	printf("LABEL $loop_top_%d\n", actual_loop_id);
 }
 
 void codegen_loop_cond(int actual_loop_id){
 
-	//ziskani vyhodnoceni podminky ze zasobniku
-	printf("POPS LF@loop_state_%d\n", actual_loop_id);
+	printf("PUSHS bool@true\n");
+	printf("JUMPIFNEQS $loop_end_%d\n", actual_loop_id);
 	printf("CLEARS\n");	
-
-	printf("JUMPIFNEQ $loop_end_%d LF@loop_state_%d bool@true\n", actual_loop_id, actual_loop_id);
 }
 
 void codegen_loop_end(int actual_loop_id){
@@ -524,27 +520,54 @@ void codegen_buildin_length(TToken* t){
 
 void codegen_buildin_asc(TToken* string_token, TToken* position_token, int convert_param){
 
+	static int call_counter = 0;
+
 	printf("CREATEFRAME\n");
 	printf("DEFVAR TF@&retval_function\n");	//chova se jako by byla funkci
+	printf("MOVE TF@&retval_function int@0\n");
 
 	printf("DEFVAR TF@$position\n");
 
 	if(position_token->type == ID){
 		printf("MOVE TF@$position LF@%s\n", position_token->string);
 		if(convert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@$position TF@$position\n");
-		printf("ADD TF@$position TF@$position int@1\n");	//indexovani od 1, ne od nuly
+		printf("SUB TF@$position TF@$position int@1\n");	//indexovani od 1, ne od nuly
 	}
 	else if(position_token->type == INT_V){
 		printf("MOVE TF@$position int@%d\n", position_token->int_v);
 		if(convert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@$position TF@$position\n");
-		printf("ADD TF@$position TF@$position int@1\n");	//indexovani od 1, ne od nuly
+		printf("SUB TF@$position TF@$position int@1\n");	//indexovani od 1, ne od nuly
 	}
 	else{
 		//FLOAT_V
 		printf("MOVE TF@$position float@%g\n", position_token->float_v);
 		printf("FLOAT2R2OINT TF@$position TF@$position\n");
-		printf("ADD TF@$position TF@$position int@1\n");	//indexovani od 1, ne od nuly
+		printf("SUB TF@$position TF@$position int@1\n");	//indexovani od 1, ne od nuly
 	}
+
+	/**if ((i < 0) || (i >= strlen)) then RETURN EMPTY_STRING**/
+	printf("PUSHS TF@$position\n");
+	printf("PUSHS int@0\n");
+	printf("LTS\n");
+	
+	printf("DEFVAR TF@$str_len\n");
+	if(string_token->type == ID){
+		printf("STRLEN TF@$str_len LF@%s\n", string_token->string);
+	}
+	else{
+		//type == STRING_V
+		printf("STRLEN TF@$str_len string@%s\n", string_token->string);	
+	}
+	printf("PUSHS TF@$position\n");
+	printf("PUSHS TF@$str_len\n");
+	printf("LTS\n");
+	printf("NOTS\n");
+	printf("ORS\n");
+	printf("PUSHS bool@true\n");
+	printf("JUMPIFEQS $wrong_index_%d\n", call_counter);
+	/**********************************************************/
+
+
 
 	if(string_token->type == ID){
 
@@ -555,6 +578,10 @@ void codegen_buildin_asc(TToken* string_token, TToken* position_token, int conve
 		char* str = string_convert_constant(string_token->string);
 		printf("STRI2INT TF@&retval_function string@%s TF@$position\n", str);
 	}
+
+	printf("LABEL $wrong_index_%d\n", call_counter);
+
+	call_counter++;
 }
 
 void codegen_buildin_chr(TToken* t, int convert_param){
@@ -635,6 +662,18 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 
 	printf("DEFVAR TF@*str_len\n");
 	printf("STRLEN TF@*str_len TF@*input\n");	//delka vstupniho retezce
+
+	printf("PUSHS TF@*index\n");
+	printf("PUSHS int@0\n");
+	printf("LTS\n");
+	printf("PUSHS TF@*str_len\n");
+	printf("PUSHS int@0\n");
+	printf("EQS\n");
+	printf("ORS\n");
+	printf("PUSHS bool@true\n");
+	printf("JUMPIFEQS $*end_loop_%d\n ", call_counter);  //if(strlen == 0 || i <= 0) jump na konec
+
+
 
 	printf("PUSHS TF@*out_len\n");
 	printf("PUSHS int@0\n");
