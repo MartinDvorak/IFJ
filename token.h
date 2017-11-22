@@ -77,7 +77,7 @@ typedef struct token{
 	int type;
 	
 	int int_v;
-	float float_v;
+	double float_v;
     char *string;
 
 }TToken;
