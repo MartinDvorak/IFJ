@@ -595,7 +595,7 @@ void codegen_buildin_chr(TToken* t, int convert_param){
 	if(t->type == ID){
 
 		printf("MOVE TF@$value LF@%s\n", t->string);
-		if(convert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@&value TF@&value\n");
+		if(convert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@$value TF@&value\n");
 		printf("INT2CHAR TF@&retval_function TF@$value\n");
 	}
 	else if(t->type == INT_V){
@@ -605,8 +605,8 @@ void codegen_buildin_chr(TToken* t, int convert_param){
 	else{
 		//FLOAT_V
 		printf("MOVE TF@$value float@%g\n", t->float_v);
-		printf("FLOAT2R2OINT TF@&value TF@&value\n");
-		printf("INT2CHAR TF@&retval_function TF@&value\n");	
+		printf("FLOAT2R2OINT TF@$value TF@$value\n");
+		printf("INT2CHAR TF@&retval_function TF@$value\n");	
 
 	}
 }
