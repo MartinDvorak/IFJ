@@ -505,7 +505,7 @@ int r_side(TToken *t,int lvalue, int* r_side_type, int* convert_func_result)
 						return TRUE;
 					}
 				}
-				free(f_name);
+				//free(f_name);
 		} 
 		else if(preprocesing_expr(t,&tmp,0,&rvalue))
 		{ // <r_side> -> <expr> EOL
@@ -1045,7 +1045,6 @@ int func_line(TToken* t,int local)
 						 			}
 						 			free(name);
 						 			t = get_next(t,LA_S,&storage);
-						 			free(name);
 						 			return TRUE;
 						 		}	
 						 	}

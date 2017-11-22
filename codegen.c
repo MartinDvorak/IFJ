@@ -549,14 +549,17 @@ void codegen_buildin_asc(TToken* string_token, TToken* position_token, int conve
 	printf("PUSHS TF@$position\n");
 	printf("PUSHS int@0\n");
 	printf("LTS\n");
-	
+
+
+	char* str = NULL;
 	printf("DEFVAR TF@$str_len\n");
 	if(string_token->type == ID){
 		printf("STRLEN TF@$str_len LF@%s\n", string_token->string);
 	}
 	else{
 		//type == STRING_V
-		printf("STRLEN TF@$str_len string@%s\n", string_token->string);	
+		str = string_convert_constant(string_token->string);
+		printf("STRLEN TF@$str_len string@%s\n", str);	
 	}
 	printf("PUSHS TF@$position\n");
 	printf("PUSHS TF@$str_len\n");
@@ -575,7 +578,6 @@ void codegen_buildin_asc(TToken* string_token, TToken* position_token, int conve
 	}
 	else{
 		//type = STRING_V
-		char* str = string_convert_constant(string_token->string);
 		printf("STRI2INT TF@&retval_function string@%s TF@$position\n", str);
 	}
 
