@@ -373,17 +373,18 @@ int build_in_fce(TToken *t)
 				t = get_next(t,LA_S,&storage);
 				if((t->type == ID)||(t->type == INT_V)||(t->type == FLOAT_V)||(t->type == STRING_V))
 				{
+
 					// TODO semantickou kontrolu dat typu
 					if(!semantic_id(root_local,t,'i', &convert_param))
 						return FALSE;
+
+					/****GENEROVANI MEZIKODU*******************/
+						codegen_buildin_chr(t, convert_param);
+
 					//
 					t = get_next(t,LA_S,&storage);
 					if(t->type == BRACKET_R)
 					{
-
-						/****GENEROVANI MEZIKODU*******************/
-						codegen_buildin_chr(&tmp, convert_param);
-
 						t = get_next(t,LA_S,&storage);
 						return TRUE;
 					}

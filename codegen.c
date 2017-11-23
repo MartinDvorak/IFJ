@@ -21,6 +21,7 @@ void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_a
 	}
 	else if(t->type == FLOAT_V){
 		//float konstanta
+		//printf("!!!!!!!!!!!!!!!!!!!!! %g\n", t->`_v);
 		operand_array[*ptr_to_array].semantic_type = DOUBLE;
 		operand_array[*ptr_to_array].type = FLOAT_V;
 		operand_array[*ptr_to_array].float_v = t->float_v;
@@ -599,9 +600,10 @@ void codegen_buildin_chr(TToken* t, int convert_param){
 	}
 	else if(t->type == INT_V){
 		//type == INT_V
+		printf("MOVE TF@$value int@%d\n", t->int_v);
 		printf("INT2CHAR TF@&retval_function int@%d\n", t->int_v);	
 	}
-	else{
+	else if(t->type == FLOAT_V){
 		//FLOAT_V
 		printf("MOVE TF@$value float@%g\n", t->float_v);
 		printf("FLOAT2R2OINT TF@$value TF@$value\n");
@@ -644,7 +646,6 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 		printf("MOVE TF@*index float@%g\n", beg_token->float_v);	
 		if(convert_param2 == DOUBLE2INT) printf("FLOAT2R2OINT TF@*index TF@*index\n");
 	}
-	printf("SUB TF@*index TF@*index int@1\n");	//posun o 1, index od 1 ne od nuly
 
 	printf("DEFVAR TF@*out_len\n");
 	if(len_token->type == ID){
@@ -664,40 +665,52 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 	printf("DEFVAR TF@*str_len\n");
 	printf("STRLEN TF@*str_len TF@*input\n");	//delka vstupniho retezce
 
+
+	printf("PUSHS TF@*str_len\n");
+	printf("PUSHS int@0\n");
+	printf("EQS\n");		//strlen == 0
+
 	printf("PUSHS TF@*index\n");
 	printf("PUSHS int@0\n");
-	printf("LTS\n");
-	printf("PUSHS TF@*str_len\n");
-	printf("PUSHS int@0\n");
-	printf("EQS\n");
-	printf("ORS\n");
-	printf("PUSHS bool@true\n");
-	printf("JUMPIFEQS $*end_loop_%d\n ", call_counter);  //if(strlen == 0 || i <= 0) jump na konec
-
-
-
-	printf("PUSHS TF@*out_len\n");
-	printf("PUSHS int@0\n");
-	printf("LTS\n");
-	printf("PUSHS TF@*out_len\n");
-	printf("PUSHS TF@*str_len\n");
 	printf("GTS\n");
-	printf("ORS\n");							// (out_len < 0) ||	(out_len > Length(in_string))
+	printf("NOTS\n");		// i <= 0
 
-	printf("DEFVAR TF@*state\n");				//vysledek porovnani
-	printf("POPS TF@*state\n");
+	printf("ORS\n");		//strlen == 0 || i <= 0
+	
+	printf("PUSHS bool@true\n");
+	printf("JUMPIFEQS $*end_chr_function_%d\n", call_counter); //if(strlen == 0 || i <= 0) jump LABEL END
+
+	printf("PUSHS TF@*out_len\n");
+	printf("PUSHS int@0\n");
+	printf("LTS\n");	//n < 0
+
+	printf("PUSHS TF@*out_len\n");
+	printf("PUSHS TF@*str_len\n");
+	printf("PUSHS TF@*index\n");
+	printf("SUBS\n");
+	printf("GTS\n");	// n > (strlen - i)
+
+	printf("ORS\n");	//n < 0 || n > (strlen - i)
+
+	printf("PUSHS bool@false\n");
+	printf("JUMPIFEQS $*else_branch_%d\n", call_counter); //if( n < 0 || n > (strlen - i)) then
+
+		printf("PUSHS TF@*str_len\n");
+		printf("PUSHS TF@*index\n");
+		printf("SUBS\n");
+		printf("PUSHS int@1\n");
+		printf("ADDS\n");
+		printf("POPS TF@*out_len\n");	//n = strlen - i + 1
+
+	printf("LABEL $*else_branch_%d\n", call_counter);		//end if
+
+	printf("SUB TF@*index TF@*index int@1\n"); 	//i--
 
 	printf("DEFVAR TF@*end_index\n");
-	printf("JUMPIFEQ $*else_branch_%d TF@*state bool@true\n", call_counter);		// if(out_len < 0) ||	(out_len > Length(in_string))
-
-		printf("MOVE TF@*end_index TF@*str_len\n");				//end_index = length(in_string)
-
-	printf("JUMP $*end_if_%d\n", call_counter);
-	printf("LABEL $*else_branch_%d\n", call_counter);			//else
-
-		printf("ADD TF@*end_index TF@*index TF@*out_len\n");	//end_index = index = out_len		
-
-	printf("LABEL $*end_if_%d\n", call_counter);					//end if 
+	printf("PUSHS TF@*index\n");
+	printf("PUSHS TF@*out_len\n");
+	printf("ADDS\n");
+	printf("POPS TF@*end_index\n");
 
 	printf("DEFVAR TF@*state_loop\n");
 	printf("DEFVAR TF@*tmp_char\n");
@@ -713,6 +726,8 @@ void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len
 	printf("ADD TF@*index TF@*index int@1\n");	//i++
 	printf("JUMP $*loop_top_%d\n", call_counter);
 	printf("LABEL $*end_loop_%d\n", call_counter);	//end loop
+
+	printf("LABEL $*end_chr_function_%d\n", call_counter);
 
 	call_counter++;
 }
