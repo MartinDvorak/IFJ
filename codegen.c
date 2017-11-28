@@ -313,7 +313,7 @@ void codegen_input(TToken* t){
 //print jednoho vyrazu
 void codegen_print(){
 
-	int call_counter = 0;
+	static int call_counter = 0;
 	call_counter++;
 
 	printf(	"DEFVAR LF@$retval_expr_%d\n"
@@ -416,7 +416,8 @@ void codegen_if_cond_jump(int actual_if_id){
 
 	printf(	"PUSHS bool@true\n"
 			"JUMPIFNEQS $else_branch_%d\n"
-			"CLEARS\n", actual_if_id);
+			, actual_if_id);
+			//bylo tu CLEARS
 }
 
 //vytvori skok na konec if-st za then vetvi a vytvori label pro skok na else vetev
@@ -446,7 +447,8 @@ void codegen_loop_cond(int actual_loop_id){
 
 	printf(	"PUSHS bool@true\n"
 			"JUMPIFNEQS $loop_end_%d\n"
-			"CLEARS\n", actual_loop_id);	
+			, actual_loop_id);	
+			//bylo CLEARS
 }
 
 void codegen_loop_end(int actual_loop_id){
