@@ -18,7 +18,7 @@ int semantic_return_type(int* glob_var,int local,int ret_type, char *name,int fl
 		}
 		if((ret_type != tmp.type) && (flag == 1))
 		{
-			ERROR_RETURN = 4;
+			ERROR_RETURN = 3;
 			return FALSE;
 		}
 	}
@@ -28,7 +28,7 @@ int semantic_return_type(int* glob_var,int local,int ret_type, char *name,int fl
 	return TRUE;
 }
 
-int semantico_convert_buildin(int type)
+int semantic_convert_buildin(int type)
 {
 	switch(type)
 	{
@@ -40,7 +40,7 @@ int semantico_convert_buildin(int type)
 	}
 }
 
-int semantic_check_lside_rside(int l_side, int r_side, int r_side_type, int* convert_func_result)
+int semantic_check_lside_rside(int l_side, int r_side)
 {
 	//pokud jde o funkci, zde konvertuje return hodnotu podle predpokladane, ne podle l_side type!!!!!!
 
@@ -50,16 +50,12 @@ int semantic_check_lside_rside(int l_side, int r_side, int r_side_type, int* con
 	}
 	else if ((l_side == INTEGER) && (r_side == DOUBLE))
 	{	// covreze Double-> int
-		if((r_side_type == R_SIDE_EXPR) || (r_side_type == FUNC_RETURN)) printf("FLOAT2R2OINTS\n");
-		if(r_side_type == R_SIDE_FCALL) *convert_func_result = DOUBLE2INT;
-		if(r_side_type == R_SIDE_BUILD_IN) *convert_func_result = DOUBLE2INT;
+		printf("FLOAT2R2OINTS\n");
 		return TRUE;
 	}
 	else if ((l_side == DOUBLE) && (r_side == INTEGER))
 	{ // INT -> DOUBLE
-		if((r_side_type == R_SIDE_EXPR) || (r_side_type == FUNC_RETURN)) printf("INT2FLOATS\n");
-		if(r_side_type == R_SIDE_FCALL) *convert_func_result = INT2DOUBLE;
-		if(r_side_type == R_SIDE_BUILD_IN) *convert_func_result = INT2DOUBLE;
+		printf("INT2FLOATS\n");
 		return TRUE;
 	}
 	
@@ -68,11 +64,14 @@ int semantic_check_lside_rside(int l_side, int r_side, int r_side_type, int* con
 	
 }
 
-int semantic_id_type_convert(TToken* t)
+int semantic_id_type_convert(int type,int id)
 {
-	Tdata tmp;
-				
-	switch(t->type)
+	if(id)
+	{
+		return id;
+	}
+
+	switch(type)
 	{
 		case INTEGER:
 		case INT_V:
@@ -83,15 +82,11 @@ int semantic_id_type_convert(TToken* t)
 		case DOUBLE:
 		case FLOAT_V:
 				return DOUBLE;
-		case ID:
-				search_tree(root_local,t->string,&tmp);
-				return tmp.type;
 		default:
 			return 0;						
 
 	}
 }
-
 int semantic_call_undefined_fce()
 {
 	if(search_in_pre_order(root_global))
@@ -136,7 +131,7 @@ void semantic_insert_build_in()
 
 	if((tmp.param = malloc(sizeof(char)*5)) == NULL)
 		exit(99);	
-	tmp.param = strcpy(tmp.param,"s");
+	tmp.param = strcpy(tmp.param,"i");
 	semantic_insert(&root_global,"chr",&tmp);
 }
 
@@ -206,66 +201,27 @@ int semantic_id_type(Ttnode_ptr root,TToken *t, int* type)
 	return TRUE;
 }
 
-int semantic_id_param(TToken *t, char* param, int* position, int* convert_param)
-{
-	int desizion = t->type;
-	
-	if (t->type == ID)
-	{
- 		Tdata tmp;
-		if(!(search_tree(root_local,t->string,&tmp)))
-			{
-				ERROR_RETURN = 3;
-				return FALSE;
-			}
-		desizion = tmp.type;
-	}
-	
-	// nasel jsem parametr ale mit nema, nebo je vic napsal vic paramentru nez je treba
-	if((int)strlen(param) < (*position)+1)
-		{
-			ERROR_RETURN = 4;
-			return FALSE;
-		}
-	
-	int convert = semantic_convert_data_type(param[(*position)++]);
-
-
-	switch(desizion)
-	{
-		case INT_V:
-		case INTEGER: desizion = INTEGER;
-					break;
-		case FLOAT_V:
-		case DOUBLE: desizion = DOUBLE;
-					break;
-		case STRING_V:
-		case STRING: desizion = STRING;
-					break;
-	}
-
-	if(desizion == convert)
-	{
-		return TRUE;
-	}
-	else if((desizion == INTEGER) && (convert == DOUBLE))
-	{
-		*convert_param = INT2DOUBLE;
-		return TRUE; 
-	}
-	else if((desizion == DOUBLE) && (convert == INTEGER))
-	{
-		*convert_param = DOUBLE2INT;
-		return TRUE;
-	}
-	ERROR_RETURN = 4;
-	return FALSE;
-}
-
 
 int semantic_fce_param(Ttnode_ptr root, TToken* t, char** param)
 {
 	Tdata tmp;
+	if((t->type == LENGTH) || (t->type == SUBSTR) || (t->type == ASC) ||(t->type == CHR) )
+	{
+		switch(t->type)
+		{
+			case LENGTH: search_tree(root,"length",&tmp);
+					break;
+			case SUBSTR: search_tree(root,"substr",&tmp);
+					break;
+			case ASC: search_tree(root,"asc",&tmp);
+					break;
+			case CHR: search_tree(root,"chr",&tmp);
+					break;
+		}
+		*param = tmp.param;
+		return TRUE;
+	}
+
 	if(search_tree(root,t->string,&tmp))
 	{
 		*param = tmp.param; 
@@ -274,6 +230,7 @@ int semantic_fce_param(Ttnode_ptr root, TToken* t, char** param)
 	ERROR_RETURN = 3;
 	return FALSE;
 }
+
 
 int semantic_insert(Ttnode_ptr* root, char* name, Tdata* data)
 {

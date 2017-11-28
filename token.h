@@ -41,6 +41,7 @@
 #define SHARED      42
 #define STATIC      43
 #define TRUE_KW     44
+#define PARAMETER	45
 
 #define ID          50   //identificator
 #define INT_V       51

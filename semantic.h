@@ -16,6 +16,7 @@ typedef struct semantic_operation{
 #endif
 #define OPSTR
 
+
 #ifndef OPERAND_STR
 typedef struct expr_operand{
 
@@ -33,7 +34,7 @@ typedef struct expr_operand{
 void semantic_insert_build_in();
 
 // convertuje type_vlaue na type
-int semantic_id_type_convert(TToken* t);
+int semantic_id_type_convert(int type,int type_id);
 
 // prevede char na #define hodnotu 'i' -> INTEGER
 int semantic_convert_data_type (char c);
@@ -68,9 +69,9 @@ int semantic_call_undefined_fce();
 // zkontroluje dat type a pretypuje popripade promenne
 int semantic_exp(char* string, TExpr_operand* operand_array, Toperation* arr, int* num_of_arr, int* exp_ret);
 
-int semantico_convert_buildin(int type);
+int semantic_convert_buildin(int type);
 
-int semantic_check_lside_rside(int l_side, int r_side, int r_side_type, int* convert_func_result);
+int semantic_check_lside_rside(int l_side, int r_side);
 
 int semantic_return_type(int* glob_var,int local,int ret_type, char* name, int flag);
 

@@ -5,7 +5,7 @@
 #define R_SIDE_EXPR 		1
 #define R_SIDE_BUILD_IN 	2
 #define R_SIDE_NONE			3
-#define FUNC_RETURN 		4
+#define FUNC_RETURN 4
 
 #define INT2DOUBLE			10
 #define DOUBLE2INT			11
@@ -15,7 +15,7 @@
 void codegen_file_BEGIN();
 
 //prida prvek do pole operandu 
-void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_array);
+void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_array, int f_return_type);
 
 
 //uvolni cele pole operandu 
@@ -27,9 +27,9 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 
 void codegen_dim(char* name);
 
-void codegen_dim_r_side(char* name, int r_side_type, int convert_func_result);
+void codegen_dim_r_side(char* name);
 
-void codegen_assignment(char* name, int r_side_type, int convert_func_result);
+void codegen_assignment(char* name);
 
 //s konverzi retezce
 void codegen_input(TToken* t);
@@ -61,7 +61,7 @@ void codegen_func_call(char* f_name);
 void codegen_empty_func_frame();
 
 //prida parametr na LF s poradovym cislem 
-void codegen_func_call_give_param(TToken* t, int param_no, int convert_param);
+void codegen_func_call_give_param(int param_no);
 
 /**IF-THEN-ELSE**/
 //skok na else vetev, bool hodnota vyhodnoceni vyrazu je na vrcholu datoveho zasobniku, vycisti ho 
