@@ -32,27 +32,11 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 
 	if((t->type == LENGTH) || (t->type == SUBSTR) || (t->type == ASC) ||(t->type == CHR) )
 	{
-		new.type = t->type;
-		int f_return_type;
-		switch(t->type){
-			case LENGTH:
-				f_return_type = INTEGER;
-				break;
-			case SUBSTR:
-				f_return_type = STRING;
-				break;
-			case ASC:
-				f_return_type = INTEGER;
-				break;
-			case CHR:
-				f_return_type = STRING;
-				break;
-		}
-		insert_operand_array(&new, operand_array, ptr_to_array, f_return_type);
-
-
+		int type = t->type; //uchovani pro generovani mezikodu
+		
 		*type_id = semantic_convert_buildin(t->type);
 		if(!semantic_fce_param(root_global,t,&param)){
+			
 			free(new.string);
 			return FALSE;
 		}
@@ -61,7 +45,40 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 		if(t->type == BRACKET_L)
 		{
 			t = get_next(t,LA_S,&storage);
-			if(param_f(t,param,&position))
+			if(param_f(t,param,&position)){
+
+				/**GENEROVANI MEZIKODU******************************************/
+				int f_return_type;
+				switch(type){
+					case LENGTH:
+						f_return_type = INTEGER;
+						codegen_buildin_length();
+						break;
+					case SUBSTR:
+						f_return_type = STRING;
+						codegen_buildin_substr();
+						break;
+					case ASC:
+						f_return_type = INTEGER;
+						codegen_buildin_asc();
+						break;
+					case CHR:
+						f_return_type = STRING;
+						codegen_buildin_chr();
+						break;
+				}
+
+				printf("DEFVAR LF@&&function_return_%d\n", act_call);
+				printf("POPS LF@&&function_return_%d\n", act_call);
+
+				/**pridani vysledku do pole operandu**********************/
+				new.type = ID;
+				free(new.string);
+				if((new.string = malloc(sizeof(char)*(25))) == NULL)
+				exit(99);
+				sprintf(new.string, "&&function_return_%d", act_call);
+				insert_operand_array(&new, operand_array, ptr_to_array, f_return_type);
+
 				if(t->type == BRACKET_R)
 				{
 					// bacha na off by one
@@ -77,6 +94,7 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 				free(new.string);
 				return TRUE;
 				}
+			}
 		}
 	}
 
@@ -120,7 +138,7 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 			/**GENEROVANI MEZIKODU*********************************/
 			printf("CALL &func&%s\n", new.string);
 			printf("DEFVAR LF@&&function_return_%d\n", act_call);
-			printf("MOVE LF@&&function_return_%d TF@&retval_function\n", act_call);
+			printf("POPS LF@&&function_return_%d\n", act_call);
 
 			Tdata symb;
 			Tdata* symbTmp = &symb;
@@ -367,11 +385,7 @@ int expr_n(TToken *t)
 //volani funkce
 int param_fn(TToken *t, char* param, int* position)
 {
-	static int param_no = 2; //zacim od indexu 2, index 1 v param_f
-
 	if(t->type == BRACKET_R){
-	
-		param_no = 2;	//reinicializace, vsechny parametry funkce byly zpracovany
 		return TRUE;
 	}
 	else if(t->type == COLON)
@@ -382,10 +396,6 @@ int param_fn(TToken *t, char* param, int* position)
 		{
 			if(!semantic_check_lside_rside(semantic_convert_data_type(param[(*position)++]),expr_value))
 				return FALSE;
-
-			/****GENEROVANI MEZIKODU*******************/
-			codegen_func_call_give_param(param_no);
-			param_no++;
 
 			//t = get_next(t,LA_S,&storage);
 			return param_fn(t,param,position);
@@ -400,9 +410,6 @@ int param_f(TToken *t, char* param, int* position)
 	int expr_value;
 
 	if(t->type == BRACKET_R){
-	
-		/****GENEROVANI MEZIKODU********************/
-		codegen_empty_func_frame();
 		return TRUE;
 	}
 	else if(preprocesing_expr(t,0,&expr_value))
@@ -412,11 +419,6 @@ int param_f(TToken *t, char* param, int* position)
 		if(!semantic_check_lside_rside(semantic_convert_data_type(param[(*position)++]),expr_value))
 			return FALSE;
 
-		/****GENEROVANI MEZIKODU*******************/
-		codegen_empty_func_frame();
-		codegen_func_call_give_param(1);
-
-		//t = get_next(t,LA_S,&storage);
 		return(param_fn(t,param,position));
 	}
 	return FALSE;
@@ -746,11 +748,7 @@ int type(TToken* t, Tdata* data, int type, int* to_symbtab)
 //definice, deklarace funkce
 int params_N(TToken *t, Tdata *data, int local)
 {
-	//cislo, po kolikate je volana v ramci jedne definice --> kolikaty parametr (poprve u 2.)
-	static int called_per_function = 2;
-
 	if (t->type == BRACKET_R){
-		called_per_function = 2; //konec definice jedne funkce, reinicializace 
 		return TRUE;
 	}
 	else if(t->type == COLON)
@@ -759,11 +757,11 @@ int params_N(TToken *t, Tdata *data, int local)
 		t = get_next(t,LA_S,&storage);
 		if (t->type == ID)
 		{
-			/****GENEROVANI MEZIKODU**********************/
-			if(local){
-			codegen_func_param(t, called_per_function);
-			called_per_function++;
-			}
+
+			char* name = NULL;
+			if((name = malloc(sizeof(char)*(strlen(t->string)+1))) == NULL)
+				exit(99);
+			strcpy(name, t->string);
 
 			t = get_next(t,LA_S,&storage);
 			if(t->type == AS)
@@ -776,12 +774,20 @@ int params_N(TToken *t, Tdata *data, int local)
 					{
 						tmp.defined = 1;
 						tmp.param = NULL;
-						if(!semantic_insert_id(&root_local,root_global,t->string,&tmp))
+						if(!semantic_insert_id(&root_local,root_global,t->string,&tmp)){
+							free(name);
 							return FALSE;	
+						}
 					}
 					t = get_next(t,LA_S,&storage);
-					if(params_N(t,data,local))
+					if(params_N(t,data,local)){
+						/****GENEROVANI MEZIKODU**********************/
+						if(local){
+						codegen_func_param(name);
+						free(name);
+						}
 						return TRUE;
+					}
 				}
 			}
 		}	
@@ -794,12 +800,11 @@ int param(TToken* t, Tdata* data, int local)
 { //IMPLICITNE budeme predpokladat ze nebudeme menit string 
 	if (t->type == ID)
 	{   
+		char* name = NULL;
+		if((name = malloc(sizeof(char)*(strlen(t->string)+1))) == NULL)
+			exit(99);
+		strcpy(name, t->string);
 
-		/****GENEROVANI MEZIKODU***********************/
-		if(local){
-			//vzdy prvni parametr
-			codegen_func_param(t,1);
-		}
 
 		Tdata tmp;
 		t = get_next(t,LA_S,&storage);
@@ -813,13 +818,23 @@ int param(TToken* t, Tdata* data, int local)
 				{
 					tmp.defined = 1;
 					tmp.param = NULL;
-					if(!semantic_insert_id(&root_local,root_global,t->string,&tmp))
+					if(!semantic_insert_id(&root_local,root_global,t->string,&tmp)){
+						free(name);
 						return FALSE;
+					}
 				}
 				//
 				t = get_next(t,LA_S,&storage);
-				if(params_N(t,data,local))
+				if(params_N(t,data,local)){
+
+					/****GENEROVANI MEZIKODU***********************/
+					if(local){
+						//vzdy prvni parametr
+						codegen_func_param(name);
+						free(name);
+					}
 					return TRUE;
+				}
 			}
 		}
 	}

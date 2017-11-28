@@ -46,7 +46,7 @@ void codegen_func_definition(TToken* t);
 void codegen_implicit_func_return(TToken* t);
 
 //zkopiruje skutecny parametr do formalniho na LF
-void codegen_func_param(TToken* t, int param_no);
+void codegen_func_param(char* name);
 
 //prevede LF na TF a navrati se zpet z funkce 
 void codegen_end_function();
@@ -90,10 +90,10 @@ char* string_convert_constant(char* source);
 
 /**BUILD IN FUNKCE***********/
 
-void codegen_buildin_length(TToken* t);
+void codegen_buildin_length();
 
-void codegen_buildin_asc(TToken* string_token, TToken* position_token, int convert_param);
+void codegen_buildin_asc();
 
-void codegen_buildin_chr(TToken* t, int convert_param);
+void codegen_buildin_chr();
 
-void codegen_buildin_substr(TToken* string_token, TToken* beg_token, TToken* len_token, int convert_param2, int convert_param3);
+void codegen_buildin_substr();

@@ -85,7 +85,7 @@ int body(TToken *t);
 // pro definice funkci
 int params_N(TToken *t, Tdata *data, int local);
 
-int param(TToken *t, Tdata* data, int local );
+int param(TToken *t, Tdata* data, int local);
 
 // pro kontrolu volani fci
 int param_f(TToken *t, char* string, int* position);

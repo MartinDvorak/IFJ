@@ -354,7 +354,7 @@ int semantic_exp(char* string, TExpr_operand *operand_array,Toperation* arr, int
 					push(s,DOUBLE);
 
 				}
-				else if((c == 'M')&&(left = DOUBLE))
+				else if((c == 'M')&&(left == DOUBLE))
 				{
 					free_stack(s);
 					ERROR_RETURN = 4;

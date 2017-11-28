@@ -1,9 +1,0 @@
-function kkt() as integer
-return 87
-end function
-
-scope
-dim a as integer =44
-a = kkt() + 1
-print a;
-end scopes
