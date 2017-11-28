@@ -132,7 +132,7 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 			free(new.string);
 			if((new.string = malloc(sizeof(char)*(25))) == NULL)
 			exit(99);
-			sprintf(new.string, "LF@&&function_return_%d", act_call);
+			sprintf(new.string, "&&function_return_%d", act_call);
 
 			insert_operand_array(&new, operand_array, ptr_to_array, f_return_type);
 			free(new.string);
