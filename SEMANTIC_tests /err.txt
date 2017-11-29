@@ -1,7 +1,0 @@
-return 2 -> syntax err
-
-return 3 -> semantic err (nedefinovane id / redefinace
-return 4 -> semantic err (typovy error u vyrazu, fce- nesedi param)
-return 6 -> others semantic err
-
-return 99 -> internal err (malloc)

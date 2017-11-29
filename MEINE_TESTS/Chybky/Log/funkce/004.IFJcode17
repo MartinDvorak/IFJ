@@ -1,0 +1,112 @@
+# 2017-11-29 12:53:23.260008
+# SECTION: 02_functions
+# TEST: 004
+# INFO: Asc value
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: 
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ILABEL at line: 2 with following arguments:
+# Executing instruction: ICREATEFRAME at line: 3 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 4 with following arguments:
+# Executing instruction: IDEFVAR at line: 5 with following arguments:
+# Dest: LF@a
+# Executing instruction: IMOVE at line: 6 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: LF@a()
+# Executing instruction: IPUSHS at line: 7 with following arguments:
+# Arg1: Const@=ahoj(string)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 8 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: ICREATEFRAME at line: 9 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 10 with following arguments:
+# Executing instruction: IDEFVAR at line: 11 with following arguments:
+# Dest: LF@&result
+# Executing instruction: IMOVE at line: 12 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: LF@&result()
+# Executing instruction: IDEFVAR at line: 13 with following arguments:
+# Dest: LF@$position
+# Executing instruction: IPOPS at line: 14 with following arguments:
+# Arg1: Stack@=2(int)
+# Dest: LF@$position()
+# Executing instruction: IDEFVAR at line: 15 with following arguments:
+# Dest: LF@$input
+# Error at line: 16
+# Temporary frame does not exist!
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+#  104
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 55
+# PRICE: ---
+# 
+#   1: scope 
+#   2:  dim a as integer 
+#   3:  a = asc(!"ahoj", 2) 
+#   4:  print a; 
+#   5:  end scope
+
+########################################
+
+.IFJcode17                                                                      #     1/44
+LABEL &&&scope                                                                  #     2/44
+CREATEFRAME                                                                     #     3/44
+PUSHFRAME                                                                       #     4/44
+DEFVAR LF@a                                                                     #     5/44
+MOVE LF@a int@0                                                                 #     6/44
+PUSHS string@ahoj                                                               #     7/44
+PUSHS int@2                                                                     #     8/44
+CREATEFRAME                                                                     #     9/44
+PUSHFRAME                                                                       #    10/44
+DEFVAR LF@&result                                                               #    11/44
+MOVE LF@&result int@0                                                           #    12/44
+DEFVAR LF@$position                                                             #    13/44
+POPS LF@$position                                                               #    14/44
+DEFVAR LF@$input                                                                #    15/44
+POPS TF@$input                                                                  #    16/44
+SUB LF@$position LF@$position int@1                                             #    17/44
+PUSHS LF@$position                                                              #    18/44
+PUSHS int@0                                                                     #    19/44
+LTS                                                                             #    20/44
+DEFVAR LF@$str_len                                                              #    21/44
+STRLEN LF@$str_len LF@$input                                                    #    22/44
+PUSHS LF@$position                                                              #    23/44
+PUSHS LF@$str_len                                                               #    24/44
+LTS                                                                             #    25/44
+NOTS                                                                            #    26/44
+ORS                                                                             #    27/44
+PUSHS bool@true                                                                 #    28/44
+JUMPIFEQS $wrong_index_0                                                        #    29/44
+STRI2INT LF@&result LF@$input LF@$position                                      #    30/44
+LABEL $wrong_index_0                                                            #    31/44
+PUSHS LF@&result                                                                #    32/44
+POPFRAME                                                                        #    33/44
+DEFVAR LF@&&function_return_0                                                   #    34/44
+POPS LF@&&function_return_0                                                     #    35/44
+PUSHS LF@&&function_return_0                                                    #    36/44
+POPS LF@a                                                                       #    37/44
+CLEARS                                                                          #    38/44
+PUSHS LF@a                                                                      #    39/44
+CREATEFRAME                                                                     #    40/44
+DEFVAR TF@expr                                                                  #    41/44
+POPS TF@expr                                                                    #    42/44
+WRITE TF@expr                                                                   #    43/44
+CLEARS                                                                          #    44/44

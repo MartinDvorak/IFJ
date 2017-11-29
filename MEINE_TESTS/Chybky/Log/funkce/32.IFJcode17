@@ -1,0 +1,187 @@
+# 2017-11-29 12:53:23.245980
+# SECTION: 02_functions
+# TEST: 32
+# INFO: Double constant into build-in function
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: 
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ILABEL at line: 2 with following arguments:
+# Executing instruction: ICREATEFRAME at line: 3 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 4 with following arguments:
+# Executing instruction: IDEFVAR at line: 5 with following arguments:
+# Dest: LF@a
+# Executing instruction: IMOVE at line: 6 with following arguments:
+# Arg1: Const@=0(double)
+# Dest: LF@a()
+# Executing instruction: IPUSHS at line: 7 with following arguments:
+# Arg1: Const@=3(double)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 8 with following arguments:
+# Arg1: Stack@=3(double)
+# Dest: LF@a=0(double)
+# Executing instruction: ICLEARS at line: 9 with following arguments:
+# Executing instruction: IDEFVAR at line: 10 with following arguments:
+# Dest: LF@i
+# Executing instruction: IMOVE at line: 11 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: LF@i()
+# Executing instruction: IDEFVAR at line: 12 with following arguments:
+# Dest: LF@j
+# Executing instruction: IMOVE at line: 13 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: LF@j()
+# Executing instruction: IPUSHS at line: 14 with following arguments:
+# Arg1: Const@=gzgfggffg(string)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 15 with following arguments:
+# Arg1: LF@a=3(double)
+# Dest: Stack@()
+# Executing instruction: IFLOAT2R2OINTS at line: 16 with following arguments:
+# Arg1: Stack@=3(double)
+# Dest: Stack@()
+# Executing instruction: ICREATEFRAME at line: 17 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 18 with following arguments:
+# Executing instruction: IDEFVAR at line: 19 with following arguments:
+# Dest: LF@&result
+# Executing instruction: IMOVE at line: 20 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: LF@&result()
+# Executing instruction: IDEFVAR at line: 21 with following arguments:
+# Dest: LF@$position
+# Executing instruction: IPOPS at line: 22 with following arguments:
+# Arg1: Stack@=3(int)
+# Dest: LF@$position()
+# Executing instruction: IDEFVAR at line: 23 with following arguments:
+# Dest: LF@$input
+# Error at line: 24
+# Temporary frame does not exist!
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+#  103 84
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 55
+# PRICE: ---
+# 
+#   1: ' Double constant into build-in function
+#   2: 
+#   3: scope
+#   4:     dim a as double = 3.0
+#   5:     
+#   6:     dim i as integer
+#   7:     dim j as integer
+#   8:     i = asc(!"gzgfggffg", a)
+#   9:     j = asc(!"ERTZUG", 3.0)
+#  10:     
+#  11:     print i;j;
+#  12:     
+#  13: end scope
+
+########################################
+
+.IFJcode17                                                                      #     1/91
+LABEL &&&scope                                                                  #     2/91
+CREATEFRAME                                                                     #     3/91
+PUSHFRAME                                                                       #     4/91
+DEFVAR LF@a                                                                     #     5/91
+MOVE LF@a float@0.0                                                             #     6/91
+PUSHS float@3                                                                   #     7/91
+POPS LF@a                                                                       #     8/91
+CLEARS                                                                          #     9/91
+DEFVAR LF@i                                                                     #    10/91
+MOVE LF@i int@0                                                                 #    11/91
+DEFVAR LF@j                                                                     #    12/91
+MOVE LF@j int@0                                                                 #    13/91
+PUSHS string@gzgfggffg                                                          #    14/91
+PUSHS LF@a                                                                      #    15/91
+FLOAT2R2OINTS                                                                   #    16/91
+CREATEFRAME                                                                     #    17/91
+PUSHFRAME                                                                       #    18/91
+DEFVAR LF@&result                                                               #    19/91
+MOVE LF@&result int@0                                                           #    20/91
+DEFVAR LF@$position                                                             #    21/91
+POPS LF@$position                                                               #    22/91
+DEFVAR LF@$input                                                                #    23/91
+POPS TF@$input                                                                  #    24/91
+SUB LF@$position LF@$position int@1                                             #    25/91
+PUSHS LF@$position                                                              #    26/91
+PUSHS int@0                                                                     #    27/91
+LTS                                                                             #    28/91
+DEFVAR LF@$str_len                                                              #    29/91
+STRLEN LF@$str_len LF@$input                                                    #    30/91
+PUSHS LF@$position                                                              #    31/91
+PUSHS LF@$str_len                                                               #    32/91
+LTS                                                                             #    33/91
+NOTS                                                                            #    34/91
+ORS                                                                             #    35/91
+PUSHS bool@true                                                                 #    36/91
+JUMPIFEQS $wrong_index_0                                                        #    37/91
+STRI2INT LF@&result LF@$input LF@$position                                      #    38/91
+LABEL $wrong_index_0                                                            #    39/91
+PUSHS LF@&result                                                                #    40/91
+POPFRAME                                                                        #    41/91
+DEFVAR LF@&&function_return_0                                                   #    42/91
+POPS LF@&&function_return_0                                                     #    43/91
+PUSHS LF@&&function_return_0                                                    #    44/91
+POPS LF@i                                                                       #    45/91
+CLEARS                                                                          #    46/91
+PUSHS string@ERTZUG                                                             #    47/91
+PUSHS float@3                                                                   #    48/91
+FLOAT2R2OINTS                                                                   #    49/91
+CREATEFRAME                                                                     #    50/91
+PUSHFRAME                                                                       #    51/91
+DEFVAR LF@&result                                                               #    52/91
+MOVE LF@&result int@0                                                           #    53/91
+DEFVAR LF@$position                                                             #    54/91
+POPS LF@$position                                                               #    55/91
+DEFVAR LF@$input                                                                #    56/91
+POPS TF@$input                                                                  #    57/91
+SUB LF@$position LF@$position int@1                                             #    58/91
+PUSHS LF@$position                                                              #    59/91
+PUSHS int@0                                                                     #    60/91
+LTS                                                                             #    61/91
+DEFVAR LF@$str_len                                                              #    62/91
+STRLEN LF@$str_len LF@$input                                                    #    63/91
+PUSHS LF@$position                                                              #    64/91
+PUSHS LF@$str_len                                                               #    65/91
+LTS                                                                             #    66/91
+NOTS                                                                            #    67/91
+ORS                                                                             #    68/91
+PUSHS bool@true                                                                 #    69/91
+JUMPIFEQS $wrong_index_1                                                        #    70/91
+STRI2INT LF@&result LF@$input LF@$position                                      #    71/91
+LABEL $wrong_index_1                                                            #    72/91
+PUSHS LF@&result                                                                #    73/91
+POPFRAME                                                                        #    74/91
+DEFVAR LF@&&function_return_2                                                   #    75/91
+POPS LF@&&function_return_2                                                     #    76/91
+PUSHS LF@&&function_return_2                                                    #    77/91
+POPS LF@j                                                                       #    78/91
+CLEARS                                                                          #    79/91
+PUSHS LF@i                                                                      #    80/91
+CREATEFRAME                                                                     #    81/91
+DEFVAR TF@expr                                                                  #    82/91
+POPS TF@expr                                                                    #    83/91
+WRITE TF@expr                                                                   #    84/91
+CLEARS                                                                          #    85/91
+PUSHS LF@j                                                                      #    86/91
+CREATEFRAME                                                                     #    87/91
+DEFVAR TF@expr                                                                  #    88/91
+POPS TF@expr                                                                    #    89/91
+WRITE TF@expr                                                                   #    90/91
+CLEARS                                                                          #    91/91

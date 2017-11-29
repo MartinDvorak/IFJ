@@ -1,9 +1,0 @@
-function funkce(x as integer,s as strin,y as integer) as integer
-	x = x + y
-	return x 
-end function
-
-scope
-dim x as integer
-x = funkce(10,!"strvoe",7)
-end scope

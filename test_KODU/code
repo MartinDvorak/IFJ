@@ -1,0 +1,189 @@
+.IFJcode17
+LABEL &&&scope
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@s1
+MOVE LF@s1 string@
+DEFVAR LF@s2
+MOVE LF@s2 string@
+DEFVAR LF@s1len
+MOVE LF@s1len int@0
+PUSHS string@Toto\032je\032nejaky\032text
+POPS LF@s1
+CLEARS
+PUSHS LF@s1
+PUSHS string@,\032ktery\032jeste\032trochu\032obohatime
+CREATEFRAME
+DEFVAR TF@$tmp1
+DEFVAR TF@$tmp2
+DEFVAR TF@$tmp_res
+POPS TF@$tmp1
+POPS TF@$tmp2
+CONCAT TF@$tmp_res TF@$tmp2 TF@$tmp1
+PUSHS TF@$tmp_res
+POPS LF@s2
+CLEARS
+PUSHS LF@s1
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS string@\010
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS LF@s2
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS string@\010
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+CREATEFRAME
+DEFVAR TF@&retval_function
+STRLEN TF@&retval_function LF@s1
+MOVE LF@s1len TF@&retval_function
+PUSHS LF@s1len
+PUSHS int@4
+SUBS
+PUSHS int@1
+ADDS
+POPS LF@s1len
+CLEARS
+CREATEFRAME
+DEFVAR TF@&retval_function
+MOVE TF@&retval_function string@
+DEFVAR TF@*input
+MOVE TF@*input LF@s2
+DEFVAR TF@*index
+MOVE TF@*index LF@s1len
+DEFVAR TF@*out_len
+MOVE TF@*out_len int@4
+DEFVAR TF@*str_len
+STRLEN TF@*str_len TF@*input
+PUSHS TF@*str_len
+PUSHS int@0
+EQS
+PUSHS TF@*index
+PUSHS int@0
+GTS
+NOTS
+ORS
+PUSHS bool@true
+JUMPIFEQS $*end_chr_function_0
+PUSHS TF@*out_len
+PUSHS int@0
+LTS
+PUSHS TF@*out_len
+PUSHS TF@*str_len
+PUSHS TF@*index
+SUBS
+GTS
+ORS
+PUSHS bool@false
+JUMPIFEQS $*else_branch_0
+PUSHS TF@*str_len
+PUSHS TF@*index
+SUBS
+PUSHS int@1
+ADDS
+POPS TF@*out_len
+LABEL $*else_branch_0
+SUB TF@*index TF@*index int@1
+DEFVAR TF@*end_index
+PUSHS TF@*index
+PUSHS TF@*out_len
+ADDS
+POPS TF@*end_index
+DEFVAR TF@*state_loop
+DEFVAR TF@*tmp_char
+LABEL $*loop_top_0
+LT TF@*state_loop TF@*index TF@*end_index
+JUMPIFEQ $*end_loop_0 TF@*state_loop bool@false
+GETCHAR TF@*tmp_char TF@*input TF@*index
+CONCAT TF@&retval_function TF@&retval_function TF@*tmp_char
+ADD TF@*index TF@*index int@1
+JUMP $*loop_top_0
+LABEL $*end_loop_0
+LABEL $*end_chr_function_0
+MOVE LF@s1 TF@&retval_function
+PUSHS string@4\032znaky\032od\032
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS LF@s1len
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS string@.\032znaku\032v\032\034
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS LF@s2
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS string@\034:
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS LF@s1
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS string@\010
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS string@Zadejte\032serazenou\032posloupnost\032vsech\032malych\032pismen\032a-h,\032
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+PUSHS string@pricemz\032se\032pismena\032nesmeji\032v\032posloupnosti\032opakovat
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+WRITE string@?\032
+READ LF@s1 string
+LABEL $loop_top_0
+PUSHS LF@s1
+PUSHS string@abcdefgh
+EQS
+NOTS
+PUSHS bool@true
+JUMPIFNEQS $loop_end_0
+CLEARS
+PUSHS string@\010Spatne\032zadana\032posloupnost,\032zkuste\032znovu
+CREATEFRAME
+DEFVAR TF@$retval_expr
+POPS TF@$retval_expr
+WRITE TF@$retval_expr
+CLEARS
+WRITE string@?\032
+READ LF@s1 string

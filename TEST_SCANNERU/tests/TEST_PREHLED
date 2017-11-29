@@ -1,9 +1,0 @@
-0 - deklarace promennych a prirazeni
-1 - typova konverze
-2 - nedeklarovana promenna
-3 - deklarace definice uziti funkce
-4 - deklarace a pouziti funkce bez definice
-5 - definice funkce a pouziti funkce
-6 - if statement
-7 - if statement spatna (int < str)
-8

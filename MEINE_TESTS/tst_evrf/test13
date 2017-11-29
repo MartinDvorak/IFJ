@@ -1,0 +1,7 @@
+declare function nevim(a as string, b as integer,c as fail) as integer
+function nevim (a as string, b as integer,c as fail) as integer
+return 0
+end function
+scope
+nevim(!"kok",5,JO)
+end scope

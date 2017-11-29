@@ -1,7 +1,0 @@
-scope
-dim x as integer
-if (x<10) then
-print !"spravne"
-else 
-print !"spatne"
-end scope

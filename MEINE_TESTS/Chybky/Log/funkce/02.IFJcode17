@@ -1,0 +1,53 @@
+# 2017-11-29 12:53:23.049796
+# SECTION: 02_functions
+# TEST: 02
+# INFO: empty function definition with declaration
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: 
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# 6.1-7: syntax error, unexpected vSTRING, expecting END
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 51
+# PRICE: ---
+# 
+#   1: ' empty function definition with declaration
+#   2: 
+#   3: declare function bar() as string
+#   4: 
+#   5: function bar() as string
+#   6: end function 
+#   7: 
+#   8: scope
+#   9: end scope
+
+########################################
+
+.IFJcode17                                                                      #     1/11
+JUMP &&&scope                                                                   #     2/11
+LABEL &func&bar                                                                 #     3/11
+CREATEFRAME                                                                     #     4/11
+PUSHFRAME                                                                       #     5/11
+string@                                                                         #     6/11
+POPFRAME                                                                        #     7/11
+RETURN                                                                          #     8/11
+LABEL &&&scope                                                                  #     9/11
+CREATEFRAME                                                                     #    10/11
+PUSHFRAME                                                                       #    11/11

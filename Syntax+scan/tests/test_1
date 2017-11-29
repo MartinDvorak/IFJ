@@ -1,6 +1,0 @@
-Declare Function factorial (n As Integer) As Integer
-Function factorial (n As Integer) As Integer
-dim x as integer
-end function
-Scope
-end scope

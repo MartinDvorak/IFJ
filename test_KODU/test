@@ -1,0 +1,947 @@
+#!/bin/bash
+
+red=`tput setaf 1`
+green=`tput setaf 2`
+nvm=`tput setaf 3`
+reset=`tput sgr0`
+
+printf "${nvm}BASIC SHIT \n${reset}"
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 1 block comments) "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" < tst/test1 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	k=$?
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			0													));then
+	if (($i==2))
+		then
+		diff -s stdout tst/test1_out > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 2) unfinished comment "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" < tst/test2 > tmp 2>&1
+k=$?
+if (($k==							1									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	k=$?
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			0													));then
+	if (($i==2))
+		then
+		diff -s stdout tst/test1_out > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 3) deklarace promennych"
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" < tst/test3 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	k=$?
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			0													));then
+	if (($i==2))
+		then
+		diff -s stdout tst/test1_out > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 4) prazdny scope"
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" < tst/test4 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	k=$?
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			0													));then
+	if (($i==2))
+		then
+		diff -s stdout tst/test1_out > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 5) prazdny scope2"
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" < tst/test5 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	k=$?
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			0													));then
+	if (($i==2))
+		then
+		diff -s stdout tst/test1_out > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 6) za scopem text"
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" < tst/test6 > tmp 2>&1
+k=$?
+if (($k==							2									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	k=$?
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			0													));then
+	if (($i==2))
+		then
+		diff -s stdout tst/test1_out > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 7) dvojity scope"
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" < tst/test7 > tmp 2>&1
+k=$?
+if (($k==							2									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	k=$?
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			0													));then
+	if (($i==2))
+		then
+		diff -s stdout tst/test1_out > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 8) spatne zapsany scope "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" < tst/test8 > tmp 2>&1
+k=$?
+if (($k==							2									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	k=$?
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			0													));then
+	if (($i==2))
+		then
+		diff -s stdout tst/test1_out > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 9) faktorial "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" < tst/test9 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp <tst/test9.i > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout tst/test9.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 10) ez factorial "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" < tst/test10 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp <tst/test10.i > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout tst/test10.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 11) rekurzivni factorial "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" < tst/test11 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp <tst/test11.i > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout tst/test11.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+
+printf "${nvm}FUNEXP ROZSIRENI\n${reset}"
+
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 1 print volani funkce) "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" <funxp/test1 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout funxp/test1.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 2 print volani funkce) "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" <funxp/test2 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout funxp/test2.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 3 volani v podmince) "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" <funxp/test3 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout funxp/test3.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 4 volani v podmince nedefinovane funkce) "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" <funxp/test4 > tmp 2>&1
+k=$?
+if (($k==							3									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	j=0;
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+if ((j!=0));then
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+fi
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			0													));then
+	if (($i==2))
+		then
+		diff -s stdout funxp/test4.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 5 volani ve výrazu) "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" <funxp/test5 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout funxp/test5.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 6 volání vnořených vyrazu) "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" <funxp/test6 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout funxp/test6.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 7 volání výrazu ve volání) "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" <funxp/test7 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout funxp/test7.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 8 volání výrazu ve volání) "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" <funxp/test8 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout funxp/test8.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 9 benchmark ackermanovy veže) "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" <funxp/test9 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout funxp/test9.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 10 dabelsky vyraz funkci) "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" <funxp/test10 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout funxp/test10.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+#__________________________________________________________________________________________________________________________________________________________________________________#
+printf "(Test 11 nejaka rekurze) "
+i=0 # KOMPILATOR LVL 
+"./ifj17_compilator" <funxp/test11 > tmp 2>&1
+k=$?
+if (($k==							0									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+	then
+	printf " Compiler: ${green}Umí	${reset}"
+	i=1  #INTERPRETER LVL
+else
+	printf " Compiler: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+fi
+
+
+if (($i==1))
+ 	then
+	"./ic17int" tmp > stdout
+	if (($k==						0									))	####################### OCEKAVANY VYSTUP INTERPRETU ###############################
+		then
+		printf " Interpret: ${green}Umí	${reset}"
+		i=2 #STDOUT LVL
+	else
+		printf " Interpret: ${red}Neumí	${reset} VYSTUP: ${red}$k 	${reset}"
+	fi
+
+fi
+
+																	      #JE TAM PRINT?			###################### VYSTUP STDOUT #####################################
+if ((																			1													));then
+	if (($i==2))
+		then
+		diff -s stdout funxp/test11.o > /dev/null 2>&1
+		if (($?==0))
+			then
+			printf " stdout: ${green}Umí	${reset}"
+		else
+			printf " stdout: ${red}Neumí	${reset}"
+		fi
+	fi
+fi
+echo ""
+
+
+
+
+
+

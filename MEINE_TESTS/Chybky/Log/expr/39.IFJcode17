@@ -1,0 +1,541 @@
+# 2017-11-29 12:53:23.548102
+# SECTION: 04_expressions
+# TEST: 39
+# INFO: expresion 2013
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: 
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ILABEL at line: 2 with following arguments:
+# Executing instruction: ICREATEFRAME at line: 3 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 4 with following arguments:
+# Executing instruction: IDEFVAR at line: 5 with following arguments:
+# Dest: LF@a
+# Executing instruction: IMOVE at line: 6 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: LF@a()
+# Executing instruction: IPUSHS at line: 7 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 8 with following arguments:
+# Arg1: Const@=964(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 9 with following arguments:
+# Arg1: Stack@=5(int)
+# Arg2: Stack@=964(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 10 with following arguments:
+# Arg1: Const@=556(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 11 with following arguments:
+# Arg1: Const@=2(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 12 with following arguments:
+# Arg1: Stack@=556(int)
+# Arg2: Stack@=2(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 13 with following arguments:
+# Arg1: Stack@=4820(int)
+# Arg2: Stack@=1112(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 14 with following arguments:
+# Arg1: Const@=485(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 15 with following arguments:
+# Arg1: Const@=6(int)
+# Dest: Stack@()
+# Executing instruction: IMULTS at line: 16 with following arguments:
+# Arg1: Stack@=485(int)
+# Arg2: Stack@=6(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 17 with following arguments:
+# Arg1: Stack@=5932(int)
+# Arg2: Stack@=2910(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 18 with following arguments:
+# Arg1: Const@=89(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 19 with following arguments:
+# Arg1: Stack@=3022(int)
+# Arg2: Stack@=89(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 20 with following arguments:
+# Arg1: Const@=98(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 21 with following arguments:
+# Arg1: Stack@=2933(int)
+# Arg2: Stack@=98(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 22 with following arguments:
+# Arg1: Const@=352(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 23 with following arguments:
+# Arg1: Stack@=2835(int)
+# Arg2: Stack@=352(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 24 with following arguments:
+# Arg1: Const@=187(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 25 with following arguments:
+# Arg1: Stack@=3187(int)
+# Arg2: Stack@=187(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 26 with following arguments:
+# Arg1: Const@=100(int)
+# Dest: Stack@()
+# Executing instruction: IDEFVAR at line: 27 with following arguments:
+# Dest: LF@$tmp1l_0
+# Executing instruction: IPOPS at line: 28 with following arguments:
+# Arg1: Stack@=100(int)
+# Dest: LF@$tmp1l_0()
+# Executing instruction: IINT2FLOATS at line: 29 with following arguments:
+# Arg1: Stack@=3000(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 30 with following arguments:
+# Arg1: LF@$tmp1l_0=100(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 31 with following arguments:
+# Arg1: Stack@=100(int)
+# Dest: Stack@()
+# Executing instruction: IDIVS at line: 32 with following arguments:
+# Arg1: Stack@=3000(double)
+# Arg2: Stack@=100(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 33 with following arguments:
+# Arg1: Const@=0.5(double)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 34 with following arguments:
+# Arg1: Stack@=30(double)
+# Arg2: Stack@=0.5(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 35 with following arguments:
+# Arg1: Const@=0.597(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 36 with following arguments:
+# Arg1: Const@=45(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 37 with following arguments:
+# Arg1: Const@=5(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 38 with following arguments:
+# Arg1: Stack@=45(int)
+# Arg2: Stack@=5(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 39 with following arguments:
+# Arg1: Const@=21.1(double)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 40 with following arguments:
+# Arg1: Const@=99(int)
+# Dest: Stack@()
+# Executing instruction: IINT2FLOATS at line: 41 with following arguments:
+# Arg1: Stack@=99(int)
+# Dest: Stack@()
+# Executing instruction: IADDS at line: 42 with following arguments:
+# Arg1: Stack@=21.1(double)
+# Arg2: Stack@=99(double)
+# Dest: Stack@()
+# Executing instruction: IDEFVAR at line: 43 with following arguments:
+# Dest: LF@$tmp1l_0
+# Error at line: 43
+# Symbol already exists!
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+#  153-29
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 52
+# PRICE: ---
+# 
+#   1: ' expresion 2013
+#   2: scope
+#   3:     dim a as integer
+#   4:     a= (5*964+556*2-485*6-89-98+352-187)/100+(0.5)+(0.597*((45-5)*(21.10001+99))*4/98.48)+((48.28-55.4841-51.48)*410.4+20.59*56)*0.18*584.97
+#   5:     a = (a * 482.48 / a - 62.48	) / 10
+#   6:     dim b as integer
+#   7:     b = 2*2+2/2*2-2*2*2*2*2-2-2+2/2*2+2-2*2/2+2-2*2+2-2*2-2/2+2+2
+#   8:     a = a*b+(b-(a/(5-498)+56/2+48)+5)-64/(42+12*42)*4*(1*1*(1+12)-486-45)-(4*43-(54+45*(4-458*((45-54)/45-4-487)-45-5)/56+45)+579+18)+1
+#   9:     a = a/(b*10)+11*14*5
+#  10:     
+#  11:     print a; b;
+#  12: 
+#  13: end scope
+
+########################################
+
+.IFJcode17                                                                      #     1/363
+LABEL &&&scope                                                                  #     2/363
+CREATEFRAME                                                                     #     3/363
+PUSHFRAME                                                                       #     4/363
+DEFVAR LF@a                                                                     #     5/363
+MOVE LF@a int@0                                                                 #     6/363
+PUSHS int@5                                                                     #     7/363
+PUSHS int@964                                                                   #     8/363
+MULS                                                                            #     9/363
+PUSHS int@556                                                                   #    10/363
+PUSHS int@2                                                                     #    11/363
+MULS                                                                            #    12/363
+ADDS                                                                            #    13/363
+PUSHS int@485                                                                   #    14/363
+PUSHS int@6                                                                     #    15/363
+MULS                                                                            #    16/363
+SUBS                                                                            #    17/363
+PUSHS int@89                                                                    #    18/363
+SUBS                                                                            #    19/363
+PUSHS int@98                                                                    #    20/363
+SUBS                                                                            #    21/363
+PUSHS int@352                                                                   #    22/363
+ADDS                                                                            #    23/363
+PUSHS int@187                                                                   #    24/363
+SUBS                                                                            #    25/363
+PUSHS int@100                                                                   #    26/363
+DEFVAR LF@$tmp1l_0                                                              #    27/363
+POPS LF@$tmp1l_0                                                                #    28/363
+INT2FLOATS                                                                      #    29/363
+PUSHS LF@$tmp1l_0                                                               #    30/363
+INT2FLOATS                                                                      #    31/363
+DIVS                                                                            #    32/363
+PUSHS float@0.5                                                                 #    33/363
+ADDS                                                                            #    34/363
+PUSHS float@0.597                                                               #    35/363
+PUSHS int@45                                                                    #    36/363
+PUSHS int@5                                                                     #    37/363
+SUBS                                                                            #    38/363
+PUSHS float@21.1                                                                #    39/363
+PUSHS int@99                                                                    #    40/363
+INT2FLOATS                                                                      #    41/363
+ADDS                                                                            #    42/363
+DEFVAR LF@$tmp1l_0                                                              #    43/363
+POPS LF@$tmp1l_0                                                                #    44/363
+INT2FLOATS                                                                      #    45/363
+PUSHS LF@$tmp1l_0                                                               #    46/363
+MULS                                                                            #    47/363
+MULS                                                                            #    48/363
+PUSHS int@4                                                                     #    49/363
+INT2FLOATS                                                                      #    50/363
+MULS                                                                            #    51/363
+PUSHS float@98.48                                                               #    52/363
+DIVS                                                                            #    53/363
+ADDS                                                                            #    54/363
+PUSHS float@48.28                                                               #    55/363
+PUSHS float@55.4841                                                             #    56/363
+SUBS                                                                            #    57/363
+PUSHS float@51.48                                                               #    58/363
+SUBS                                                                            #    59/363
+PUSHS float@410.4                                                               #    60/363
+MULS                                                                            #    61/363
+PUSHS float@20.59                                                               #    62/363
+PUSHS int@56                                                                    #    63/363
+INT2FLOATS                                                                      #    64/363
+MULS                                                                            #    65/363
+ADDS                                                                            #    66/363
+PUSHS float@0.18                                                                #    67/363
+MULS                                                                            #    68/363
+PUSHS float@584.97                                                              #    69/363
+MULS                                                                            #    70/363
+ADDS                                                                            #    71/363
+FLOAT2R2OINTS                                                                   #    72/363
+POPS LF@a                                                                       #    73/363
+CLEARS                                                                          #    74/363
+PUSHS LF@a                                                                      #    75/363
+PUSHS float@482.48                                                              #    76/363
+DEFVAR LF@$tmp1l_1                                                              #    77/363
+POPS LF@$tmp1l_1                                                                #    78/363
+INT2FLOATS                                                                      #    79/363
+PUSHS LF@$tmp1l_1                                                               #    80/363
+MULS                                                                            #    81/363
+PUSHS LF@a                                                                      #    82/363
+INT2FLOATS                                                                      #    83/363
+DIVS                                                                            #    84/363
+PUSHS float@62.48                                                               #    85/363
+SUBS                                                                            #    86/363
+PUSHS int@10                                                                    #    87/363
+INT2FLOATS                                                                      #    88/363
+DIVS                                                                            #    89/363
+FLOAT2R2OINTS                                                                   #    90/363
+POPS LF@a                                                                       #    91/363
+CLEARS                                                                          #    92/363
+DEFVAR LF@b                                                                     #    93/363
+MOVE LF@b int@0                                                                 #    94/363
+PUSHS int@2                                                                     #    95/363
+PUSHS int@2                                                                     #    96/363
+MULS                                                                            #    97/363
+PUSHS int@2                                                                     #    98/363
+PUSHS int@2                                                                     #    99/363
+DEFVAR LF@$tmp1l_2                                                              #   100/363
+POPS LF@$tmp1l_2                                                                #   101/363
+INT2FLOATS                                                                      #   102/363
+PUSHS LF@$tmp1l_2                                                               #   103/363
+INT2FLOATS                                                                      #   104/363
+DIVS                                                                            #   105/363
+PUSHS int@2                                                                     #   106/363
+INT2FLOATS                                                                      #   107/363
+MULS                                                                            #   108/363
+DEFVAR LF@$tmp1l_2                                                              #   109/363
+POPS LF@$tmp1l_2                                                                #   110/363
+INT2FLOATS                                                                      #   111/363
+PUSHS LF@$tmp1l_2                                                               #   112/363
+ADDS                                                                            #   113/363
+PUSHS int@2                                                                     #   114/363
+PUSHS int@2                                                                     #   115/363
+MULS                                                                            #   116/363
+PUSHS int@2                                                                     #   117/363
+MULS                                                                            #   118/363
+PUSHS int@2                                                                     #   119/363
+MULS                                                                            #   120/363
+PUSHS int@2                                                                     #   121/363
+MULS                                                                            #   122/363
+INT2FLOATS                                                                      #   123/363
+SUBS                                                                            #   124/363
+PUSHS int@2                                                                     #   125/363
+INT2FLOATS                                                                      #   126/363
+SUBS                                                                            #   127/363
+PUSHS int@2                                                                     #   128/363
+INT2FLOATS                                                                      #   129/363
+SUBS                                                                            #   130/363
+PUSHS int@2                                                                     #   131/363
+PUSHS int@2                                                                     #   132/363
+DEFVAR LF@$tmp1l_2                                                              #   133/363
+POPS LF@$tmp1l_2                                                                #   134/363
+INT2FLOATS                                                                      #   135/363
+PUSHS LF@$tmp1l_2                                                               #   136/363
+INT2FLOATS                                                                      #   137/363
+DIVS                                                                            #   138/363
+PUSHS int@2                                                                     #   139/363
+INT2FLOATS                                                                      #   140/363
+MULS                                                                            #   141/363
+ADDS                                                                            #   142/363
+PUSHS int@2                                                                     #   143/363
+INT2FLOATS                                                                      #   144/363
+ADDS                                                                            #   145/363
+PUSHS int@2                                                                     #   146/363
+PUSHS int@2                                                                     #   147/363
+MULS                                                                            #   148/363
+PUSHS int@2                                                                     #   149/363
+DEFVAR LF@$tmp1l_2                                                              #   150/363
+POPS LF@$tmp1l_2                                                                #   151/363
+INT2FLOATS                                                                      #   152/363
+PUSHS LF@$tmp1l_2                                                               #   153/363
+INT2FLOATS                                                                      #   154/363
+DIVS                                                                            #   155/363
+SUBS                                                                            #   156/363
+PUSHS int@2                                                                     #   157/363
+INT2FLOATS                                                                      #   158/363
+ADDS                                                                            #   159/363
+PUSHS int@2                                                                     #   160/363
+PUSHS int@2                                                                     #   161/363
+MULS                                                                            #   162/363
+INT2FLOATS                                                                      #   163/363
+SUBS                                                                            #   164/363
+PUSHS int@2                                                                     #   165/363
+INT2FLOATS                                                                      #   166/363
+ADDS                                                                            #   167/363
+PUSHS int@2                                                                     #   168/363
+PUSHS int@2                                                                     #   169/363
+MULS                                                                            #   170/363
+INT2FLOATS                                                                      #   171/363
+SUBS                                                                            #   172/363
+PUSHS int@2                                                                     #   173/363
+PUSHS int@2                                                                     #   174/363
+DEFVAR LF@$tmp1l_2                                                              #   175/363
+POPS LF@$tmp1l_2                                                                #   176/363
+INT2FLOATS                                                                      #   177/363
+PUSHS LF@$tmp1l_2                                                               #   178/363
+INT2FLOATS                                                                      #   179/363
+DIVS                                                                            #   180/363
+SUBS                                                                            #   181/363
+PUSHS int@2                                                                     #   182/363
+INT2FLOATS                                                                      #   183/363
+ADDS                                                                            #   184/363
+PUSHS int@2                                                                     #   185/363
+INT2FLOATS                                                                      #   186/363
+ADDS                                                                            #   187/363
+FLOAT2R2OINTS                                                                   #   188/363
+POPS LF@b                                                                       #   189/363
+CLEARS                                                                          #   190/363
+PUSHS LF@a                                                                      #   191/363
+PUSHS LF@b                                                                      #   192/363
+MULS                                                                            #   193/363
+PUSHS LF@b                                                                      #   194/363
+PUSHS LF@a                                                                      #   195/363
+PUSHS int@5                                                                     #   196/363
+PUSHS int@498                                                                   #   197/363
+SUBS                                                                            #   198/363
+DEFVAR LF@$tmp1l_3                                                              #   199/363
+POPS LF@$tmp1l_3                                                                #   200/363
+INT2FLOATS                                                                      #   201/363
+PUSHS LF@$tmp1l_3                                                               #   202/363
+INT2FLOATS                                                                      #   203/363
+DIVS                                                                            #   204/363
+PUSHS int@56                                                                    #   205/363
+PUSHS int@2                                                                     #   206/363
+DEFVAR LF@$tmp1l_3                                                              #   207/363
+POPS LF@$tmp1l_3                                                                #   208/363
+INT2FLOATS                                                                      #   209/363
+PUSHS LF@$tmp1l_3                                                               #   210/363
+INT2FLOATS                                                                      #   211/363
+DIVS                                                                            #   212/363
+ADDS                                                                            #   213/363
+PUSHS int@48                                                                    #   214/363
+INT2FLOATS                                                                      #   215/363
+ADDS                                                                            #   216/363
+DEFVAR LF@$tmp1l_3                                                              #   217/363
+POPS LF@$tmp1l_3                                                                #   218/363
+INT2FLOATS                                                                      #   219/363
+PUSHS LF@$tmp1l_3                                                               #   220/363
+SUBS                                                                            #   221/363
+PUSHS int@5                                                                     #   222/363
+INT2FLOATS                                                                      #   223/363
+ADDS                                                                            #   224/363
+DEFVAR LF@$tmp1l_3                                                              #   225/363
+POPS LF@$tmp1l_3                                                                #   226/363
+INT2FLOATS                                                                      #   227/363
+PUSHS LF@$tmp1l_3                                                               #   228/363
+ADDS                                                                            #   229/363
+PUSHS int@64                                                                    #   230/363
+PUSHS int@42                                                                    #   231/363
+PUSHS int@12                                                                    #   232/363
+PUSHS int@42                                                                    #   233/363
+MULS                                                                            #   234/363
+ADDS                                                                            #   235/363
+DEFVAR LF@$tmp1l_3                                                              #   236/363
+POPS LF@$tmp1l_3                                                                #   237/363
+INT2FLOATS                                                                      #   238/363
+PUSHS LF@$tmp1l_3                                                               #   239/363
+INT2FLOATS                                                                      #   240/363
+DIVS                                                                            #   241/363
+PUSHS int@4                                                                     #   242/363
+INT2FLOATS                                                                      #   243/363
+MULS                                                                            #   244/363
+PUSHS int@1                                                                     #   245/363
+PUSHS int@1                                                                     #   246/363
+MULS                                                                            #   247/363
+PUSHS int@1                                                                     #   248/363
+PUSHS int@12                                                                    #   249/363
+ADDS                                                                            #   250/363
+MULS                                                                            #   251/363
+PUSHS int@486                                                                   #   252/363
+SUBS                                                                            #   253/363
+PUSHS int@45                                                                    #   254/363
+SUBS                                                                            #   255/363
+INT2FLOATS                                                                      #   256/363
+MULS                                                                            #   257/363
+SUBS                                                                            #   258/363
+PUSHS int@4                                                                     #   259/363
+PUSHS int@43                                                                    #   260/363
+MULS                                                                            #   261/363
+PUSHS int@54                                                                    #   262/363
+PUSHS int@45                                                                    #   263/363
+PUSHS int@4                                                                     #   264/363
+PUSHS int@458                                                                   #   265/363
+PUSHS int@45                                                                    #   266/363
+PUSHS int@54                                                                    #   267/363
+SUBS                                                                            #   268/363
+PUSHS int@45                                                                    #   269/363
+DEFVAR LF@$tmp1l_3                                                              #   270/363
+POPS LF@$tmp1l_3                                                                #   271/363
+INT2FLOATS                                                                      #   272/363
+PUSHS LF@$tmp1l_3                                                               #   273/363
+INT2FLOATS                                                                      #   274/363
+DIVS                                                                            #   275/363
+PUSHS int@4                                                                     #   276/363
+INT2FLOATS                                                                      #   277/363
+SUBS                                                                            #   278/363
+PUSHS int@487                                                                   #   279/363
+INT2FLOATS                                                                      #   280/363
+SUBS                                                                            #   281/363
+DEFVAR LF@$tmp1l_3                                                              #   282/363
+POPS LF@$tmp1l_3                                                                #   283/363
+INT2FLOATS                                                                      #   284/363
+PUSHS LF@$tmp1l_3                                                               #   285/363
+MULS                                                                            #   286/363
+DEFVAR LF@$tmp1l_3                                                              #   287/363
+POPS LF@$tmp1l_3                                                                #   288/363
+INT2FLOATS                                                                      #   289/363
+PUSHS LF@$tmp1l_3                                                               #   290/363
+SUBS                                                                            #   291/363
+PUSHS int@45                                                                    #   292/363
+INT2FLOATS                                                                      #   293/363
+SUBS                                                                            #   294/363
+PUSHS int@5                                                                     #   295/363
+INT2FLOATS                                                                      #   296/363
+SUBS                                                                            #   297/363
+DEFVAR LF@$tmp1l_3                                                              #   298/363
+POPS LF@$tmp1l_3                                                                #   299/363
+INT2FLOATS                                                                      #   300/363
+PUSHS LF@$tmp1l_3                                                               #   301/363
+MULS                                                                            #   302/363
+PUSHS int@56                                                                    #   303/363
+INT2FLOATS                                                                      #   304/363
+DIVS                                                                            #   305/363
+DEFVAR LF@$tmp1l_3                                                              #   306/363
+POPS LF@$tmp1l_3                                                                #   307/363
+INT2FLOATS                                                                      #   308/363
+PUSHS LF@$tmp1l_3                                                               #   309/363
+ADDS                                                                            #   310/363
+PUSHS int@45                                                                    #   311/363
+INT2FLOATS                                                                      #   312/363
+ADDS                                                                            #   313/363
+DEFVAR LF@$tmp1l_3                                                              #   314/363
+POPS LF@$tmp1l_3                                                                #   315/363
+INT2FLOATS                                                                      #   316/363
+PUSHS LF@$tmp1l_3                                                               #   317/363
+SUBS                                                                            #   318/363
+PUSHS int@579                                                                   #   319/363
+INT2FLOATS                                                                      #   320/363
+ADDS                                                                            #   321/363
+PUSHS int@18                                                                    #   322/363
+INT2FLOATS                                                                      #   323/363
+ADDS                                                                            #   324/363
+SUBS                                                                            #   325/363
+PUSHS int@1                                                                     #   326/363
+INT2FLOATS                                                                      #   327/363
+ADDS                                                                            #   328/363
+FLOAT2R2OINTS                                                                   #   329/363
+POPS LF@a                                                                       #   330/363
+CLEARS                                                                          #   331/363
+PUSHS LF@a                                                                      #   332/363
+PUSHS LF@b                                                                      #   333/363
+PUSHS int@10                                                                    #   334/363
+MULS                                                                            #   335/363
+DEFVAR LF@$tmp1l_4                                                              #   336/363
+POPS LF@$tmp1l_4                                                                #   337/363
+INT2FLOATS                                                                      #   338/363
+PUSHS LF@$tmp1l_4                                                               #   339/363
+INT2FLOATS                                                                      #   340/363
+DIVS                                                                            #   341/363
+PUSHS int@11                                                                    #   342/363
+PUSHS int@14                                                                    #   343/363
+MULS                                                                            #   344/363
+PUSHS int@5                                                                     #   345/363
+MULS                                                                            #   346/363
+INT2FLOATS                                                                      #   347/363
+ADDS                                                                            #   348/363
+FLOAT2R2OINTS                                                                   #   349/363
+POPS LF@a                                                                       #   350/363
+CLEARS                                                                          #   351/363
+PUSHS LF@a                                                                      #   352/363
+CREATEFRAME                                                                     #   353/363
+DEFVAR TF@expr                                                                  #   354/363
+POPS TF@expr                                                                    #   355/363
+WRITE TF@expr                                                                   #   356/363
+CLEARS                                                                          #   357/363
+PUSHS LF@b                                                                      #   358/363
+CREATEFRAME                                                                     #   359/363
+DEFVAR TF@expr                                                                  #   360/363
+POPS TF@expr                                                                    #   361/363
+WRITE TF@expr                                                                   #   362/363
+CLEARS                                                                          #   363/363

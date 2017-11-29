@@ -1,0 +1,5 @@
+' block comments
+scope
+/'aaa 'aaa'/
+
+end scope

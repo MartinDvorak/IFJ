@@ -1,0 +1,3 @@
+scope 
+ print asc(!"ahoj", 2);
+end scope

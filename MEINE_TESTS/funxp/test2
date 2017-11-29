@@ -1,0 +1,3 @@
+scope
+print chr(97);
+end scope

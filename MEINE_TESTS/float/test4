@@ -1,0 +1,5 @@
+scope
+
+dim a as double = 4.e5
+
+end scope

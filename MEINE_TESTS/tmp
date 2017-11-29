@@ -1,0 +1,164 @@
+.IFJcode17
+JUMP &&&scope
+LABEL &func&get_year
+CREATEFRAME
+PUSHFRAME
+PUSHS int@0
+PUSHS string@Enter\032a\032year:\032
+CREATEFRAME
+DEFVAR TF@expr
+POPS TF@expr
+WRITE TF@expr
+CLEARS
+DEFVAR LF@year
+MOVE LF@year int@0
+WRITE string@?\032
+READ LF@year int
+PUSHS LF@year
+ADDS
+POPFRAME
+RETURN
+POPFRAME
+RETURN
+JUMP &&&scope
+LABEL &func&modulo
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@divider
+POPS LF@divider
+DEFVAR LF@divident
+POPS LF@divident
+PUSHS int@0
+DEFVAR LF@res
+MOVE LF@res int@0
+PUSHS LF@divident
+PUSHS LF@divident
+PUSHS LF@divider
+CREATEFRAME
+DEFVAR TF@$tmp1_mul
+INT2FLOATS
+POPS TF@$tmp1_mul
+INT2FLOATS
+PUSHS TF@$tmp1_mul
+DIVS
+FLOAT2INTS
+PUSHS LF@divider
+MULS
+SUBS
+POPS LF@res
+CLEARS
+PUSHS LF@res
+ADDS
+POPFRAME
+RETURN
+POPFRAME
+RETURN
+LABEL &&&scope
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@year
+MOVE LF@year int@0
+CALL &func&get_year
+DEFVAR LF@&&function_return_6
+POPS LF@&&function_return_6
+PUSHS LF@&&function_return_6
+POPS LF@year
+CLEARS
+DEFVAR LF@res
+MOVE LF@res int@0
+PUSHS LF@year
+PUSHS int@4
+CALL &func&modulo
+DEFVAR LF@&&function_return_7
+POPS LF@&&function_return_7
+PUSHS LF@&&function_return_7
+POPS LF@res
+CLEARS
+PUSHS LF@res
+PUSHS int@0
+EQS
+PUSHS bool@true
+JUMPIFNEQS $else_branch_0
+PUSHS LF@year
+PUSHS int@100
+CALL &func&modulo
+DEFVAR LF@&&function_return_10
+POPS LF@&&function_return_10
+PUSHS LF@&&function_return_10
+POPS LF@res
+CLEARS
+PUSHS LF@res
+PUSHS int@0
+EQS
+PUSHS bool@true
+JUMPIFNEQS $else_branch_1
+PUSHS LF@year
+PUSHS int@400
+CALL &func&modulo
+DEFVAR LF@&&function_return_13
+POPS LF@&&function_return_13
+PUSHS LF@&&function_return_13
+POPS LF@res
+CLEARS
+PUSHS LF@res
+PUSHS int@0
+EQS
+PUSHS bool@true
+JUMPIFNEQS $else_branch_2
+PUSHS LF@year
+CREATEFRAME
+DEFVAR TF@expr
+POPS TF@expr
+WRITE TF@expr
+CLEARS
+PUSHS string@\032is\032a\032leap\032year
+CREATEFRAME
+DEFVAR TF@expr
+POPS TF@expr
+WRITE TF@expr
+CLEARS
+JUMP $end_if_2
+LABEL $else_branch_2
+PUSHS LF@year
+CREATEFRAME
+DEFVAR TF@expr
+POPS TF@expr
+WRITE TF@expr
+CLEARS
+PUSHS string@\032is\032not\032a\032leap\032year
+CREATEFRAME
+DEFVAR TF@expr
+POPS TF@expr
+WRITE TF@expr
+CLEARS
+LABEL $end_if_2
+JUMP $end_if_1
+LABEL $else_branch_1
+PUSHS LF@year
+CREATEFRAME
+DEFVAR TF@expr
+POPS TF@expr
+WRITE TF@expr
+CLEARS
+PUSHS string@\032is\032a\032leap\032year
+CREATEFRAME
+DEFVAR TF@expr
+POPS TF@expr
+WRITE TF@expr
+CLEARS
+LABEL $end_if_1
+JUMP $end_if_0
+LABEL $else_branch_0
+PUSHS LF@year
+CREATEFRAME
+DEFVAR TF@expr
+POPS TF@expr
+WRITE TF@expr
+CLEARS
+PUSHS string@\032is\032not\032a\032leap\032year
+CREATEFRAME
+DEFVAR TF@expr
+POPS TF@expr
+WRITE TF@expr
+CLEARS
+LABEL $end_if_0

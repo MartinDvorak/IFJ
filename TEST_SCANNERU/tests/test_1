@@ -1,4 +1,0 @@
-scope
-dim str as string
-str = str+1
-end scope

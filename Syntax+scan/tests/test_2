@@ -1,8 +1,0 @@
-Function factorial (n As Integer) As Integer
-
-	Dim temp_result As Integer
-	Dim decremented_n As Integer
-	Dim result As Integer
-	Return result
-
-End Function

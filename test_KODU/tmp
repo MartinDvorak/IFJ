@@ -1,0 +1,17 @@
+.IFJcode17
+19 50 JUMP &&&scope
+LABEL &func&kkt
+PUSHFRAME
+DEFVAR LF@&retval_function
+67 50 DEFVAR LF@a
+MOVE LF@a LF@$f_param1
+10 22 68 10 22 MOVE LF@&retval_function int@0
+66 13 50 10 22 66 DEFVAR LF@i
+MOVE LF@i int@0
+66 20 50 58 51 30 PUSHS LF@a
+PUSHS int@0
+GTS
+66 PUSHS bool@true
+JUMPIFNEQS $else_branch_0
+CLEARS
+26 50 

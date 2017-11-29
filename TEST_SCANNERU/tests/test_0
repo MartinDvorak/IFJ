@@ -1,7 +1,0 @@
-scope
-dim x as integer = 5
-dim y as integer = 7
-dim z as integer = 0
-x = (x*y)/7
-z = 0
-end scope

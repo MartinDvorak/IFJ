@@ -1,0 +1,3 @@
+scope
+dim a as double = 4..4e6 
+end scope

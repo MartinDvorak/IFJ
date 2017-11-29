@@ -1,9 +1,0 @@
-' unfinished multi line comment
-
-SCOPE
-
-/' Toto je komentář
-
-print 42;
-
-END SCOPE

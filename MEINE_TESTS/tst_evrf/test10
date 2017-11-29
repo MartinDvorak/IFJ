@@ -1,0 +1,10 @@
+scope
+dim a as integer
+dim vysl as integer
+print !"zadejte";
+input a
+do while a > 0
+vysl = vysl * a
+a = a - 1
+loop
+end scope

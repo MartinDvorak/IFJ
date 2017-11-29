@@ -1,4 +1,0 @@
-scope 'Hlavni telo
-Dim a as integer
-dim vysl as kunda
-end scope

@@ -1,0 +1,423 @@
+# 2017-11-29 12:53:24.010828
+# SECTION: 07_strings
+# TEST: 04
+# INFO: asc builtin function
+# REQUIRED EXTENSIONS: 
+# ACTIVATED EXTENSIONS: 
+# STATE: FAIL
+# 
+# COMPILER STDERR:
+# 
+# INTERPRETER STDERR:
+# Executing instruction: ILABEL at line: 2 with following arguments:
+# Executing instruction: ICREATEFRAME at line: 3 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 4 with following arguments:
+# Executing instruction: IDEFVAR at line: 5 with following arguments:
+# Dest: LF@res
+# Executing instruction: IMOVE at line: 6 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: LF@res()
+# Executing instruction: IDEFVAR at line: 7 with following arguments:
+# Dest: LF@tmp
+# Executing instruction: IMOVE at line: 8 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: LF@tmp()
+# Executing instruction: IPUSHS at line: 9 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 10 with following arguments:
+# Arg1: Const@=10(int)
+# Dest: Stack@()
+# Executing instruction: ISUBS at line: 11 with following arguments:
+# Arg1: Stack@=0(int)
+# Arg2: Stack@=10(int)
+# Dest: Stack@()
+# Executing instruction: IPOPS at line: 12 with following arguments:
+# Arg1: Stack@=-10(int)
+# Dest: LF@tmp=0(int)
+# Executing instruction: ICLEARS at line: 13 with following arguments:
+# Executing instruction: IPUSHS at line: 14 with following arguments:
+# Arg1: Const@=test(string)
+# Dest: Stack@()
+# Executing instruction: IPUSHS at line: 15 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: Stack@()
+# Executing instruction: ICREATEFRAME at line: 16 with following arguments:
+# Executing instruction: IPUSHFRAME at line: 17 with following arguments:
+# Executing instruction: IDEFVAR at line: 18 with following arguments:
+# Dest: LF@&result
+# Executing instruction: IMOVE at line: 19 with following arguments:
+# Arg1: Const@=0(int)
+# Dest: LF@&result()
+# Executing instruction: IDEFVAR at line: 20 with following arguments:
+# Dest: LF@$position
+# Executing instruction: IPOPS at line: 21 with following arguments:
+# Arg1: Stack@=0(int)
+# Dest: LF@$position()
+# Executing instruction: IDEFVAR at line: 22 with following arguments:
+# Dest: LF@$input
+# Error at line: 23
+# Temporary frame does not exist!
+# 
+# EXPECTED INTERPRETER STDOUT:
+
+#  0 116 1 255 127 10 0 0
+
+
+# CURRENT INTERPRETER STDOUT:
+
+
+
+# INTERPRETER STDIN: 
+# 
+#
+# EXPECTED COMPILER EXIT CODE: 0
+# CURRENT COMPILER EXIT CODE: 0
+# EXPECTED INTERPRETER EXIT CODE: 0
+# CURRENT INTERPRETER EXIT CODE: 55
+# PRICE: ---
+# 
+#   1: ' asc builtin function
+#   2: scope
+#   3: 	dim res as integer
+#   4: 	dim tmp as integer
+#   5: 	tmp = 0 - 10
+#   6: 
+#   7: 	res = asc(!"test", 0)
+#   8: 	print res;
+#   9: 	res = asc(!"test", 1)
+#  10: 	print res;
+#  11: 	res = asc(!"\001", 1)
+#  12: 	print res;
+#  13: 	res = asc(!"\255", 1)
+#  14: 	print res;
+#  15: 	res = asc(!"\127", 1)
+#  16: 	print res;
+#  17: 	res = asc(!"\n", 1)
+#  18: 	print res;
+#  19: 	res = asc(!"asdasd", tmp)
+#  20: 	print res;
+#  21: 	res = asc(!"asdasd", 42)
+#  22: 	print res;
+#  23: 	
+#  24: end scope
+
+########################################
+
+.IFJcode17                                                                      #     1/317
+LABEL &&&scope                                                                  #     2/317
+CREATEFRAME                                                                     #     3/317
+PUSHFRAME                                                                       #     4/317
+DEFVAR LF@res                                                                   #     5/317
+MOVE LF@res int@0                                                               #     6/317
+DEFVAR LF@tmp                                                                   #     7/317
+MOVE LF@tmp int@0                                                               #     8/317
+PUSHS int@0                                                                     #     9/317
+PUSHS int@10                                                                    #    10/317
+SUBS                                                                            #    11/317
+POPS LF@tmp                                                                     #    12/317
+CLEARS                                                                          #    13/317
+PUSHS string@test                                                               #    14/317
+PUSHS int@0                                                                     #    15/317
+CREATEFRAME                                                                     #    16/317
+PUSHFRAME                                                                       #    17/317
+DEFVAR LF@&result                                                               #    18/317
+MOVE LF@&result int@0                                                           #    19/317
+DEFVAR LF@$position                                                             #    20/317
+POPS LF@$position                                                               #    21/317
+DEFVAR LF@$input                                                                #    22/317
+POPS TF@$input                                                                  #    23/317
+SUB LF@$position LF@$position int@1                                             #    24/317
+PUSHS LF@$position                                                              #    25/317
+PUSHS int@0                                                                     #    26/317
+LTS                                                                             #    27/317
+DEFVAR LF@$str_len                                                              #    28/317
+STRLEN LF@$str_len LF@$input                                                    #    29/317
+PUSHS LF@$position                                                              #    30/317
+PUSHS LF@$str_len                                                               #    31/317
+LTS                                                                             #    32/317
+NOTS                                                                            #    33/317
+ORS                                                                             #    34/317
+PUSHS bool@true                                                                 #    35/317
+JUMPIFEQS $wrong_index_0                                                        #    36/317
+STRI2INT LF@&result LF@$input LF@$position                                      #    37/317
+LABEL $wrong_index_0                                                            #    38/317
+PUSHS LF@&result                                                                #    39/317
+POPFRAME                                                                        #    40/317
+DEFVAR LF@&&function_return_0                                                   #    41/317
+POPS LF@&&function_return_0                                                     #    42/317
+PUSHS LF@&&function_return_0                                                    #    43/317
+POPS LF@res                                                                     #    44/317
+CLEARS                                                                          #    45/317
+PUSHS LF@res                                                                    #    46/317
+CREATEFRAME                                                                     #    47/317
+DEFVAR TF@expr                                                                  #    48/317
+POPS TF@expr                                                                    #    49/317
+WRITE TF@expr                                                                   #    50/317
+CLEARS                                                                          #    51/317
+PUSHS string@test                                                               #    52/317
+PUSHS int@1                                                                     #    53/317
+CREATEFRAME                                                                     #    54/317
+PUSHFRAME                                                                       #    55/317
+DEFVAR LF@&result                                                               #    56/317
+MOVE LF@&result int@0                                                           #    57/317
+DEFVAR LF@$position                                                             #    58/317
+POPS LF@$position                                                               #    59/317
+DEFVAR LF@$input                                                                #    60/317
+POPS TF@$input                                                                  #    61/317
+SUB LF@$position LF@$position int@1                                             #    62/317
+PUSHS LF@$position                                                              #    63/317
+PUSHS int@0                                                                     #    64/317
+LTS                                                                             #    65/317
+DEFVAR LF@$str_len                                                              #    66/317
+STRLEN LF@$str_len LF@$input                                                    #    67/317
+PUSHS LF@$position                                                              #    68/317
+PUSHS LF@$str_len                                                               #    69/317
+LTS                                                                             #    70/317
+NOTS                                                                            #    71/317
+ORS                                                                             #    72/317
+PUSHS bool@true                                                                 #    73/317
+JUMPIFEQS $wrong_index_1                                                        #    74/317
+STRI2INT LF@&result LF@$input LF@$position                                      #    75/317
+LABEL $wrong_index_1                                                            #    76/317
+PUSHS LF@&result                                                                #    77/317
+POPFRAME                                                                        #    78/317
+DEFVAR LF@&&function_return_2                                                   #    79/317
+POPS LF@&&function_return_2                                                     #    80/317
+PUSHS LF@&&function_return_2                                                    #    81/317
+POPS LF@res                                                                     #    82/317
+CLEARS                                                                          #    83/317
+PUSHS LF@res                                                                    #    84/317
+CREATEFRAME                                                                     #    85/317
+DEFVAR TF@expr                                                                  #    86/317
+POPS TF@expr                                                                    #    87/317
+WRITE TF@expr                                                                   #    88/317
+CLEARS                                                                          #    89/317
+PUSHS string@\001                                                               #    90/317
+PUSHS int@1                                                                     #    91/317
+CREATEFRAME                                                                     #    92/317
+PUSHFRAME                                                                       #    93/317
+DEFVAR LF@&result                                                               #    94/317
+MOVE LF@&result int@0                                                           #    95/317
+DEFVAR LF@$position                                                             #    96/317
+POPS LF@$position                                                               #    97/317
+DEFVAR LF@$input                                                                #    98/317
+POPS TF@$input                                                                  #    99/317
+SUB LF@$position LF@$position int@1                                             #   100/317
+PUSHS LF@$position                                                              #   101/317
+PUSHS int@0                                                                     #   102/317
+LTS                                                                             #   103/317
+DEFVAR LF@$str_len                                                              #   104/317
+STRLEN LF@$str_len LF@$input                                                    #   105/317
+PUSHS LF@$position                                                              #   106/317
+PUSHS LF@$str_len                                                               #   107/317
+LTS                                                                             #   108/317
+NOTS                                                                            #   109/317
+ORS                                                                             #   110/317
+PUSHS bool@true                                                                 #   111/317
+JUMPIFEQS $wrong_index_2                                                        #   112/317
+STRI2INT LF@&result LF@$input LF@$position                                      #   113/317
+LABEL $wrong_index_2                                                            #   114/317
+PUSHS LF@&result                                                                #   115/317
+POPFRAME                                                                        #   116/317
+DEFVAR LF@&&function_return_4                                                   #   117/317
+POPS LF@&&function_return_4                                                     #   118/317
+PUSHS LF@&&function_return_4                                                    #   119/317
+POPS LF@res                                                                     #   120/317
+CLEARS                                                                          #   121/317
+PUSHS LF@res                                                                    #   122/317
+CREATEFRAME                                                                     #   123/317
+DEFVAR TF@expr                                                                  #   124/317
+POPS TF@expr                                                                    #   125/317
+WRITE TF@expr                                                                   #   126/317
+CLEARS                                                                          #   127/317
+PUSHS string@\255                                                               #   128/317
+PUSHS int@1                                                                     #   129/317
+CREATEFRAME                                                                     #   130/317
+PUSHFRAME                                                                       #   131/317
+DEFVAR LF@&result                                                               #   132/317
+MOVE LF@&result int@0                                                           #   133/317
+DEFVAR LF@$position                                                             #   134/317
+POPS LF@$position                                                               #   135/317
+DEFVAR LF@$input                                                                #   136/317
+POPS TF@$input                                                                  #   137/317
+SUB LF@$position LF@$position int@1                                             #   138/317
+PUSHS LF@$position                                                              #   139/317
+PUSHS int@0                                                                     #   140/317
+LTS                                                                             #   141/317
+DEFVAR LF@$str_len                                                              #   142/317
+STRLEN LF@$str_len LF@$input                                                    #   143/317
+PUSHS LF@$position                                                              #   144/317
+PUSHS LF@$str_len                                                               #   145/317
+LTS                                                                             #   146/317
+NOTS                                                                            #   147/317
+ORS                                                                             #   148/317
+PUSHS bool@true                                                                 #   149/317
+JUMPIFEQS $wrong_index_3                                                        #   150/317
+STRI2INT LF@&result LF@$input LF@$position                                      #   151/317
+LABEL $wrong_index_3                                                            #   152/317
+PUSHS LF@&result                                                                #   153/317
+POPFRAME                                                                        #   154/317
+DEFVAR LF@&&function_return_6                                                   #   155/317
+POPS LF@&&function_return_6                                                     #   156/317
+PUSHS LF@&&function_return_6                                                    #   157/317
+POPS LF@res                                                                     #   158/317
+CLEARS                                                                          #   159/317
+PUSHS LF@res                                                                    #   160/317
+CREATEFRAME                                                                     #   161/317
+DEFVAR TF@expr                                                                  #   162/317
+POPS TF@expr                                                                    #   163/317
+WRITE TF@expr                                                                   #   164/317
+CLEARS                                                                          #   165/317
+PUSHS string@\127                                                               #   166/317
+PUSHS int@1                                                                     #   167/317
+CREATEFRAME                                                                     #   168/317
+PUSHFRAME                                                                       #   169/317
+DEFVAR LF@&result                                                               #   170/317
+MOVE LF@&result int@0                                                           #   171/317
+DEFVAR LF@$position                                                             #   172/317
+POPS LF@$position                                                               #   173/317
+DEFVAR LF@$input                                                                #   174/317
+POPS TF@$input                                                                  #   175/317
+SUB LF@$position LF@$position int@1                                             #   176/317
+PUSHS LF@$position                                                              #   177/317
+PUSHS int@0                                                                     #   178/317
+LTS                                                                             #   179/317
+DEFVAR LF@$str_len                                                              #   180/317
+STRLEN LF@$str_len LF@$input                                                    #   181/317
+PUSHS LF@$position                                                              #   182/317
+PUSHS LF@$str_len                                                               #   183/317
+LTS                                                                             #   184/317
+NOTS                                                                            #   185/317
+ORS                                                                             #   186/317
+PUSHS bool@true                                                                 #   187/317
+JUMPIFEQS $wrong_index_4                                                        #   188/317
+STRI2INT LF@&result LF@$input LF@$position                                      #   189/317
+LABEL $wrong_index_4                                                            #   190/317
+PUSHS LF@&result                                                                #   191/317
+POPFRAME                                                                        #   192/317
+DEFVAR LF@&&function_return_8                                                   #   193/317
+POPS LF@&&function_return_8                                                     #   194/317
+PUSHS LF@&&function_return_8                                                    #   195/317
+POPS LF@res                                                                     #   196/317
+CLEARS                                                                          #   197/317
+PUSHS LF@res                                                                    #   198/317
+CREATEFRAME                                                                     #   199/317
+DEFVAR TF@expr                                                                  #   200/317
+POPS TF@expr                                                                    #   201/317
+WRITE TF@expr                                                                   #   202/317
+CLEARS                                                                          #   203/317
+PUSHS string@\010                                                               #   204/317
+PUSHS int@1                                                                     #   205/317
+CREATEFRAME                                                                     #   206/317
+PUSHFRAME                                                                       #   207/317
+DEFVAR LF@&result                                                               #   208/317
+MOVE LF@&result int@0                                                           #   209/317
+DEFVAR LF@$position                                                             #   210/317
+POPS LF@$position                                                               #   211/317
+DEFVAR LF@$input                                                                #   212/317
+POPS TF@$input                                                                  #   213/317
+SUB LF@$position LF@$position int@1                                             #   214/317
+PUSHS LF@$position                                                              #   215/317
+PUSHS int@0                                                                     #   216/317
+LTS                                                                             #   217/317
+DEFVAR LF@$str_len                                                              #   218/317
+STRLEN LF@$str_len LF@$input                                                    #   219/317
+PUSHS LF@$position                                                              #   220/317
+PUSHS LF@$str_len                                                               #   221/317
+LTS                                                                             #   222/317
+NOTS                                                                            #   223/317
+ORS                                                                             #   224/317
+PUSHS bool@true                                                                 #   225/317
+JUMPIFEQS $wrong_index_5                                                        #   226/317
+STRI2INT LF@&result LF@$input LF@$position                                      #   227/317
+LABEL $wrong_index_5                                                            #   228/317
+PUSHS LF@&result                                                                #   229/317
+POPFRAME                                                                        #   230/317
+DEFVAR LF@&&function_return_10                                                  #   231/317
+POPS LF@&&function_return_10                                                    #   232/317
+PUSHS LF@&&function_return_10                                                   #   233/317
+POPS LF@res                                                                     #   234/317
+CLEARS                                                                          #   235/317
+PUSHS LF@res                                                                    #   236/317
+CREATEFRAME                                                                     #   237/317
+DEFVAR TF@expr                                                                  #   238/317
+POPS TF@expr                                                                    #   239/317
+WRITE TF@expr                                                                   #   240/317
+CLEARS                                                                          #   241/317
+PUSHS string@asdasd                                                             #   242/317
+PUSHS LF@tmp                                                                    #   243/317
+CREATEFRAME                                                                     #   244/317
+PUSHFRAME                                                                       #   245/317
+DEFVAR LF@&result                                                               #   246/317
+MOVE LF@&result int@0                                                           #   247/317
+DEFVAR LF@$position                                                             #   248/317
+POPS LF@$position                                                               #   249/317
+DEFVAR LF@$input                                                                #   250/317
+POPS TF@$input                                                                  #   251/317
+SUB LF@$position LF@$position int@1                                             #   252/317
+PUSHS LF@$position                                                              #   253/317
+PUSHS int@0                                                                     #   254/317
+LTS                                                                             #   255/317
+DEFVAR LF@$str_len                                                              #   256/317
+STRLEN LF@$str_len LF@$input                                                    #   257/317
+PUSHS LF@$position                                                              #   258/317
+PUSHS LF@$str_len                                                               #   259/317
+LTS                                                                             #   260/317
+NOTS                                                                            #   261/317
+ORS                                                                             #   262/317
+PUSHS bool@true                                                                 #   263/317
+JUMPIFEQS $wrong_index_6                                                        #   264/317
+STRI2INT LF@&result LF@$input LF@$position                                      #   265/317
+LABEL $wrong_index_6                                                            #   266/317
+PUSHS LF@&result                                                                #   267/317
+POPFRAME                                                                        #   268/317
+DEFVAR LF@&&function_return_12                                                  #   269/317
+POPS LF@&&function_return_12                                                    #   270/317
+PUSHS LF@&&function_return_12                                                   #   271/317
+POPS LF@res                                                                     #   272/317
+CLEARS                                                                          #   273/317
+PUSHS LF@res                                                                    #   274/317
+CREATEFRAME                                                                     #   275/317
+DEFVAR TF@expr                                                                  #   276/317
+POPS TF@expr                                                                    #   277/317
+WRITE TF@expr                                                                   #   278/317
+CLEARS                                                                          #   279/317
+PUSHS string@asdasd                                                             #   280/317
+PUSHS int@42                                                                    #   281/317
+CREATEFRAME                                                                     #   282/317
+PUSHFRAME                                                                       #   283/317
+DEFVAR LF@&result                                                               #   284/317
+MOVE LF@&result int@0                                                           #   285/317
+DEFVAR LF@$position                                                             #   286/317
+POPS LF@$position                                                               #   287/317
+DEFVAR LF@$input                                                                #   288/317
+POPS TF@$input                                                                  #   289/317
+SUB LF@$position LF@$position int@1                                             #   290/317
+PUSHS LF@$position                                                              #   291/317
+PUSHS int@0                                                                     #   292/317
+LTS                                                                             #   293/317
+DEFVAR LF@$str_len                                                              #   294/317
+STRLEN LF@$str_len LF@$input                                                    #   295/317
+PUSHS LF@$position                                                              #   296/317
+PUSHS LF@$str_len                                                               #   297/317
+LTS                                                                             #   298/317
+NOTS                                                                            #   299/317
+ORS                                                                             #   300/317
+PUSHS bool@true                                                                 #   301/317
+JUMPIFEQS $wrong_index_7                                                        #   302/317
+STRI2INT LF@&result LF@$input LF@$position                                      #   303/317
+LABEL $wrong_index_7                                                            #   304/317
+PUSHS LF@&result                                                                #   305/317
+POPFRAME                                                                        #   306/317
+DEFVAR LF@&&function_return_15                                                  #   307/317
+POPS LF@&&function_return_15                                                    #   308/317
+PUSHS LF@&&function_return_15                                                   #   309/317
+POPS LF@res                                                                     #   310/317
+CLEARS                                                                          #   311/317
+PUSHS LF@res                                                                    #   312/317
+CREATEFRAME                                                                     #   313/317
+DEFVAR TF@expr                                                                  #   314/317
+POPS TF@expr                                                                    #   315/317
+WRITE TF@expr                                                                   #   316/317
+CLEARS                                                                          #   317/317

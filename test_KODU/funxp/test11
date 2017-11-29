@@ -1,0 +1,18 @@
+function kkt(a as integer) as integer
+dim i as integer
+
+if a>0 then
+ 	return kkt(a-1)
+else
+	return 50
+end if
+
+end function
+
+
+scope
+dim a as integer
+a = (kkt(2) + kkt(2)) * kkt(2)
+print a;
+
+end scope

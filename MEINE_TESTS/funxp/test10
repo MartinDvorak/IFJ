@@ -1,0 +1,11 @@
+function kkt() as integer
+return 88
+end function
+
+
+scope
+dim a as integer
+a = (kkt() + kkt()) * kkt()
+print a;
+
+end scope
