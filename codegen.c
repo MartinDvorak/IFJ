@@ -470,7 +470,7 @@ void codegen_buildin_asc(){
 			"DEFVAR LF@$position\n"
 			"POPS LF@$position\n"
 			"DEFVAR LF@$input\n"
-			"POPS TF@$input\n");
+			"POPS LF@$input\n");
 
 			//if(convert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@$position TF@$position\n");
 			//TODO pretypovani parametru!!!
