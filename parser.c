@@ -68,8 +68,7 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 						break;
 				}
 
-				printf("DEFVAR LF@&&function_return_%d\n", act_call);
-				printf("POPS LF@&&function_return_%d\n", act_call);
+				codegen_get_func_result(act_call);
 
 				/**pridani vysledku do pole operandu**********************/
 				new.type = ID;
@@ -136,9 +135,7 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 
 
 			/**GENEROVANI MEZIKODU*********************************/
-			printf("CALL &func&%s\n", new.string);
-			printf("DEFVAR LF@&&function_return_%d\n", act_call);
-			printf("POPS LF@&&function_return_%d\n", act_call);
+			codegen_func_call(new.string, act_call);
 
 			Tdata symb;
 			Tdata* symbTmp = &symb;
@@ -435,7 +432,7 @@ int r_side(TToken *t,int lvalue, char* name)
 				if(!semantic_check_lside_rside(lvalue,rvalue))
 					return FALSE;
 
-				/****GENEROVANI MEZIKODU***************************/
+				/****GENEROVANI MEZIKODU**************************/
 					codegen_assignment(name);
 					free(name);
 
@@ -972,7 +969,7 @@ int func(TToken* t, int scope)
 						{
 
 							/****GENEROVANI MEZIKODU****************/
-							codegen_end_function();
+							codegen_func_return();
 
 							t = get_next(t,LA_S,&storage);
 							return func(t,scope);

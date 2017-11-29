@@ -313,15 +313,6 @@ void codegen_input(TToken* t){
 //print jednoho vyrazu
 void codegen_print(){
 
-	/*static int call_counter = 0;
-	call_counter++;
-
-	printf(	"DEFVAR LF@$retval_expr_%d\n"
-			"POPS LF@$retval_expr_%d\n"
-			"WRITE LF@$retval_expr_%d\n"
-			"CLEARS\n"
-			,call_counter, call_counter, call_counter);
-	*/
 	printf(	"CREATEFRAME\n"
 			"DEFVAR TF@expr\n"
 			"POPS TF@expr\n"
@@ -341,6 +332,19 @@ void codegen_scope(){
 
 
 /****FUNKCE, DEFINICE A VOLANI**********************************************************************/
+
+void codegen_func_call(char* name, int act_call){
+
+	printf("CALL &func&%s\n", name);
+	printf("DEFVAR LF@&&function_return_%d\n", act_call);
+	printf("POPS LF@&&function_return_%d\n", act_call);
+}
+
+void codegen_get_func_result(int act_call){
+
+	printf("DEFVAR LF@&&function_return_%d\n", act_call);
+	printf("POPS LF@&&function_return_%d\n", act_call);
+}
 
 //vytvori navesti, prevede TF na LF
 void codegen_func_definition(TToken* t){
@@ -376,12 +380,6 @@ void codegen_func_param(char* name){
 			"POPS LF@%s\n", name, name);
 }
 
-//prevede LF na TF a navrati se zpet z funkce (RETURN), , navratova hodnota predat ?
-void codegen_end_function(){
-
-	printf(	"POPFRAME\n"
-			"RETURN\n");
-}
 
 void codegen_func_return(){
 
@@ -391,13 +389,12 @@ void codegen_func_return(){
 
 /****IF THEN ELSE STATEMENT************************************************************************/
 
-//skok na else vetev, bool hodnota vyhodnoceni vyrazu je na vrcholu datoveho zasobniku, vycisti ho 
+//skok na else vetev, bool hodnota vyhodnoceni vyrazu je na vrcholu datoveho zasobniku
 void codegen_if_cond_jump(int actual_if_id){
 
 	printf(	"PUSHS bool@true\n"
 			"JUMPIFNEQS $else_branch_%d\n"
 			, actual_if_id);
-			//bylo tu CLEARS
 }
 
 //vytvori skok na konec if-st za then vetvi a vytvori label pro skok na else vetev
@@ -428,7 +425,6 @@ void codegen_loop_cond(int actual_loop_id){
 	printf(	"PUSHS bool@true\n"
 			"JUMPIFNEQS $loop_end_%d\n"
 			, actual_loop_id);	
-			//bylo CLEARS
 }
 
 void codegen_loop_end(int actual_loop_id){
