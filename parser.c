@@ -681,7 +681,7 @@ int body(TToken *t)
 				return FALSE;
 
 			/****GENEROVANI MEZIKODU*************/
-			codegen_func_return();
+			codegen_func_return_inner();
 
 			//end semantic
 			if(t->type == EOL)

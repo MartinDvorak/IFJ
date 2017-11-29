@@ -44,7 +44,7 @@ int valid_ES(Tstack* s) {
                 return 0;
             }
         }
-        if (tmp > 255) {
+        if (tmp > 255 || tmp < 001) {
             return 0;
         }
     }
@@ -107,7 +107,9 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     int signed_exp = 0;
     int done = 0;
     int dot = 0;
-    int nonzero = 0;
+    int nonzero_e = 0;
+    int nonzero_d = 0;
+    
 
 
     if (t == NULL) {                //FIRST USE
@@ -255,6 +257,10 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
             state = EOF;
         }
 
+        else if (c == '&') {
+            state = AMP;
+        }
+
         else {
             state = SCAN_ERR;
         }
@@ -270,6 +276,10 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
             if (state != STRING_V) {
                 break;
             }
+        }
+
+        if (state == SCAN_ERR) {
+            break;
         }
 
         switch (state) {
@@ -312,10 +322,16 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
             case FLOAT_V:
                 if ((c >= '0') && (c <= '9')) {
                     push(s,c);
+                    nonzero_d = 1;
                 }
                 else if (c == 'e') {
-                    state = EXPONENT;
-                    push(s,c);
+                    if (nonzero_d) {
+                        state = EXPONENT;
+                        push(s,c);
+                    }
+                    else {
+                        state = SCAN_ERR;
+                    }
                 }
                 else if ((dot == 1) && (c == '.')) {
                     state = SCAN_ERR;
@@ -340,7 +356,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                         push(s, '+');
                         push(s, c);
                         signed_exp = 1;
-                        nonzero = 1;
+                        nonzero_e = 1;
                     }
                     else {
                         state = SCAN_ERR;
@@ -350,7 +366,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 }
                 else if ((c >= '0') && (c <='9')) {
                     push(s,c);
-                    nonzero = 1;
+                    nonzero_e = 1;
                 }
                 else if (isspace(c)) {
                     done = 1;
@@ -360,7 +376,7 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                     done = 1;
                     *storage = c;
                     //state = SCAN_ERR;
-                    /*if (!nonzero) {
+                    /*if (!nonzero_e) {
                         state = SCAN_ERR;
                     }*/
                 }
@@ -420,14 +436,54 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                 }
                 break;
             
-            /*case SCAN_ERR:
-                done = 1;
-                *storage = c;
-                break;*/
+            case AMP:
+                if (c == 'b') {
+                    state = BINARY;
+                }
+                else if (c == 'o') {
+                    state = OCTAL;
+                }
+                else if (c == 'h') {
+                    state = HEXA;
+                }
+                else {
+                    state = SCAN_ERR;
+                }
+                break;
+            
+            case BINARY:
+                if (c == '1' || c == '0') {
+                    push(s, c);
+                }
+                else {
+                    done = 1;
+                    *storage = c;
+                }
+                break;
+            
+            case OCTAL:
+                if ((c >= '0') && (c <= '7')) {
+                    push(s, c);
+                }
+                else {
+                    done = 1;
+                    *storage = c;
+                }
+                break;
+
+            case HEXA:
+                if (((c >= '0') && (c <= '9')) || ((c >= 'a') && (c <= 'f'))) {
+                    push(s, c);
+                }
+                else {
+                    done = 1;
+                    *storage = c;
+                }
+                break;
         }
     }
 
-    if ((nonzero == 0) && (state == EXPONENT)) {
+    if (((nonzero_e == 0) && (state == EXPONENT)) || ((nonzero_d == 0) && (state == FLOAT_V))) {
         state = SCAN_ERR;
     }
 
@@ -454,15 +510,35 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
         }
     }
 
-    t->type = state;
-
-    if (state == INT_V) {
-        t->int_v = strtol(tmp_s, NULL, 10);
+    else if (state == INT_V) {
+        char *ptr = NULL;
+        t->int_v = strtol(tmp_s, &ptr, 10);
+        if (ptr[0] != '\0') {
+            state = SCAN_ERR;
+        }
     }
 
-    if (state == FLOAT_V) {
+    else if ((state == BINARY) || (state == OCTAL) || (state == HEXA)) {
+        state = INT_V;
         char *ptr = NULL;
-        t->float_v = strtod(tmp_s,&ptr);
+        if (state == BINARY) {
+            t->int_v = strtol(tmp_s, &ptr, 2);
+        }
+        else if (state == OCTAL) {
+            t->int_v = strtol(tmp_s, &ptr, 8);
+        }
+        else {
+            t->int_v = strtol(tmp_s, &ptr, 16);
+        }
+
+        if (ptr[0] != '\0') {
+            state = SCAN_ERR;
+        }
+    }
+
+    else if (state == FLOAT_V) {
+        char *ptr = NULL;
+        t->float_v = strtod(tmp_s, &ptr);
         if (ptr[0] != '\0') {
             state = SCAN_ERR;
         }
@@ -475,6 +551,8 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
         }
         strcpy(t->string, tmp_s);
     }
+
+    t->type = state;
 
     free(tmp_s);
     free_stack(s);

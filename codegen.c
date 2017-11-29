@@ -116,9 +116,6 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 	
 	int operand_index = 0;	//kolik operandu v poli se uz proslo
 	int operator_index = 0;	//kolik operatoru v poli se uz proslo
-	static int call_counter = 0;
-	int act_call = call_counter;
-	call_counter++;
 	
 	for(int i = 0; postfix[i] != '$'; i++){
 
@@ -157,12 +154,12 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 
 			if(act.l_convert){
 				//levy operand konverze
-				printf(	"DEFVAR LF@$tmp1l_%d\n"
+				printf(	"CREATEFRAME\n"
+						"DEFVAR TF@$tmp1l\n"
 						
-						"POPS LF@$tmp1l_%d\n"
+						"POPS TF@$tmp1l\n"
 						"INT2FLOATS\n"
-						"PUSHS LF@$tmp1l_%d\n"
-						,act_call, act_call, act_call);
+						"PUSHS TF@$tmp1l\n");
 			}
 			if(act.r_convert){
 				//pravy operand konverze
@@ -175,15 +172,15 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 					if((operand_array[operand_index-1].type == STRING) || 
 						(operand_array[operand_index-1].type == STRING_V)){
 						//jde o retezce
-						printf(	"DEFVAR LF@$tmp1_conc_%d\n"
-								"DEFVAR LF@$tmp2_conc_%d\n"
-								"DEFVAR LF@$tmp_res_conc_%d\n"
+						printf(	"CREATEFRAME\n"
+								"DEFVAR TF@$tmp1_conc\n"
+								"DEFVAR TF@$tmp2_conc\n"
+								"DEFVAR TF@$tmp_res_conc\n"
 								
-								"POPS LF@$tmp1_conc_%d\n"
-								"POPS LF@$tmp2_conc_%d\n"
-								"CONCAT LF@$tmp_res_conc_%d LF@$tmp2_conc_%d LF@$tmp1_conc_%d\n"
-								"PUSHS LF@$tmp_res_conc_%d\n"
-								,act_call, act_call, act_call, act_call, act_call, act_call, act_call, act_call, act_call);
+								"POPS TF@$tmp1_conc\n"
+								"POPS TF@$tmp2_conc\n"
+								"CONCAT TF@$tmp_res_conc TF@$tmp2_conc TF@$tmp1_conc\n"
+								"PUSHS TF@$tmp_res_conc\n");
 					} 
 					else{
 						//integery nebo floaty
@@ -201,15 +198,15 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 					break;
 				case 'M':
 					//prevede oba na float, podeli, osekne na int
-					printf(	"DEFVAR LF@$tmp1_mul_%d\n"
+					printf(	"CREATEFRAME\n"
+							"DEFVAR TF@$tmp1_mul\n"
 							
 							"INT2FLOATS\n"
-							"POPS LF@$tmp1_mul_%d\n"
+							"POPS TF@$tmp1_mul\n"
 							"INT2FLOATS\n"
-							"PUSHS LF@$tmp1_mul_%d\n"
+							"PUSHS TF@$tmp1_mul\n"
 							"DIVS\n"
-							"FLOAT2INTS\n"
-							,act_call, act_call, act_call);
+							"FLOAT2INTS\n");
 					break;
 				case 'N':
 					printf(	"EQS\n"
@@ -367,7 +364,7 @@ void codegen_implicit_func_return(TToken* t){
 	}
 	else{
 		//t->type == STRING
-		printf("string@\n");
+		printf("PUSHS string@\n");
 
 	}
 
@@ -380,8 +377,18 @@ void codegen_func_param(char* name){
 			"POPS LF@%s\n", name, name);
 }
 
-
+//na konci tela funkce
 void codegen_func_return(){
+
+	printf(	"POPFRAME\n"
+			"RETURN\n");
+}
+
+
+//pokud se uvnitr funkce nachazi klicove slovo return 
+void codegen_func_return_inner(){
+
+	printf("ADDS\n"); //pricte k navratove hodnote implicitni, tj. 0 / 0.0 / !"", tzn. smaze implicitni
 
 	printf(	"POPFRAME\n"
 			"RETURN\n");
