@@ -282,7 +282,6 @@ void codegen_assignment(char* name){
 
 			//expression
 			printf("POPS LF@%s\n", name);
-			printf("CLEARS\n");
 }
 
 void codegen_input(TToken* t){
