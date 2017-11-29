@@ -50,7 +50,7 @@ int semantic_check_lside_rside(int l_side, int r_side)
 	}
 	else if ((l_side == INTEGER) && (r_side == DOUBLE))
 	{	// covreze Double-> int
-		printf("FLOAT2R2OINTS\n");
+		printf("FLOAT2R2EINTS\n");
 		return TRUE;
 	}
 	else if ((l_side == DOUBLE) && (r_side == INTEGER))

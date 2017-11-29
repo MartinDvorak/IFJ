@@ -1,20 +1,19 @@
- ' Function call function
- 
- function GHGKghgk55() as integer
- 	return 42
- end function
- 
- function GHGKghgk67() as integer
- 	dim a as integer
- 	a = GHGKghgk55()
- 	a = a + a
- 	return a
- end function
- 
+ ' while with elseif in condition
  scope
- 	dim b as integer
- 	b = GHGKghgk67()
- 	print b;
- 	b = GHGKghgk67()
- 	print b;
+     dim a as integer
+ 	if 78 > 2 then
+ 	    a = 12
+ 		do while a >= 1
+ 			if a > 8 then
+ 				print 69;
+ 			elseif a > 3 then
+ 				print 74;
+ 			else
+ 				print 11;
+ 			end if
+ 			a = a - 1
+ 		loop
+ 	else
+ 		print 77;
+ 	end if
  end scope
