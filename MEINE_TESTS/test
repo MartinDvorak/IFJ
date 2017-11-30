@@ -1124,7 +1124,7 @@ printf "(Test 3)doubly co by nemeli"
 i=0 # KOMPILATOR LVL 
 "./ifj17_compilator" < float/test3 > tmp 2>&1
 k=$?
-if (($k==							1									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+if (($k==							2									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
 	then
 	printf " Compiler: ${green}Umí	${reset}"
 	if ((k==0))
@@ -1214,7 +1214,7 @@ printf "(Test 5)doubly co by nemeli"
 i=0 # KOMPILATOR LVL 
 "./ifj17_compilator" < float/test5 > tmp 2>&1
 k=$?
-if (($k==							1									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
+if (($k==							3									)) ################### OCEKAVANY VYSTUP COMPILATORU #########################x
 	then
 	printf " Compiler: ${green}Umí	${reset}"
 	if ((k==0))

@@ -1,5 +1,3 @@
 scope
-
 dim a as double = 1.4f45
-
 end scope

@@ -282,7 +282,6 @@ void codegen_assignment(char* name){
 
 			//expression
 			printf("POPS LF@%s\n", name);
-			printf("CLEARS\n");
 }
 
 void codegen_input(TToken* t){
@@ -314,7 +313,6 @@ void codegen_print(){
 			"DEFVAR TF@expr\n"
 			"POPS TF@expr\n"
 			"WRITE TF@expr\n"
-			"CLEARS\n"
 			);
 }
 
@@ -471,9 +469,6 @@ void codegen_buildin_asc(){
 			"POPS LF@$position\n"
 			"DEFVAR LF@$input\n"
 			"POPS LF@$input\n");
-
-			//if(convert_param == DOUBLE2INT) printf("FLOAT2R2OINT TF@$position TF@$position\n");
-			//TODO pretypovani parametru!!!
 		
 			printf("SUB LF@$position LF@$position int@1\n");	//indexovani od 1, ne od nuly
 	

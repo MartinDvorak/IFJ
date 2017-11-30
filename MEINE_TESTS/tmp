@@ -9,7 +9,6 @@ CREATEFRAME
 DEFVAR TF@expr
 POPS TF@expr
 WRITE TF@expr
-CLEARS
 DEFVAR LF@year
 MOVE LF@year int@0
 WRITE string@?\032
@@ -46,7 +45,6 @@ PUSHS LF@divider
 MULS
 SUBS
 POPS LF@res
-CLEARS
 PUSHS LF@res
 ADDS
 POPFRAME
@@ -63,7 +61,6 @@ DEFVAR LF@&&function_return_6
 POPS LF@&&function_return_6
 PUSHS LF@&&function_return_6
 POPS LF@year
-CLEARS
 DEFVAR LF@res
 MOVE LF@res int@0
 PUSHS LF@year
@@ -73,7 +70,6 @@ DEFVAR LF@&&function_return_7
 POPS LF@&&function_return_7
 PUSHS LF@&&function_return_7
 POPS LF@res
-CLEARS
 PUSHS LF@res
 PUSHS int@0
 EQS
@@ -86,7 +82,6 @@ DEFVAR LF@&&function_return_10
 POPS LF@&&function_return_10
 PUSHS LF@&&function_return_10
 POPS LF@res
-CLEARS
 PUSHS LF@res
 PUSHS int@0
 EQS
@@ -99,7 +94,6 @@ DEFVAR LF@&&function_return_13
 POPS LF@&&function_return_13
 PUSHS LF@&&function_return_13
 POPS LF@res
-CLEARS
 PUSHS LF@res
 PUSHS int@0
 EQS
@@ -110,13 +104,11 @@ CREATEFRAME
 DEFVAR TF@expr
 POPS TF@expr
 WRITE TF@expr
-CLEARS
 PUSHS string@\032is\032a\032leap\032year
 CREATEFRAME
 DEFVAR TF@expr
 POPS TF@expr
 WRITE TF@expr
-CLEARS
 JUMP $end_if_2
 LABEL $else_branch_2
 PUSHS LF@year
@@ -124,13 +116,11 @@ CREATEFRAME
 DEFVAR TF@expr
 POPS TF@expr
 WRITE TF@expr
-CLEARS
 PUSHS string@\032is\032not\032a\032leap\032year
 CREATEFRAME
 DEFVAR TF@expr
 POPS TF@expr
 WRITE TF@expr
-CLEARS
 LABEL $end_if_2
 JUMP $end_if_1
 LABEL $else_branch_1
@@ -139,13 +129,11 @@ CREATEFRAME
 DEFVAR TF@expr
 POPS TF@expr
 WRITE TF@expr
-CLEARS
 PUSHS string@\032is\032a\032leap\032year
 CREATEFRAME
 DEFVAR TF@expr
 POPS TF@expr
 WRITE TF@expr
-CLEARS
 LABEL $end_if_1
 JUMP $end_if_0
 LABEL $else_branch_0
@@ -154,11 +142,9 @@ CREATEFRAME
 DEFVAR TF@expr
 POPS TF@expr
 WRITE TF@expr
-CLEARS
 PUSHS string@\032is\032not\032a\032leap\032year
 CREATEFRAME
 DEFVAR TF@expr
 POPS TF@expr
 WRITE TF@expr
-CLEARS
 LABEL $end_if_0
