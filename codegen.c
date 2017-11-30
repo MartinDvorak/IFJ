@@ -52,6 +52,7 @@ void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_a
 			}
 			strcpy(operand_array[*ptr_to_array].name,t->string);
 			operand_array[*ptr_to_array].string = NULL;
+			operand_array[*ptr_to_array].is_return_value = TRUE;
 		}
 
 		else if(symbTmp->type == INTEGER){
@@ -63,6 +64,7 @@ void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_a
 			}
 			strcpy(operand_array[*ptr_to_array].name,t->string);
 			operand_array[*ptr_to_array].string = NULL;
+			operand_array[*ptr_to_array].is_return_value = FALSE;
 		}
 		else if(symbTmp->type == DOUBLE){
 			//promenna float
@@ -73,6 +75,7 @@ void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_a
 			}
 			strcpy(operand_array[*ptr_to_array].name,t->string);
 			operand_array[*ptr_to_array].string = NULL;
+			operand_array[*ptr_to_array].is_return_value = FALSE;
 		}
 		else if(symbTmp->type == STRING){
 			//promenna string
@@ -83,6 +86,7 @@ void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_a
 			}
 			strcpy(operand_array[*ptr_to_array].name,t->string);
 			operand_array[*ptr_to_array].string = NULL;
+			operand_array[*ptr_to_array].is_return_value = FALSE;
 		}
 	}
 
@@ -123,8 +127,11 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 			//promenna nebo konstanta
 			if((operand_array[operand_index].type == INTEGER) || (operand_array[operand_index].type == DOUBLE)
 				|| (operand_array[operand_index].type == STRING)){
-				//promenna
-				printf("PUSHS LF@%s\n", operand_array[operand_index].name);
+				//promenna nebo navratova hodnota funkce
+				if(operand_array[operand_index].is_return_value == FALSE)
+					printf("PUSHS LF@%s\n", operand_array[operand_index].name);
+				else
+					printf("PUSHS TF@%s\n", operand_array[operand_index].name);
 
 			}
 			else if((operand_array[operand_index].type == INT_V) || (operand_array[operand_index].type == FLOAT_V)
@@ -154,12 +161,13 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 
 			if(act.l_convert){
 				//levy operand konverze
-				printf(	"CREATEFRAME\n"
-						"DEFVAR TF@$tmp1l\n"
+				printf(	//"CREATEFRAME\n"
+						"DEFVAR TF@$tmp1l%d\n"
 						
-						"POPS TF@$tmp1l\n"
+						"POPS TF@$tmp1l%d\n"
 						"INT2FLOATS\n"
-						"PUSHS TF@$tmp1l\n");
+						"PUSHS TF@$tmp1l%d\n"
+						,i,i,i);
 			}
 			if(act.r_convert){
 				//pravy operand konverze
@@ -172,15 +180,16 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 					if((operand_array[operand_index-1].type == STRING) || 
 						(operand_array[operand_index-1].type == STRING_V)){
 						//jde o retezce
-						printf(	"CREATEFRAME\n"
-								"DEFVAR TF@$tmp1_conc\n"
-								"DEFVAR TF@$tmp2_conc\n"
-								"DEFVAR TF@$tmp_res_conc\n"
+						printf(	//"CREATEFRAME\n"
+								"DEFVAR TF@$tmp1_conc%d\n"
+								"DEFVAR TF@$tmp2_conc%d\n"
+								"DEFVAR TF@$tmp_res_conc%d\n"
 								
-								"POPS TF@$tmp1_conc\n"
-								"POPS TF@$tmp2_conc\n"
-								"CONCAT TF@$tmp_res_conc TF@$tmp2_conc TF@$tmp1_conc\n"
-								"PUSHS TF@$tmp_res_conc\n");
+								"POPS TF@$tmp1_conc%d\n"
+								"POPS TF@$tmp2_conc%d\n"
+								"CONCAT TF@$tmp_res_conc%d TF@$tmp2_conc%d TF@$tmp1_conc%d\n"
+								"PUSHS TF@$tmp_res_conc%d\n"
+								,i,i,i,i,i,i,i,i,i);
 					} 
 					else{
 						//integery nebo floaty
@@ -198,15 +207,16 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 					break;
 				case 'M':
 					//prevede oba na float, podeli, osekne na int
-					printf(	"CREATEFRAME\n"
-							"DEFVAR TF@$tmp1_mul\n"
+					printf(	//"CREATEFRAME\n"
+							"DEFVAR TF@$tmp1_mul%d\n"
 							
 							"INT2FLOATS\n"
-							"POPS TF@$tmp1_mul\n"
+							"POPS TF@$tmp1_mul%d\n"
 							"INT2FLOATS\n"
-							"PUSHS TF@$tmp1_mul\n"
+							"PUSHS TF@$tmp1_mul%d\n"
 							"DIVS\n"
-							"FLOAT2INTS\n");
+							"FLOAT2INTS\n"
+							,i,i,i);
 					break;
 				case 'N':
 					printf(	"EQS\n"
@@ -328,17 +338,35 @@ void codegen_scope(){
 
 /****FUNKCE, DEFINICE A VOLANI**********************************************************************/
 
+
+//meni porani navratovych hodnot na datovem zasobniku
+void codegen_revert_return_values_order(int calls_per_expression){
+
+	printf("CREATEFRAME\n");
+
+	for(int i = calls_per_expression; i > 0 ;i--){
+
+		printf("DEFVAR TF@&&function_return_%d\n", i);
+		printf("POPS TF@&&function_return_%d\n", i);
+	}
+	//for(int i = 1; i <= calls_per_expression; i++){
+
+	//		printf("PUSHS TF@$tmp_%d\n", i);
+	//}
+
+}
+
 void codegen_func_call(char* name, int act_call){
 
 	printf("CALL &func&%s\n", name);
-	printf("DEFVAR LF@&&function_return_%d\n", act_call);
-	printf("POPS LF@&&function_return_%d\n", act_call);
+	//printf("DEFVAR TF@&&function_return_%d\n", act_call);
+	//printf("POPS TF@&&function_return_%d\n", act_call);
 }
 
 void codegen_get_func_result(int act_call){
 
-	printf("DEFVAR LF@&&function_return_%d\n", act_call);
-	printf("POPS LF@&&function_return_%d\n", act_call);
+	//printf("DEFVAR LF@&&function_return_%d\n", act_call);
+	//printf("POPS LF@&&function_return_%d\n", act_call);
 }
 
 //vytvori navesti, prevede TF na LF

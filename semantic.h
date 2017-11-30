@@ -21,6 +21,7 @@ typedef struct expr_operand{
 
 	int semantic_type;//pro semantickou kontrolu, bez rozdilu pro konst. a promenne
 	int type;
+	int is_return_value;
 	char* name;
 	int int_v;
 	float float_v;

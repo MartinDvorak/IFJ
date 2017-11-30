@@ -16,13 +16,13 @@ int ERROR_RETURN = 2;
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_to_array)
+int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_to_array, int* calls_per_expression)
 {
 	int position = 0;
 	char*param = NULL;
-	static int call_counter = 0;
-	int act_call = call_counter;
-	call_counter++;
+	static int global_call_per_expr = 0;
+	int call_per_expr = global_call_per_expr;
+	global_call_per_expr++;
 
 
 	TToken new;
@@ -48,6 +48,7 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 			if(param_f(t,param,&position)){
 
 				/**GENEROVANI MEZIKODU******************************************/
+				*calls_per_expression+=1;
 				int f_return_type;
 				switch(type){
 					case LENGTH:
@@ -68,14 +69,14 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 						break;
 				}
 
-				codegen_get_func_result(act_call);
+				codegen_get_func_result(call_per_expr);
 
 				/**pridani vysledku do pole operandu**********************/
 				new.type = ID;
 				free(new.string);
 				if((new.string = malloc(sizeof(char)*(25))) == NULL)
 				exit(99);
-				sprintf(new.string, "&&function_return_%d", act_call);
+				sprintf(new.string, "&&function_return_%d", *calls_per_expression);
 				insert_operand_array(&new, operand_array, ptr_to_array, f_return_type);
 
 				if(t->type == BRACKET_R)
@@ -135,7 +136,8 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 
 
 			/**GENEROVANI MEZIKODU*********************************/
-			codegen_func_call(new.string, act_call);
+			*calls_per_expression+=1;
+			codegen_func_call(new.string, call_per_expr);
 
 			Tdata symb;
 			Tdata* symbTmp = &symb;
@@ -147,7 +149,7 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 			free(new.string);
 			if((new.string = malloc(sizeof(char)*(25))) == NULL)
 			exit(99);
-			sprintf(new.string, "&&function_return_%d", act_call);
+			sprintf(new.string, "&&function_return_%d", *calls_per_expression);
 
 			insert_operand_array(&new, operand_array, ptr_to_array, f_return_type);
 			free(new.string);
@@ -173,6 +175,11 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 
 int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 { // TODO - expresion
+	static int global_expr_no = 0;
+	int expr_no = global_expr_no;
+	global_expr_no++;
+	int calls_per_expression = 0;
+
 	char* string;
 	if ((string = malloc(sizeof(char)*10)) == NULL)
 		exit(99);
@@ -226,7 +233,7 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 			case ASC:
 			case CHR:
 			case ID: 
-					if(!look_ahead(t,&type_id, operand_array, &ptr_to_array))
+					if(!look_ahead(t,&type_id, operand_array, &ptr_to_array, &calls_per_expression))
 						{
 							free(string);
 							operand_array_destructor(operand_array, ptr_to_array);
@@ -287,7 +294,7 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 			case SUBSTR:
 			case ASC:
 			case CHR:
-			case ID: if(!look_ahead(t,&type_id, operand_array, &ptr_to_array))
+			case ID: if(!look_ahead(t,&type_id, operand_array, &ptr_to_array, &calls_per_expression))
 						{
 							free(string);
 							operand_array_destructor(operand_array, ptr_to_array);
@@ -344,6 +351,7 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 		res = TRUE;
 
 		/*****GENEROVANI MEZIKODU****************************************/
+		codegen_revert_return_values_order(calls_per_expression);
 		codegen_expression(operand_array, postfix, op_arr);
 		}
 	

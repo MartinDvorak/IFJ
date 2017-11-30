@@ -278,6 +278,6 @@ int r_side(TToken *t,int lvalue, char* name);
  * @return     TRUE = proběhlo úspěšně zpracovnání, jinak
  *             FALSE
  */
-int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_to_array);
+int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_to_array, int* calls_per_expression);
 
 #endif //PARSER_H_

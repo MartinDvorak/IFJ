@@ -102,6 +102,8 @@ void codegen_scope();
 
 
 
+void codegen_revert_return_values_order(int calls_per_expression);
+
 
 /**
  * @brief      Generuje kód volání funkce, a uloží navrátovou hodnotu z vrcholu
