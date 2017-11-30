@@ -391,6 +391,9 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
                             *storage = c;
                             break;
                         }
+                        if (c <= 31) {      //primo lze zadavat pouze znak s ascii hodnotou vyss nez 31
+                            state = SCAN_ERR;
+                        }
                         if (c == EOF) {
                             state = SCAN_ERR;
                             break;
@@ -519,7 +522,6 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
     }
 
     else if ((state == BINARY) || (state == OCTAL) || (state == HEXA)) {
-        state = INT_V;
         char *ptr = NULL;
         if (state == BINARY) {
             t->int_v = strtol(tmp_s, &ptr, 2);
@@ -534,6 +536,8 @@ TToken* get_next (TToken* t, Tstack* s, int *storage) {       // simuluje cinost
         if (ptr[0] != '\0') {
             state = SCAN_ERR;
         }
+        
+        state = INT_V;
     }
 
     else if (state == FLOAT_V) {
