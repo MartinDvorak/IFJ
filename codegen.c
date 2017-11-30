@@ -384,9 +384,21 @@ void codegen_func_return(){
 
 
 //pokud se uvnitr funkce nachazi klicove slovo return 
-void codegen_func_return_inner(){
+void codegen_func_return_inner(int return_type){
 
-	printf("ADDS\n"); //pricte k navratove hodnote implicitni, tj. 0 / 0.0 / !"", tzn. smaze implicitni
+	if(return_type == STRING){
+		//stringy
+		printf("CREATEFRAME\n");
+		printf("DEFVAR TF@$str1\n");
+		printf("DEFVAR TF@$str2\n");
+		printf("POPS TF@$str1\n");
+		printf("POPS TF@$str2\n");
+		printf("PUSHS TF@$str1\n");
+	}
+	else{
+		//integery a floaty
+		printf("ADDS\n"); //pricte k navratove hodnote implicitni, tj. 0 / 0.0 , tzn. smaze implicitni
+	}
 
 	printf(	"POPFRAME\n"
 			"RETURN\n");

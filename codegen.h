@@ -165,7 +165,7 @@ void codegen_func_param(char* name);
  * @brief      Generuje kód návratu z funkce. Přesune lokální rámec funkce, na
  *             dočasný. Kdekoliv v těle funkce, kde se objeví return.
  */
-void codegen_func_return_inner();
+void codegen_func_return_inner(int return_type);
 
 
 
