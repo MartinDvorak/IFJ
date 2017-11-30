@@ -1,12 +1,13 @@
 #include "codegen.h"
 
 
+
 void codegen_file_BEGIN(){
 
 	printf(".IFJcode17\n");
 }
 
-/****ZPRACOVANI VYRAZU****************************************************************/
+
 
 //prida prvek do pole operandu 
 void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_array, int f_return_type){
@@ -95,6 +96,7 @@ void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_a
 }
 
 
+
 //uvolni cele pole operandu 
 void operand_array_destructor(TExpr_operand* operand_array, int size){
 
@@ -115,6 +117,7 @@ void operand_array_destructor(TExpr_operand* operand_array, int size){
 }
 
 
+
 //generovani kodu pro vyraz
 void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation* op_arr){
 	
@@ -124,13 +127,16 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 	for(int i = 0; postfix[i] != '$'; i++){
 
 		if(postfix[i] == 'i'){
-			//promenna nebo konstanta
+			//promenna, navratova hodnota funkce, nebo konstanta
 			if((operand_array[operand_index].type == INTEGER) || (operand_array[operand_index].type == DOUBLE)
 				|| (operand_array[operand_index].type == STRING)){
 				//promenna nebo navratova hodnota funkce
 				if(operand_array[operand_index].is_return_value == FALSE)
+					//promenna
 					printf("PUSHS LF@%s\n", operand_array[operand_index].name);
 				else
+					//operand_array[operand_index].is_return_value == TRUE
+					//navratova hodnota funkce
 					printf("PUSHS TF@%s\n", operand_array[operand_index].name);
 
 			}
@@ -246,7 +252,7 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 		if(postfix[i+1] == '\0'){
 			
 
-			/**********************************************
+			/**
 			**vysledek vyrazu zustane na zasobniku, 
 			**je potreba ho nasledne vycistit, aby se na nem nehromadily vysledky
 			*/
@@ -254,7 +260,7 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 	}
 }
 
-/****KONEC ZPRACOVANI VYRAZU**********************************************************/
+
 
 
 
@@ -288,11 +294,15 @@ void codegen_dim(char* name){
 	call_counter++;
 }
 
+
+
 void codegen_assignment(char* name){
 
 			//expression
 			printf("POPS LF@%s\n", name);
 }
+
+
 
 void codegen_input(TToken* t){
 
@@ -316,6 +326,8 @@ void codegen_input(TToken* t){
 	}
 }
 
+
+
 //print jednoho vyrazu
 void codegen_print(){
 
@@ -325,6 +337,8 @@ void codegen_print(){
 			"WRITE TF@expr\n"
 			);
 }
+
+
 
 //vytvori LF
 void codegen_scope(){
@@ -336,10 +350,11 @@ void codegen_scope(){
 }
 
 
-/****FUNKCE, DEFINICE A VOLANI**********************************************************************/
 
 
-//meni porani navratovych hodnot na datovem zasobniku
+
+
+//meni poradi navratovych hodnot na datovem zasobniku
 void codegen_revert_return_values_order(int calls_per_expression){
 
 	printf("CREATEFRAME\n");
@@ -349,25 +364,16 @@ void codegen_revert_return_values_order(int calls_per_expression){
 		printf("DEFVAR TF@&&function_return_%d\n", i);
 		printf("POPS TF@&&function_return_%d\n", i);
 	}
-	//for(int i = 1; i <= calls_per_expression; i++){
-
-	//		printf("PUSHS TF@$tmp_%d\n", i);
-	//}
-
 }
 
-void codegen_func_call(char* name, int act_call){
+
+
+void codegen_func_call(char* name){
 
 	printf("CALL &func&%s\n", name);
-	//printf("DEFVAR TF@&&function_return_%d\n", act_call);
-	//printf("POPS TF@&&function_return_%d\n", act_call);
 }
 
-void codegen_get_func_result(int act_call){
 
-	//printf("DEFVAR LF@&&function_return_%d\n", act_call);
-	//printf("POPS LF@&&function_return_%d\n", act_call);
-}
 
 //vytvori navesti, prevede TF na LF
 void codegen_func_definition(TToken* t){

@@ -7,23 +7,33 @@
 #include "parser.h"
 
 
+/**
+ * Struktura popisující jeden operátor/operaci ve výrazu. Společně s polem
+ * operandů (viz. níže) reprezentuje výraz.
+ */
 #ifndef OPSTR
 typedef struct semantic_operation{
-	char op;  // what is operation
-	int l_convert; // left value need convert
-	int r_convert; // right valur need convert
+	char op;  // operátor
+	int l_convert; // příznak nutnosti přetypování levé strany
+	int r_convert; // příznak nutnosti přetypování pravé strany
 }Toperation;
 #endif
 #define OPSTR
 
+
+/**
+ * Struktura popisující jeden operand výrazu (nebo také návratovou hodnotu
+ * funkce volané ve výrazu). Společně s polem operátorů/operací (viz. výše)
+ * reprezentuje výraz.
+ */
 #ifndef OPERAND_STR
 typedef struct expr_operand{
 
-	int semantic_type;//pro semantickou kontrolu, bez rozdilu pro konst. a promenne
-	int type;
-	int is_return_value;
-	char* name;
-	int int_v;
+	int semantic_type;	//typ pro semantickou kontrolu, bez rozdilu pro konst. a promenne
+	int type;	//typ pro generování kódu
+	int is_return_value;	//TRUE - jedná se návrat. hodnotu funkce, FALSE - proměnná
+	char* name;	 	//identifikátor 
+	int int_v;			
 	float float_v;
 	char* string;
 }TExpr_operand;

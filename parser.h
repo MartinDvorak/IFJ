@@ -271,12 +271,14 @@ int r_side(TToken *t,int lvalue, char* name);
  * @brief      NEreprezentuje žádná neterminál. pomocná funkce, který ve
  *             zpracování výrazů rozeznává od sebe ID a ID(PARAMS)
  *
- * @param      t        ukazatel na aktuální token
- * @param      type_id  ukazatel na dat. typ, který bude nastaven podle
- *                      přijatého ID
+ * @param      t                     ukazatel na aktuální token
+ * @param      type_id               ukazatel na dat. typ, který bude nastaven
+ *                                   podle přijatého ID
+ * @param      operand_array         pole operandu
+ * @param      ptr_to_array          prvni volna pozice v poli operandů
+ * @param      calls_per_expression  počet volání funkcí v rámci jednoho výrazu
  *
- * @return     TRUE = proběhlo úspěšně zpracovnání, jinak
- *             FALSE
+ * @return     TRUE = proběhlo úspěšně zpracovnání, jinak FALSE
  */
 int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_to_array, int* calls_per_expression);
 

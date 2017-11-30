@@ -102,29 +102,27 @@ void codegen_scope();
 
 
 
+
+/**
+ * @brief      Uloží návratové hodnoty funkcí z datového zásobníku do proměnných
+ *             na dočasný rámec, v pořadí, v jakém byly funkce volány, tj.
+ *             opačně než jsou uloženy na zásobníku.
+ *
+ * @param[in]  calls_per_expression  počet funkcí volaných v rámci jednoho
+ *                                   výrazu
+ */
 void codegen_revert_return_values_order(int calls_per_expression);
 
 
+
+
 /**
- * @brief      Generuje kód volání funkce, a uloží navrátovou hodnotu z vrcholu
- *             datového zásobníku do proměnné, pro další zpracování (ve výrazu).
+ * @brief      Generuje kód volání funkce, tj. pouze instrukci CALL s příslušným
+ *             identifikátorem funkce.
  *
  * @param      name      jméno funkce
- * @param[in]  act_call  pom. proměnná pro gen. unikátního jména proměnné
  */
-void codegen_func_call(char* name, int act_call);
-
-
-
-
-/**
- * @brief      Uloží navrátovou hodnotu funkce z vrcholu datového zásobníku do
- *             proměnné, pro další zpracování (ve výrazu). Používá se u
- *             vestavěných funkcí.
- *
- * @param[in]  act_call  pom. proměnná pro gen. unikátního jména proměnné
- */
-void codegen_get_func_result(int act_call);
+void codegen_func_call(char* name);
 
 
 

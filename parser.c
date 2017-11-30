@@ -20,19 +20,15 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 {
 	int position = 0;
 	char*param = NULL;
-	static int global_call_per_expr = 0;
-	int call_per_expr = global_call_per_expr;
-	global_call_per_expr++;
 
-
-	TToken new;
+	TToken new; //pro uzeni jmena promenne x funkce 
 	if((new.string = malloc(sizeof(char)*(strlen(t->string)+1))) == NULL)
 		exit(99);
 	strcpy(new.string, t->string);
 
 	if((t->type == LENGTH) || (t->type == SUBSTR) || (t->type == ASC) ||(t->type == CHR) )
 	{
-		int type = t->type; //uchovani pro generovani mezikodu
+		int type = t->type; //uchovani typu vestavene funkce pro generovani mezikodu
 		
 		*type_id = semantic_convert_buildin(t->type);
 		if(!semantic_fce_param(root_global,t,&param)){
@@ -47,7 +43,7 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 			t = get_next(t,LA_S,&storage);
 			if(param_f(t,param,&position)){
 
-				/**GENEROVANI MEZIKODU******************************************/
+				/**GENEROVANI MEZIKODU********************************/
 				*calls_per_expression+=1;
 				int f_return_type;
 				switch(type){
@@ -69,13 +65,12 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 						break;
 				}
 
-				codegen_get_func_result(call_per_expr);
-
-				/**pridani vysledku do pole operandu**********************/
+				//pridani vysledku do pole operandu
 				new.type = ID;
-				free(new.string);
-				if((new.string = malloc(sizeof(char)*(25))) == NULL)
-				exit(99);
+					free(new.string);
+					if((new.string = malloc(sizeof(char)*(25))) == NULL)
+						exit(99);
+				
 				sprintf(new.string, "&&function_return_%d", *calls_per_expression);
 				insert_operand_array(&new, operand_array, ptr_to_array, f_return_type);
 
@@ -104,6 +99,8 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 	if(t->type != BRACKET_L)
 	{
 	//proměnná 
+		
+		//vlozeni do pole operandu
 		Tdata symb;
 		Tdata* symbTmp = &symb;
 		search_tree(root_local,t->string,symbTmp);
@@ -120,6 +117,8 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 	}
 	else if(t->type == BRACKET_L)
 	{
+	//volani funkce
+
 		// semantic chceck
 		if(!semantic_fce_param(root_global,t,&param)){
 			free(new.string);
@@ -135,20 +134,21 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 		if(param_f(t,param,&position)){
 
 
-			/**GENEROVANI MEZIKODU*********************************/
+			/**GENEROVANI MEZIKODU********************************/
+			//funkce se vola pred generovanim kodu vyrazu
 			*calls_per_expression+=1;
-			codegen_func_call(new.string, call_per_expr);
+			codegen_func_call(new.string);
 
 			Tdata symb;
 			Tdata* symbTmp = &symb;
 			search_tree(root_global,new.string,symbTmp);
 
-
 			int f_return_type = symbTmp->type;	//get function return type
 
+			//pridani vysledku do pole operandu
 			free(new.string);
 			if((new.string = malloc(sizeof(char)*(25))) == NULL)
-			exit(99);
+				exit(99);
 			sprintf(new.string, "&&function_return_%d", *calls_per_expression);
 
 			insert_operand_array(&new, operand_array, ptr_to_array, f_return_type);
@@ -175,16 +175,16 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 
 int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 { // TODO - expresion
-	static int global_expr_no = 0;
-	int expr_no = global_expr_no;
-	global_expr_no++;
-	int calls_per_expression = 0;
 
+	int calls_per_expression = 0; //pocet volani funkce v ramci jednoho vyrazu
+
+	//inicializace retezce pro reprezentaci vyrazu
 	char* string;
 	if ((string = malloc(sizeof(char)*10)) == NULL)
 		exit(99);
 	string = strcpy(string,"");
 
+	//inicializace pole operandu
 	TExpr_operand *operand_array;
 	int ptr_to_array = 0;
 	if ((operand_array = malloc(sizeof(struct expr_operand)*10)) == NULL)
@@ -197,10 +197,10 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 
 	while(!end_loop)
 	{
-
 		if((t->type == EOL) || (t->type == SEMICOLON) || (t->type == THEN) || (t->type == COLON))
 			break;
 		
+		//resize retezce repr. vyraz
 		if(strlen(string)%10 == 9)
 		{
 			int size = strlen(string);
@@ -208,6 +208,7 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 				exit(99);
 		}
 
+		//resize pole operandu
 		if(ptr_to_array%10 == 9)
 		{
 			if ((operand_array = realloc(operand_array, sizeof(struct expr_operand)*(ptr_to_array+10))) == NULL)
@@ -233,6 +234,7 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 			case ASC:
 			case CHR:
 			case ID: 
+					//v pripade volani funkce zpracovani (a volani) pred gen. kodu vyrazu
 					if(!look_ahead(t,&type_id, operand_array, &ptr_to_array, &calls_per_expression))
 						{
 							free(string);
@@ -244,7 +246,6 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 			case INT_V: 
 			case FLOAT_V:
 			case STRING_V:
-					// TODO pro komplikovanejsi strukturu predelat insert
 					insert_operand_array(t, operand_array, &ptr_to_array, 0);
 					string = strcat(string, "i");
 					break;
@@ -294,7 +295,9 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 			case SUBSTR:
 			case ASC:
 			case CHR:
-			case ID: if(!look_ahead(t,&type_id, operand_array, &ptr_to_array, &calls_per_expression))
+			case ID:
+					//v pripade volani funkce zpracovani (a volani) pred gen. kodu vyrazu
+					 if(!look_ahead(t,&type_id, operand_array, &ptr_to_array, &calls_per_expression))
 						{
 							free(string);
 							operand_array_destructor(operand_array, ptr_to_array);
@@ -333,6 +336,7 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 	} // indikuje konec vyrazu 
 	string = strcat(string, "$");
 
+	//inicializace pole pro operatory
 	Toperation* op_arr = NULL;
 	int num_of_op = 0;
 
@@ -346,15 +350,15 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 		exit(99);
 	postfix = strcpy(postfix,"");	
 
+	//syntakticka a semanticka kontrola vyrazu, prevedeni do postfixove reprezentace
 	if(expr(string,condition,postfix) && semantic_exp(postfix,operand_array,op_arr,&num_of_op,exp_ret))
 		{
 		res = TRUE;
 
-		/*****GENEROVANI MEZIKODU****************************************/
+		/**GENEROVANI MEZIKODU********************************/
 		codegen_revert_return_values_order(calls_per_expression);
 		codegen_expression(operand_array, postfix, op_arr);
 		}
-	
 
 	free(string);
 	operand_array_destructor(operand_array, ptr_to_array);
@@ -362,9 +366,10 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 	free(postfix);
 
 	return res;		
-
-
 }
+
+
+
 
 int expr_n(TToken *t)
 {
@@ -373,7 +378,7 @@ int expr_n(TToken *t)
 		return TRUE;
 	else if (preprocesing_expr(t,0,&nul))	
 	{
-		/*****GENEROVANI MEZIKODU****************************************/
+		/**GENEROVANI MEZIKODU********************************/
 		codegen_print();
 
 
@@ -402,7 +407,6 @@ int param_fn(TToken *t, char* param, int* position)
 			if(!semantic_check_lside_rside(semantic_convert_data_type(param[(*position)++]),expr_value))
 				return FALSE;
 
-			//t = get_next(t,LA_S,&storage);
 			return param_fn(t,param,position);
 		}
 	}
@@ -420,7 +424,6 @@ int param_f(TToken *t, char* param, int* position)
 	else if(preprocesing_expr(t,0,&expr_value))
 	{
 
-		/***dodelat pretypovani*************************************************/
 		if(!semantic_check_lside_rside(semantic_convert_data_type(param[(*position)++]),expr_value))
 			return FALSE;
 
@@ -440,7 +443,7 @@ int r_side(TToken *t,int lvalue, char* name)
 				if(!semantic_check_lside_rside(lvalue,rvalue))
 					return FALSE;
 
-				/****GENEROVANI MEZIKODU**************************/
+				/**GENEROVANI MEZIKODU********************************/
 					codegen_assignment(name);
 					free(name);
 
@@ -481,7 +484,6 @@ int body(TToken *t)
 				exit(99);
 			strcpy(name, t->string);
 
-			// TODO - insert to local_tree
 			Tdata tmp;
 			tmp.defined = 1;
 			tmp.param = NULL;	
@@ -499,7 +501,7 @@ int body(TToken *t)
 					//
 					t = get_next(t,LA_S,&storage);
 
-					/****GENEROVANI MEZIKODU********************/
+					/**GENEROVANI MEZIKODU********************************/
 					codegen_dim(name);
 
 					if(equal(t,tmp.type, name))
@@ -516,7 +518,6 @@ int body(TToken *t)
 	}
 	else if(t->type == ID)
 	{ // <BODY> -> ID = <R_SIDE> EOL <BODY>
-		// TODO semanticky overit 
 		char* name = NULL;	//ulozeni jmena fuknce pro codegen
 		if((name = malloc(sizeof(char)*(strlen(t->string)+1))) == NULL)
 			exit(99);
@@ -552,13 +553,12 @@ int body(TToken *t)
 		t = get_next(t,LA_S,&storage);
 		if(t->type == ID)
 		{
-			/*****GENEROVANI MEZIKODU****************************************/
+			/**GENEROVANI MEZIKODU********************************/
 			codegen_input(t);
 
-			// TODO - semanticka kontrola
 			if(!semantic_find_id(t))
 				return FALSE;
-			//
+
 			t = get_next(t,LA_S,&storage);
 			if(t->type == EOL)
 			{
@@ -572,7 +572,7 @@ int body(TToken *t)
 		t = get_next(t,LA_S,&storage);
 		if(preprocesing_expr(t,0,&nul)){
 
-			/*****GENEROVANI MEZIKODU****************************************/
+			/**GENEROVANI MEZIKODU********************************/
 			codegen_print();
 
 			if(t->type == SEMICOLON)
@@ -675,7 +675,6 @@ int body(TToken *t)
 	}	
 	else if(t->type == RETURN)
 	{ // <BODY> -> RETURN <EXP> EOL <BODY>
-		// TODO - semanticka kontrolo jestli je return s return typem
 		int rvalue;
 		t = get_next(t,LA_S,&storage);
 		if(preprocesing_expr(t,0,&rvalue))
@@ -688,7 +687,7 @@ int body(TToken *t)
 			if(!semantic_check_lside_rside(return_type,rvalue))
 				return FALSE;
 
-			/****GENEROVANI MEZIKODU*************/
+			/**GENEROVANI MEZIKODU********************************/
 			codegen_func_return_inner(return_type);
 
 			//end semantic
@@ -786,8 +785,9 @@ int params_N(TToken *t, Tdata *data, int local)
 					}
 					t = get_next(t,LA_S,&storage);
 					if(params_N(t,data,local)){
-						/****GENEROVANI MEZIKODU**********************/
-						if(local){
+						
+						/**GENEROVANI MEZIKODU********************************/
+						if(local){//pouze pokud jde o definici funkce 
 						codegen_func_param(name);
 						free(name);
 						}
@@ -832,8 +832,8 @@ int param(TToken* t, Tdata* data, int local)
 				t = get_next(t,LA_S,&storage);
 				if(params_N(t,data,local)){
 
-					/****GENEROVANI MEZIKODU***********************/
-					if(local){
+					/**GENEROVANI MEZIKODU********************************/
+					if(local){//pouze pokud jde o definici funkce 
 						//vzdy prvni parametr
 						codegen_func_param(name);
 						free(name);
@@ -870,8 +870,8 @@ int func_line(TToken* t,int local)
 			{
 				int prom = semantic_check_define(&root_global,t->string);
 
-				/*****GENEROVANI MEZIKODU*************************/
-					codegen_func_definition(t);
+				/**GENEROVANI MEZIKODU********************************/
+				codegen_func_definition(t);
 
 				if(prom == 0)// redefinace
 					return FALSE;
@@ -920,8 +920,8 @@ int func_line(TToken* t,int local)
 						 		}
 						 		// end  semantic
 
-						 		/**GENEROVANI MEZIKODU**********************/
-						 		if(local){
+						 		/**GENEROVANI MEZIKODU********************************/
+						 		if(local){//pouze pokud jde o definici funkce 
 						 		codegen_implicit_func_return(t);
 						 		}
 
@@ -976,7 +976,7 @@ int func(TToken* t, int scope)
 						if(t->type == EOL)
 						{
 
-							/****GENEROVANI MEZIKODU****************/
+							/**GENEROVANI MEZIKODU********************************/
 							codegen_func_return();
 
 							t = get_next(t,LA_S,&storage);
@@ -1004,7 +1004,7 @@ int scope(TToken *t)
 		if(t->type == EOL)
 		{
 
-			/*****GENEROVANI MEZIKODU****************************************/
+			/**GENEROVANI MEZIKODU********************************/
 			codegen_scope();
 			
 			free_tree(&root_local);
@@ -1017,7 +1017,7 @@ int scope(TToken *t)
 					if(t->type == SCOPE)
 					{
 						t = get_next(t,LA_S,&storage);
-						if((t->type == EOL)||(t->type == EOF)) // oef? 
+						if((t->type == EOL)||(t->type == EOF)) 
 						{
 							
 
@@ -1041,7 +1041,6 @@ int scope(TToken *t)
 int parser_start(TToken *t)
 { // S-> FMF
 	// insert build in fce
-	//TODO 
 	semantic_insert_build_in();
 	codegen_file_BEGIN();
 	t = get_next(t,LA_S,&storage);
