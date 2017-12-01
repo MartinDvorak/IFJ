@@ -176,6 +176,11 @@ int look_ahead(TToken *t, int* type_id, TExpr_operand* operand_array, int* ptr_t
 int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 { // TODO - expresion
 
+	//static int global_expr_id = 0;
+	//int expr_id = global_expr_id;
+	//global_expr_id++;
+	int log_operator_counter = 0;
+
 	int calls_per_expression = 0; //pocet volani funkce v ramci jednoho vyrazu
 
 	//inicializace retezce pro reprezentaci vyrazu
@@ -261,16 +266,22 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 							string = strcat(string, ")");
 					break;
 			case ASSIGN:string = strcat(string, "=");
+					log_operator_counter++;
 					break;
 			case NEQ: string = strcat(string, "N");
+					log_operator_counter++;
 					break;
 			case LESS:string = strcat(string, "L");
+					log_operator_counter++;
 					break;
 			case GREAT:string = strcat(string, "G");
+					log_operator_counter++;
 					break;
 			case LESSEQ:string = strcat(string, "S");
+					log_operator_counter++;
 					break;
 			case GREATEQ:string = strcat(string, "R");
+					log_operator_counter++;
 					break;
 			default:
 				free(string);
@@ -336,6 +347,7 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 	} // indikuje konec vyrazu 
 	string = strcat(string, "$");
 
+
 	//inicializace pole pro operatory
 	Toperation* op_arr = NULL;
 	int num_of_op = 0;
@@ -354,6 +366,28 @@ int preprocesing_expr(TToken* t, int condition, int* exp_ret)
 	if(expr(string,condition,postfix) && semantic_exp(postfix,operand_array,op_arr,&num_of_op,exp_ret))
 		{
 		res = TRUE;
+
+		
+		//semanticka kontrola vyrazu v podmince 
+		if(log_operator_counter > 1){
+		//vice log operatoru
+		free(string);
+		operand_array_destructor(operand_array, ptr_to_array);
+		free(op_arr);
+		free(postfix);
+		ERROR_RETURN = 4;
+		return FALSE;
+		}
+		else if(condition && (ptr_to_array < 2)){
+
+			free(string);
+			operand_array_destructor(operand_array, ptr_to_array);
+			free(op_arr);
+			free(postfix);
+			ERROR_RETURN = 4;
+			return FALSE;
+		}
+
 
 		/**GENEROVANI MEZIKODU********************************/
 		codegen_revert_return_values_order(calls_per_expression);

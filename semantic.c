@@ -356,9 +356,12 @@ int semantic_exp(char* string, TExpr_operand *operand_array,Toperation* arr, int
 				}
 				else if((c == 'M')&&(left == DOUBLE))
 				{
-					free_stack(s);
-					ERROR_RETURN = 4;
-					return FALSE;
+					tmp.op = c;
+					tmp.l_convert = 1;
+					tmp.r_convert = 1;
+					arr[(*num_arr)++] = tmp;
+					pop2(s);
+					push(s,INTEGER);
 				}
 				else{
 					tmp.op = c;
@@ -368,29 +371,41 @@ int semantic_exp(char* string, TExpr_operand *operand_array,Toperation* arr, int
 					pop(s);
 				}
 			}
-			else if(c == 'M')
-			{// modulo nelze jinde nez int/int
-				free_stack(s);
-				ERROR_RETURN = 4;
-				return FALSE;
-			}
 			else if((left == INTEGER)&&(right == DOUBLE))
 			{
-				tmp.op = c;
-				tmp.l_convert = 1;
-				tmp.r_convert = 0;
-				arr[(*num_arr)++] = tmp;
-				pop2(s);
-				push(s,DOUBLE);
-
+				if(c == 'M'){
+					tmp.op = c;
+					tmp.l_convert = 0;
+					tmp.r_convert = 1;
+					arr[(*num_arr)++] = tmp;
+					pop(s);
+				}
+				else{
+					tmp.op = c;
+					tmp.l_convert = 1;
+					tmp.r_convert = 0;
+					arr[(*num_arr)++] = tmp;
+					pop2(s);
+					push(s,DOUBLE);
+				}
 			}
 			else if((left == DOUBLE)&&(right == INTEGER))
 			{
-				tmp.op = c;
-				tmp.l_convert = 0;
-				tmp.r_convert = 1;
-				arr[(*num_arr)++] = tmp;
-				pop(s);
+				if(c == 'M'){
+					tmp.op = c;
+					tmp.l_convert = 1;
+					tmp.r_convert = 0;
+					arr[(*num_arr)++] = tmp;
+					pop2(s);
+					push(s, INTEGER);
+				}
+				else{
+					tmp.op = c;
+					tmp.l_convert = 0;
+					tmp.r_convert = 1;
+					arr[(*num_arr)++] = tmp;
+					pop(s);
+				}
 			}
 			else{
 				free_stack(s);

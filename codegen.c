@@ -164,20 +164,40 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 		else{
 			//operator
 			Toperation act = op_arr[operator_index];
-
+			
+			//implicitni konverze
 			if(act.l_convert){
-				//levy operand konverze
-				printf(	//"CREATEFRAME\n"
-						"DEFVAR TF@$tmp1l%d\n"
-						
-						"POPS TF@$tmp1l%d\n"
-						"INT2FLOATS\n"
-						"PUSHS TF@$tmp1l%d\n"
-						,i,i,i);
+				//pretypovani leveho operandu
+				if(act.op == 'M'){
+					//modulo --> na integery
+					printf(	//"CREATEFRAME\n"
+							"DEFVAR TF@$tmp1l%d\n"
+							"POPS TF@$tmp1l%d\n"
+							"FLOAT2R2EINTS\n"
+							"PUSHS TF@$tmp1l%d\n"
+							,i,i,i);
+
+				}
+				else{
+					//levy operand konverze
+					printf(	//"CREATEFRAME\n"
+							"DEFVAR TF@$tmp1l%d\n"
+							"POPS TF@$tmp1l%d\n"
+							"INT2FLOATS\n"
+							"PUSHS TF@$tmp1l%d\n"
+							,i,i,i);
+				}
 			}
 			if(act.r_convert){
-				//pravy operand konverze
-				printf("INT2FLOATS\n");
+				//pretypovani praveho operandu
+				if(act.op == 'M'){
+					//modulo --> na integery
+					printf("FLOAT2R2EINTS\n");
+				}
+				else{
+					//pravy operand konverze
+					printf("INT2FLOATS\n");
+				}
 			}
 
 			switch(act.op){

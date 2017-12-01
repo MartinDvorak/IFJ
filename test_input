@@ -1,18 +1,5 @@
-function foo(a as integer) as integer
-return a
-end function
-
-function bar(a as integer) as integer
-return a
-end function  
-
+ declare function foo() as integer
+ 
  scope
- 	dim a as integer = 5 
- 	dim res as integer
-
- 	do while a > 0 
- 		res = 0 * (1+ foo(1+2+4+bar(1)))
- 		print res;
- 		a = a - 1
- 	loop
- end scope
+ 
+ end scope 
