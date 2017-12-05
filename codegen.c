@@ -22,7 +22,6 @@ void insert_operand_array(TToken* t, TExpr_operand* operand_array, int* ptr_to_a
 	}
 	else if(t->type == FLOAT_V){
 		//float konstanta
-		//printf("!!!!!!!!!!!!!!!!!!!!! %g\n", t->`_v);
 		operand_array[*ptr_to_array].semantic_type = DOUBLE;
 		operand_array[*ptr_to_array].type = FLOAT_V;
 		operand_array[*ptr_to_array].float_v = t->float_v;
@@ -282,9 +281,7 @@ void codegen_expression(TExpr_operand* operand_array, char* postfix, Toperation*
 
 
 
-
-
-//zatim jen prototyp
+//deklarace promenne, prirazeni implicitni hodnoty
 void codegen_dim(char* name){
 
 	Tdata data;
@@ -316,6 +313,7 @@ void codegen_dim(char* name){
 
 
 
+//prirazeni
 void codegen_assignment(char* name){
 
 			//expression
@@ -324,6 +322,7 @@ void codegen_assignment(char* name){
 
 
 
+//cteni hodnoty ze stdin
 void codegen_input(TToken* t){
 
 	Tdata sdata;
@@ -348,7 +347,7 @@ void codegen_input(TToken* t){
 
 
 
-//print jednoho vyrazu
+//vypis vysledne hodnoty jednoho vyrazu
 void codegen_print(){
 
 	printf(	"CREATEFRAME\n"
@@ -360,7 +359,7 @@ void codegen_print(){
 
 
 
-//vytvori LF
+//vytvori LF pro hlavni blok
 void codegen_scope(){
 
 	printf(	"LABEL &&&scope\n"
@@ -368,9 +367,6 @@ void codegen_scope(){
 			"PUSHFRAME\n");
 
 }
-
-
-
 
 
 
@@ -388,6 +384,7 @@ void codegen_revert_return_values_order(int calls_per_expression){
 
 
 
+//volani funkce 
 void codegen_func_call(char* name){
 
 	printf("CALL &func&%s\n", name);
@@ -395,7 +392,7 @@ void codegen_func_call(char* name){
 
 
 
-//vytvori navesti, prevede TF na LF
+//vytvori navesti, a lokalni ramec 
 void codegen_func_definition(TToken* t){
 
 	printf(	"JUMP &&&scope\n"
@@ -437,7 +434,7 @@ void codegen_func_return(){
 }
 
 
-//pokud se uvnitr funkce nachazi klicove slovo return 
+//pokud se uvnitr funkce nachazi klicove slovo return, odstrani implicitni hodnotu a nahradi novou
 void codegen_func_return_inner(int return_type){
 
 	if(return_type == STRING){
